@@ -10,8 +10,6 @@ class App extends Component {
                     {/* Insert Routing here */}
                     <Route exact path="/dashboard" component={Dashboard} />
                 </Switch>
-
-                {/* Below is only a test, remove later */}
             </div>
         );
     }
