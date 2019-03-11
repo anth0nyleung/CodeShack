@@ -54,7 +54,8 @@ $theme-colors: (
     uw-gray-blue: #dadfe1,
     uw-gray-darker: #646569,
     uw-gray-darkest: #282728,
-    uw-anchor-color: #0479a8
+    uw-anchor-color: #0479a8,
+    uw-gray-footer-text: #adadad
 );
 $colors: (
     light-red: #9b0000,
@@ -117,5 +118,10 @@ $link-color: $cyan;
 $link-decoration: none;
 $link-hover-color: $uw-dark-red;
 $link-hover-decoration: underline;
+
+$list-group-action-color: $gray-700;
+$list-group-action-hover-color: $red;
+$list-group-action-active-color: $red;
+$list-group-action-active-bg: $gray-200;
 
 @import "~bootstrap/scss/bootstrap";
