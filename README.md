@@ -11,3 +11,8 @@ Run <code>npm install</code> to install all dependencies
 Run <code>npm start</code> to run
 
 Run <code>git push -u origin your-branch</code> to push to your branch
+
+Google account for codeshack:
+Email: code.shack.99@gmail.com
+Password: codeshack123!!
+
