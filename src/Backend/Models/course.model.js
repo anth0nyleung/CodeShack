@@ -1,9 +1,9 @@
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
-    courseName :  {type: Sting, required: true}
-})
+    courseName :  {type: String, required: true},
+    questions : [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}]
+});
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model('Course', CourseSchema);
