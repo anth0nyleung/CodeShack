@@ -1,9 +1,9 @@
+
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-    email: { type: String, required: true }
-});
-
+const CourseSchema = new Schema({
+    courseName :  {type: Sting, required: true}
+})
 
 module.exports = mongoose.model("User", UserSchema);
