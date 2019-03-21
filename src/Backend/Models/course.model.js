@@ -1,9 +1,8 @@
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
-    courseName :  {type: Sting, required: true}
-})
+    courseName: { type: Sting, required: true }
+});
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("Course", UserSchema);
