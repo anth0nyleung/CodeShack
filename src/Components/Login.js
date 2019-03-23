@@ -1,4 +1,7 @@
 import React, {Component} from "react"
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { push } from "connected-react-router";
 import {
     Col,
     Button,
@@ -10,14 +13,30 @@ import {
     Input,
 } from "reactstrap";
 
+const styles = theme => ({});
+
+const mapStateToProps = state => {
+    return {
+        user: state.user.user,
+        loginError: state.user.loginError,
+        isAuth: state.user.isAuth
+    };
+};
+
 
 class Login extends Component {
-    state = {};
+    constructor(props) {
+        super(props);
 
-    componentDidMount() {
-        // Sets the title of the page
-        document.title = "Login ";
+        this.state = {
+            username: "",
+        };
     }
+
+    onRegister = () => {
+        console.log('Pressed')
+        this.context.router.history.push("/signup");
+    };
 
     render() {
         return(
@@ -44,7 +63,7 @@ class Login extends Component {
                         </Col>
                     </FormGroup>
                     <Button>Submit</Button>
-                    <Button>Sign up</Button>
+                    <Button fullWidth onClick={this.onRegister} >Sign up</Button>
                 </Form>
             </Container>
             </main>
