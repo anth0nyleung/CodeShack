@@ -1,16 +1,13 @@
 import React, {Component} from "react"
 import {
-    Row,
     Col,
     Button,
     Jumbotron,
     Container,
     Form,
     FormGroup,
-    ListGroup,
     Label,
     Input,
-    ListGroupItem
 } from "reactstrap";
 
 
@@ -19,7 +16,7 @@ class Login extends Component {
 
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Dashboard";
+        document.title = "Login ";
     }
 
     render() {
@@ -35,17 +32,19 @@ class Login extends Component {
             <Container>
                 <Form>
                     <FormGroup row>
-                        <Label for="exampleEmail" sm={2}>Email</Label>
+                        <Label for="email" sm={2}>Email</Label>
                         <Col sm={10}>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" />
+                        <Input type="email" name="email" id="email" placeholder="Enter your email" />
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="exampleEmail" sm={2}>Password</Label>
+                        <Label for="password" sm={2}>Password</Label>
                         <Col sm={10}>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" />
+                        <Input type="password" name="password" id="password" placeholder="Enter your password" />
                         </Col>
                     </FormGroup>
+                    <Button>Submit</Button>
+                    <Button>Sign up</Button>
                 </Form>
             </Container>
             </main>
