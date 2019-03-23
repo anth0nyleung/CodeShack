@@ -6,12 +6,19 @@ const mongoose = require("mongoose"),
     cors = require("cors"),
     router = express.Router(),
     helmet = require("helmet"),
+    config = require("config"),
     logger = require("morgan");
 
 const API_PORT = 8080;
 
-// this is our MongoDB database
-const dbRoute = "mongodb://localhost:27017/CodeShackTest"; // Change this
+// This is our MongoDB database
+let dbRoute = "mongodb://localhost:27017/CodeShackDev"; // Change this
+
+// If test, set the uri correctly
+if (config.util.getEnv("NODE_ENV") === "test") {
+    console.log("Running test...");
+    dbRoute = "mongodb://localhost:27017/CodeShackTest";
+}
 
 // connects our back end code with the database
 mongoose.connect(dbRoute, { useNewUrlParser: true });
@@ -38,3 +45,5 @@ app.use("/api", router);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+module.exports = app;

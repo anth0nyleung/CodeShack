@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { loadAllQuestions } from "../redux/actions/actions";
 import {
     Row,
     Col,
@@ -10,6 +12,17 @@ import {
 } from "reactstrap";
 
 /**
+ * Maps the state of the redux store to the properties of the component
+ *
+ * @param state The state of the application
+ */
+const mapStateToProps = state => {
+    return {
+        questions: null // TODO: Set questions here
+    };
+};
+
+/**
  * Dashboard page component
  */
 class Dashboard extends Component {
@@ -18,6 +31,8 @@ class Dashboard extends Component {
     componentDidMount() {
         // Sets the title of the page
         document.title = "Dashboard";
+
+        // this.props.loadAllQuestions();
     }
 
     /**
@@ -164,4 +179,7 @@ class Dashboard extends Component {
     }
 }
 
-export default Dashboard;
+export default connect(
+    mapStateToProps,
+    { loadAllQuestions }
+)(Dashboard);
