@@ -1,8 +1,10 @@
 import React, {Component} from "react"
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { loginUser } from "../redux/actions/actions";
 import { push } from "connected-react-router";
 import {
+    Row,
     Col,
     Button,
     Jumbotron,
@@ -13,8 +15,6 @@ import {
     Input,
 } from "reactstrap";
 
-const styles = theme => ({});
-
 const mapStateToProps = state => {
     return {
         user: state.user.user,
@@ -22,7 +22,6 @@ const mapStateToProps = state => {
         isAuth: state.user.isAuth
     };
 };
-
 
 class Login extends Component {
     constructor(props) {
@@ -34,11 +33,40 @@ class Login extends Component {
     }
 
     onRegister = () => {
-        console.log('Pressed')
         this.context.router.history.push("/signup");
     };
 
+    handleChange = e => {
+        this.setState({
+            [e.target.id]: e.target.value
+        });
+    };
+
+    onSignIn = e => {
+        this.props.loginUser({
+            username: this.state.username,
+        });
+        e.preventDefault();
+    };
+
+    renderRedirect = e => {
+        if (this.props.isAuth) {
+            this.context.router.history.push("/");
+        }
+    };
+
+    onRedirect = () => {
+        this.context.router.history.push("/");
+    };
+
+    validateForm = () => {
+        return true;
+    };
+
+
     render() {
+        const { classes } = this.props;
+
         return(
         <div>
             <main>
@@ -62,8 +90,8 @@ class Login extends Component {
                         <Input type="password" name="password" id="password" placeholder="Enter your password" />
                         </Col>
                     </FormGroup>
-                    <Button>Submit</Button>
-                    <Button fullWidth onClick={this.onRegister} >Sign up</Button>
+                    <Col sm={10}><Button>Submit</Button></Col>
+                    <Col sm={10}><Button fullWidth onClick={this.onRegister} >Sign up</Button></Col>
                 </Form>
             </Container>
             </main>
