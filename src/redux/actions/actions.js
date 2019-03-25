@@ -15,3 +15,22 @@ export function loadAllQuestions() {
             });
     };
 }
+
+
+export function loginUser(user_data) {
+    console.log("login")
+    return dispatch => {
+        const username = user_data.username;
+        axios
+            .post(`${url}user/${username}`, { password: user_data.password })
+            .then(res => {
+                let user = res.data;
+                localStorage.setItem("Auth", user._id);
+                dispatch({ type: "SET_USER", user });
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch({ type: "LOGIN_ERROR" });
+            });
+    };
+}
