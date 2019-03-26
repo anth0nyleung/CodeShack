@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { loadAllCourses } from "../redux/actions/actions"
+import { connect } from "react-redux"
 import {
     Row,
     Col,
@@ -6,6 +8,12 @@ import {
     Jumbotron,
     Container
 } from "reactstrap";
+
+const mapStateToProps = state => {
+    return {
+        courses: state.course.courses
+    }
+}
 
 /**
  * Dashboard page component
@@ -16,6 +24,8 @@ class CourseOverview extends Component {
     componentDidMount() {
         // Sets the title of the page
         document.title = "Course Overview";
+
+        this.props.loadAllCourses();
     }
 
     /**
@@ -66,11 +76,11 @@ class CourseOverview extends Component {
                         </Container>
                     </Jumbotron>
                     <Container>
-                        <Row>
-                            <Col md = {{ span : 2, offset: 3 }}>
+                        <Row style={{marginTop: "16px"}}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS200</h2>
                                 <p>
-                                    View and answer technical questions related to CS200
+                                    Programing I
                                 </p>
                                 <Button
                                     id="CS200"
@@ -80,10 +90,10 @@ class CourseOverview extends Component {
                                     Click Here &raquo;
                                 </Button>
                             </Col>
-                            <Col md = {{ span : 2, offset : 2 }}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS300</h2>
                                 <p>
-                                    View and answer technical questions related to CS300
+                                    Programing II
                                 </p>
                                 <Button
                                     id="CS300"
@@ -94,11 +104,11 @@ class CourseOverview extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col md = {{ span : 2, offset: 3 }}>
+                        <Row style={{marginTop: "16px"}}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS400</h2>
                                 <p>
-                                    View and answer technical questions related to CS400
+                                    Programing III
                                 </p>
                                 <Button
                                     id="CS400"
@@ -108,10 +118,10 @@ class CourseOverview extends Component {
                                     Click Here &raquo;
                                 </Button>
                             </Col>
-                            <Col md = {{ span : 2, offset : 2 }}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS354</h2>
                                 <p>
-                                    View and answer technical questions related to CS354
+                                    Intro to Computer Systems
                                 </p>
                                 <Button
                                     id="CS354"
@@ -122,11 +132,11 @@ class CourseOverview extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col md = {{ span : 2, offset: 3 }}>
+                        <Row style={{marginTop: "16px"}}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS240</h2>
                                 <p>
-                                    View and answer technical questions related to CS240
+                                    Discrete Math
                                 </p>
                                 <Button
                                     id="CS2"
@@ -136,10 +146,10 @@ class CourseOverview extends Component {
                                     Click Here &raquo;
                                 </Button>
                             </Col>
-                            <Col md = {{ span : 2, offset : 2 }}>
+                            <Col className="span-2, offset-2">
                                 <h2>CS577</h2>
                                 <p>
-                                    View and answer technical questions related to CS577
+                                    Introduction to Algorithm
                                 </p>
                                 <Button
                                     id="CS577"
@@ -163,4 +173,4 @@ class CourseOverview extends Component {
     }
 }
 
-export default CourseOverview;
+export default connect(mapStateToProps, {loadAllCourses})(CourseOverview);
