@@ -64,7 +64,7 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                course.addQuestion((err, course) => {
+                course.addQuestion(req.body.question_id, (err, course) => {
                     if (err) {
                         res.status(500);
                         res.send(err);

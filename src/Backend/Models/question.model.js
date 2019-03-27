@@ -11,4 +11,73 @@ const QuestionSchema = new Schema({
     topics : [{type: mongoose.Schema.Types.ObjectId, ref: 'Topic'}]
 });
 
+QuestionSchema.methods.addCompany = function(company, callback) {
+    var index = this.companies.findIndex(el => {
+        return el.equals(c._id);
+    });
+    if (index !== -1) {
+        return callback(null, null);
+    } else {
+        this.companies.push(company);
+        this.save(function(err, question) {
+            if (err) {
+                return callback(err);
+            } else {
+                return callback(null, this);
+            }
+        });
+    }
+};
+QuestionSchema.methods.addCourse = function(course, callback) {
+    var index = this.courses.findIndex(el => {
+        return el.equals(c._id);
+    });
+    if (index !== -1) {
+        return callback(null, null);
+    } else {
+        this.courses.push(course);
+        this.save(function(err, question) {
+            if (err) {
+                return callback(err);
+            } else {
+                return callback(null, this);
+            }
+        });
+    }
+};
+QuestionSchema.methods.addTopic = function(topic, callback) {
+    var index = this.topics.findIndex(el => {
+        return el.equals(c._id);
+    });
+    if (index !== -1) {
+        return callback(null, null);
+    } else {
+        this.topics.push(topic);
+        this.save(function(err, question) {
+            if (err) {
+                return callback(err);
+            } else {
+                return callback(null, this);
+            }
+        });
+    }
+};
+QuestionSchema.methods.addComment = function(comment, callback) {
+    var index = this.comments.findIndex(el => {
+        return el.equals(c._id);
+    });
+    if (index !== -1) {
+        return callback(null, null);
+    } else {
+        this.comments.push(comment);
+        this.save(function(err, question) {
+            if (err) {
+                return callback(err);
+            } else {
+                return callback(null, this);
+            }
+        });
+    }
+};
+
 module.exports = mongoose.model('Question', QuestionSchema);
