@@ -1,4 +1,8 @@
 const Question = require("../Models/question.model");
+const Course = require("../Models/course.model");
+const Comment = require("../Models/comment.model");
+const Topic = require("../Models/topic.model");
+const Company = require("../Models/company.model");
 
 module.exports = {
     createQuestion: (req, res) => {
@@ -57,12 +61,25 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                question.addCompany(req.body.company_id, (err, question) => {
+                Company.findById(req.body.company_id, (err, company) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!company) {
+                        res.status(500);
+                        res.send(err);
                     } else {
-                        res.send(question);
+                        question.addCompany(
+                            req.body.company_id,
+                            (err, question) => {
+                                if (err) {
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    res.send(question);
+                                }
+                            }
+                        );
                     }
                 });
             }
@@ -77,12 +94,25 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                question.addTopic(req.body.topic_id, (err, question) => {
+                Topic.findById(req.body.topic_id, (err, topic) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!topic) {
+                        res.status(500);
+                        res.send(err);
                     } else {
-                        res.send(question);
+                        question.addTopic(
+                            req.body.topic_id,
+                            (err, question) => {
+                                if (err) {
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    res.send(question);
+                                }
+                            }
+                        );
                     }
                 });
             }
@@ -97,12 +127,25 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                question.addCourse(req.body.course_id, (err, question) => {
+                Course.findById(req.body.course_id, (err, course) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!course) {
+                        res.status(500);
+                        res.send(err);
                     } else {
-                        res.send(question);
+                        question.addCourse(
+                            req.body.course_id,
+                            (err, question) => {
+                                if (err) {
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    res.send(question);
+                                }
+                            }
+                        );
                     }
                 });
             }
@@ -117,12 +160,25 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                question.addCompany(req.body.comment_id, (err, question) => {
+                Comment.findById(req.body.comment_id, (err, comment) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!comment) {
+                        res.status(500);
+                        res.send(err);
                     } else {
-                        res.send(question);
+                        question.addCompany(
+                            req.body.comment_id,
+                            (err, question) => {
+                                if (err) {
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    res.send(question);
+                                }
+                            }
+                        );
                     }
                 });
             }
