@@ -8,7 +8,7 @@ const CourseSchema = new Schema({
 
 CourseSchema.methods.addQuestion = function(question, callback) {
     var index = this.questions.findIndex(el => {
-        return el.equals(c._id);
+        return el.equals(question);
     });
     if (index !== -1) {
         return callback(null, null);
@@ -18,7 +18,7 @@ CourseSchema.methods.addQuestion = function(question, callback) {
             if (err) {
                 return callback(err);
             } else {
-                return callback(null, this);
+                return callback(null, course);
             }
         });
     }

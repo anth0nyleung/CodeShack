@@ -1,4 +1,5 @@
 const Course = require("../Models/course.model");
+const Question = require("../Models/question.model");
 
 module.exports = {
     createCourse: (req, res) => {
@@ -34,7 +35,7 @@ module.exports = {
         });
     },
     getCourses: (req, res) => {
-        Courses.find({}).exec((err, courses) => {
+        Course.find({}).exec((err, courses) => {
             if (err) {
                 res.status(500);
                 res.send(err);
@@ -44,7 +45,7 @@ module.exports = {
         });
     },
     getCourse: (req, res) => {
-        Courses.findById(req.params.id)
+        Course.findById(req.params.id)
             .populate("questions")
             .exec((err, course) => {
                 if (err) {
@@ -56,7 +57,7 @@ module.exports = {
             });
     },
     addQuestion: (req, res) => {
-        Courses.findById(req.params.id, (err, course) => {
+        Course.findById(req.params.id, (err, course) => {
             if (err) {
                 res.status(500);
                 res.send(err);
@@ -64,12 +65,25 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                course.addQuestion(req.body.question_id, (err, course) => {
+                Question.findById(req.body.question_id, (err, question) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!question) {
+                        res.status(500);
+                        res.send(err);
                     } else {
-                        res.send(course);
+                        course.addQuestion(
+                            req.body.question_id,
+                            (err, course) => {
+                                if (err) {
+                                    res.status(500);
+                                    res.send(err);
+                                } else {
+                                    res.send(course);
+                                }
+                            }
+                        );
                     }
                 });
             }

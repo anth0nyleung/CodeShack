@@ -2,7 +2,7 @@ const Question = require("../Models/question.model");
 
 module.exports = {
     createQuestion: (req, res) => {
-        var quesion = new Question(req.body);
+        var question = new Question(req.body);
 
         question.save(function(err, question) {
             if (err) {
@@ -35,7 +35,10 @@ module.exports = {
     },
     getQuestion: (req, res) => {
         Questions.findById(req.params.id)
-            .populate("questions")
+            .populate("courses")
+            .populate("comments")
+            .populate("topics")
+            .populate("companies")
             .exec((err, question) => {
                 if (err) {
                     res.status(500);
