@@ -18,6 +18,8 @@ let dbRoute = "mongodb://localhost:27017/CodeShackDev"; // Change this
 if (config.util.getEnv("NODE_ENV") === "test") {
     console.log("Running test...");
     dbRoute = "mongodb://localhost:27017/CodeShackTest";
+} else {
+    app.use(logger("dev"));
 }
 
 // connects our back end code with the database
@@ -36,7 +38,6 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(logger("dev"));
 
 routes(router);
 
