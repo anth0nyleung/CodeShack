@@ -2,6 +2,12 @@ const Course = require("../Models/course.model");
 const Question = require("../Models/question.model");
 
 module.exports = {
+    /**
+     * Creates a course in the database
+     * POST /course
+     *
+     * @param req.body The object containing all info for course
+     */
     createCourse: (req, res) => {
         var course = new Course(req.body);
 
@@ -14,6 +20,13 @@ module.exports = {
             }
         });
     },
+    /**
+     * Updates a course in the database
+     * PATCH /course/:id
+     *
+     * @param req.params.id The id of the course to update
+     * @param req.body      The object containing all the new info
+     */
     updateCourse: (req, res) => {
         Course.findById(req.params.id, (err, course) => {
             if (err) {
@@ -34,6 +47,10 @@ module.exports = {
             }
         });
     },
+    /**
+     * Gets all courses from database
+     * GET /course
+     */
     getCourses: (req, res) => {
         Course.find({}).exec((err, courses) => {
             if (err) {
@@ -44,6 +61,12 @@ module.exports = {
             }
         });
     },
+    /**
+     * Gets a single course from the database. Populates all questions
+     * GET /course/:id
+     *
+     * @param req.params.id The id of the course to get
+     */
     getCourse: (req, res) => {
         Course.findById(req.params.id)
             .populate("questions")
@@ -56,6 +79,13 @@ module.exports = {
                 }
             });
     },
+    /**
+     * Adds a question to a course
+     * POST /course/:id/addq
+     *
+     * @param req.params.id         The id of the course
+     * @param req.body.question_id  The id of the question to add
+     */
     addQuestion: (req, res) => {
         Course.findById(req.params.id, (err, course) => {
             if (err) {

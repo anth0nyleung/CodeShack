@@ -5,6 +5,12 @@ const Topic = require("../Models/topic.model");
 const Company = require("../Models/company.model");
 
 module.exports = {
+    /**
+     * Creates a question in the database
+     * POST /question
+     *
+     * @param req.body The info for the new question
+     */
     createQuestion: (req, res) => {
         var question = new Question(req.body);
 
@@ -17,6 +23,13 @@ module.exports = {
             }
         });
     },
+    /**
+     * Updates a question in the database
+     * PATCH /question/:id
+     *
+     * @param req.params.id The id of the question
+     * @param req.body      The info of the new question
+     */
     updateQuestion: (req, res) => {
         Question.findById(req.params.id, (err, question) => {
             if (err) {
@@ -37,8 +50,14 @@ module.exports = {
             }
         });
     },
+    /**
+     * Get a question from the database. Populates all fields
+     * GET /question/:id
+     *
+     * @param req.params.id The id of the question
+     */
     getQuestion: (req, res) => {
-        Questions.findById(req.params.id)
+        Question.findById(req.params.id)
             .populate("courses")
             .populate("comments")
             .populate("topics")
@@ -52,8 +71,15 @@ module.exports = {
                 }
             });
     },
+    /**
+     * Adds a company to a question
+     * POST /question/:id/addcompany
+     *
+     * @param req.params.id       The id of the question
+     * @param req.body.company_id The id of the company
+     */
     addCompany: (req, res) => {
-        Questions.findById(req.params.id, (err, question) => {
+        Question.findById(req.params.id, (err, question) => {
             if (err) {
                 res.status(500);
                 res.send(err);
@@ -85,8 +111,15 @@ module.exports = {
             }
         });
     },
+    /**
+     * Adds a topic to a question
+     * POST /question/:id/addtopic
+     *
+     * @param req.params.id     The id of the question
+     * @param req.body.topic_id The id of the topic
+     */
     addTopic: (req, res) => {
-        Questions.findById(req.params.id, (err, question) => {
+        Question.findById(req.params.id, (err, question) => {
             if (err) {
                 res.status(500);
                 res.send(err);
@@ -118,8 +151,15 @@ module.exports = {
             }
         });
     },
+    /**
+     * Adds a course to a question
+     * POST /question/:id/addcourse
+     *
+     * @param req.params.id      The id of the question
+     * @param req.body.course_id The id of the course
+     */
     addCourse: (req, res) => {
-        Questions.findById(req.params.id, (err, question) => {
+        Question.findById(req.params.id, (err, question) => {
             if (err) {
                 res.status(500);
                 res.send(err);
@@ -151,8 +191,15 @@ module.exports = {
             }
         });
     },
+    /**
+     * Adds a comment to a question
+     * POST /question/:id/addcomment
+     *
+     * @param req.params.id       The id of the question
+     * @param req.body.comment_id The id of the comment
+     */
     addComment: (req, res) => {
-        Questions.findById(req.params.id, (err, question) => {
+        Question.findById(req.params.id, (err, question) => {
             if (err) {
                 res.status(500);
                 res.send(err);
