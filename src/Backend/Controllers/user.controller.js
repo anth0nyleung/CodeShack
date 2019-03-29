@@ -20,12 +20,13 @@ module.exports = {
                 res.status(500);
                 res.send(err);               
             }
-            else if (!user) {
-                res.status(500);
-                res.send(err);
+
+            else if (user) {
+                res.send(user);
             }
             else {
-                res.send(user);
+                res.status(600);
+                res.send(err);
                 
             }
         });
