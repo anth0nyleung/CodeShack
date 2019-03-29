@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser } from "../redux/actions/actions";
+import { loginUser, userExist } from "../redux/actions/actions";
 import Firebase from "../Backend/Firebase";
 import {
     Row,
@@ -48,7 +48,8 @@ const formGroupStyle = {
 const mapStateToProps = state => {
     return {
         user: state.authUser.user,
-        isAuth: state.authUser.isAuth
+        isAuth: state.authUser.isAuth,
+        authError: state.authUser.authError
     };
 };
 
@@ -59,7 +60,8 @@ export class Login extends Component {
         this.state = {
             email: "",
             loginError: false,
-            alertVisible: true
+            alertVisible: true,
+            userExist: false
         };
     }
 
@@ -77,22 +79,29 @@ export class Login extends Component {
     onSubmit = e => {
         console.log("Pressed Submit");
 
-        // Firebase authentication
-        const firebase = Firebase.getFirebase();
+        this.props.userExist({ email: this.state.email }, err => {
+            if (err == null) {
+                // Firebase authentication
+                const firebase = Firebase.getFirebase();
 
-        firebase.logOut(); // Need to be remove
-        firebase.logInWithWiscID(user => {
-            console.log("Callback email: " + user.email);
+                firebase.logOut(); // Need to be remove
+                firebase.logInWithWiscID(user => {
+                    console.log("Callback email: " + user.email);
 
-            // Save user to state if authenticate with @wisc.edu
-            if (user.email.includes("@wisc.edu")) {
-                // Load user to state
-                this.props.loginUser({ email: user.email }, () => {});
-            }
-            // Reject and require to log in with wisc edu email again
-            else {
-                // Show an alert
-                this.setState({ loginError: true });
+                    // Save user to state if authenticate with @wisc.edu
+                    if (user.email.includes("@wisc.edu")) {
+                        // Load user to state
+                        this.props.loginUser({ email: user.email });
+                    }
+                    // Reject and require to log in with wisc edu email again
+                    else {
+                        // Show an alert
+                        this.setState({ loginError: true });
+                    }
+                });
+            } else {
+                console.log("here");
+                this.setState({ userExist: true });
             }
         });
     };
@@ -157,7 +166,8 @@ export class Login extends Component {
                                             />
                                         </Col>
                                     </FormGroup>
-                                    {this.state.loginError && (
+                                    {(this.state.loginError ||
+                                        this.props.authError) && (
                                         <Alert
                                             color="danger"
                                             isOpen={this.state.visible}
@@ -165,6 +175,16 @@ export class Login extends Component {
                                         >
                                             Please use a valid wisc.edu email to
                                             login
+                                        </Alert>
+                                    )}
+                                    {this.state.userExist && (
+                                        <Alert
+                                            color="danger"
+                                            isOpen={this.state.visible}
+                                            toggle={this.onDismiss}
+                                        >
+                                            User is not registered, please sign
+                                            up
                                         </Alert>
                                     )}
                                     <Col>
@@ -197,6 +217,12 @@ export class Login extends Component {
                         </Col>
                     </Row>
                 </main>
+                <footer>
+                    <Container>
+                        <hr />
+                        <p>&copy; CodeShack 2019</p>
+                    </Container>
+                </footer>
             </div>
         );
     }
@@ -211,5 +237,5 @@ Login.contextTypes = {
 };
 export default connect(
     mapStateToProps,
-    { loginUser }
+    { loginUser, userExist }
 )(Login);

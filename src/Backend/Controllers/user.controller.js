@@ -19,11 +19,11 @@ module.exports = {
             if (err) {
                 res.status(500);
                 res.send(err);
-            } else if (!user) {
-                res.status(500);
-                res.send(err);
-            } else {
+            } else if (user) {
                 res.send(user);
+            } else {
+                res.status(600);
+                res.send(err);
             }
         });
     }

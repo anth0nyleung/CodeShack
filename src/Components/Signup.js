@@ -97,7 +97,6 @@ export class Signup extends Component {
                 this.setState({ invalidEmailError: true });
             }
         });
-
         e.preventDefault();
     };
 
@@ -208,7 +207,8 @@ export class Signup extends Component {
                                     isOpen={this.state.visible}
                                     toggle={this.onDismiss}
                                 >
-                                    Please use a valid username to login
+                                    Duplicate username or email has been
+                                    registered
                                 </Alert>
                             )}
                             <FormGroup row onChange={this.handleChange}>
@@ -265,6 +265,12 @@ export class Signup extends Component {
                         </Form>
                     </Container>
                 </main>
+                <footer>
+                    <Container>
+                        <hr />
+                        <p>&copy; CodeShack 2019</p>
+                    </Container>
+                </footer>
             </div>
         );
     }

@@ -63,6 +63,24 @@ export function loginUser(user_data, callback) {
     };
 }
 
+export function userExist(user_data, callback) {
+    console.log("user exist");
+
+    return () => {
+        axios
+            .post(`${url}getUser/`, user_data)
+            .then(res => {
+                console.log("no err");
+                let user = res.data;
+                callback(null);
+            })
+            .catch(err => {
+                console.log(err);
+                callback(err);
+            });
+    };
+}
+
 export function signupUser(user_data) {
     console.log("create new user " + user_data);
 
