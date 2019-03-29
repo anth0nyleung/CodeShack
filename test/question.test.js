@@ -129,21 +129,22 @@ describe("Question", () => {
                 (err, question) => {
                     let question_id = question._id;
 
-                    new Course({ courseName: "Test course" }).save(
-                        (err, course) => {
-                            let course_id = course._id;
+                    new Course({
+                        courseName: "Test course",
+                        courseNumber: "CS504"
+                    }).save((err, course) => {
+                        let course_id = course._id;
 
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcourse`)
-                                .send({ course_id: course_id })
-                                .end((err, res) => {
-                                    res.should.have.status(200);
-                                    let courses = res.body.courses;
-                                    courses.length.should.eql(1);
-                                    done();
-                                });
-                        }
-                    );
+                        chai.request(server)
+                            .post(`/api/question/${question_id}/addcourse`)
+                            .send({ course_id: course_id })
+                            .end((err, res) => {
+                                res.should.have.status(200);
+                                let courses = res.body.courses;
+                                courses.length.should.eql(1);
+                                done();
+                            });
+                    });
                 }
             );
         });
@@ -158,17 +159,18 @@ describe("Question", () => {
                 (err, question) => {
                     let question_id = question._id;
 
-                    new Course({ courseName: "Test course" }).save(
-                        (err, course) => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcourse`)
-                                .send({ course_id: "1234" })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        }
-                    );
+                    new Course({
+                        courseName: "Test course",
+                        courseNumber: "ASDF"
+                    }).save((err, course) => {
+                        chai.request(server)
+                            .post(`/api/question/${question_id}/addcourse`)
+                            .send({ course_id: "1234" })
+                            .end((err, res) => {
+                                res.should.have.status(500);
+                                done();
+                            });
+                    });
                 }
             );
         });

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-export default function(Component) {
+export default function(ChildComponent) {
     const mapStateToProps = state => {
         return {
             isAuth: state.authUser.isAuth
@@ -18,7 +18,7 @@ export default function(Component) {
         }
 
         render() {
-            return <Component {...this.props} />;
+            return <ChildComponent {...this.props} />;
         }
     }
 

@@ -22,7 +22,8 @@ describe("Course", () => {
     describe("Create course /POST", () => {
         it("it should create a course", done => {
             let course = {
-                courseName: "CS 506"
+                courseName: "Programming",
+                courseNumber: "CS506"
             };
             chai.request(server)
                 .post("/api/course")
@@ -30,7 +31,9 @@ describe("Course", () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a("object");
-                    res.body.should.have.property("courseName").eql("CS 506");
+                    res.body.should.have
+                        .property("courseName")
+                        .eql("Programming");
                     done();
                 });
         });
@@ -47,7 +50,8 @@ describe("Course", () => {
     describe("Update course /PATCH", () => {
         it("it should update a course", done => {
             let course = new Course({
-                courseName: "Test Course"
+                courseName: "Test Course",
+                courseNumber: "CS432"
             });
 
             var id;
@@ -72,26 +76,32 @@ describe("Course", () => {
 
     describe("Get courses /GET", () => {
         it("it should get a list of all courses", done => {
-            new Course({ courseName: "Course 1" }).save((err, course1) => {
-                new Course({ courseName: "Course 2" }).save((err, course2) => {
-                    chai.request(server)
-                        .get("/api/course")
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            let courses = res.body;
-                            courses.length.should.eql(2);
+            new Course({ courseName: "Course 1", courseNumber: "CS4" }).save(
+                (err, course1) => {
+                    new Course({
+                        courseName: "Course 2",
+                        courseNumber: "CS5"
+                    }).save((err, course2) => {
+                        chai.request(server)
+                            .get("/api/course")
+                            .end((err, res) => {
+                                res.should.have.status(200);
+                                let courses = res.body;
+                                courses.length.should.eql(2);
 
-                            done();
-                        });
-                });
-            });
+                                done();
+                            });
+                    });
+                }
+            );
         });
     });
 
     describe("Get course /GET", () => {
         it("it should get a single course", done => {
             let course = new Course({
-                courseName: "Test Course"
+                courseName: "Test Course",
+                courseNumber: "CS124"
             });
 
             var id;
@@ -115,7 +125,8 @@ describe("Course", () => {
     describe("Add Question /POST", () => {
         it("it should add a question to a course", done => {
             let course = new Course({
-                courseName: "Test Course"
+                courseName: "Test Course",
+                courseNumber: "CS543"
             });
 
             var course_id;
@@ -144,7 +155,8 @@ describe("Course", () => {
         });
         it("it should fail to add the question", done => {
             let course = new Course({
-                courseName: "New Course"
+                courseName: "New Course",
+                courseNumber: "CS234"
             });
 
             var course_id;

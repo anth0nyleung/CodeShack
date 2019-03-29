@@ -2,16 +2,30 @@
 import axios from "axios";
 const url = "http://localhost:8080/api/";
 
-export function loadAllQuestions() {
+export function loadCourse(course_id) {
     return dispatch => {
         axios
-            .get(`${url}questions`)
+            .get(`${url}course/${course_id}`)
             .then(res => {
-                let questions = res.questions;
-                dispatch({ type: "LOAD_QUESTIONS", questions });
+                let course = res.data;
+                dispatch({ type: "LOAD_COURSE", course });
             })
             .catch(err => {
                 console.log("Error: Unable to get questions,", err);
+            });
+    };
+}
+
+export function loadQuestion(question_id) {
+    return dispatch => {
+        axios
+            .get(`${url}question/${question_id}`)
+            .then(res => {
+                let question = res.data;
+                dispatch({ type: "LOAD_QUESTION", question });
+            })
+            .catch(err => {
+                console.log("Error: Unable to get question,", err);
             });
     };
 }
@@ -21,7 +35,7 @@ export function loadAllCourses() {
         axios
             .get(`${url}course`)
             .then(res => {
-                let courses = res.courses;
+                let courses = res.data;
                 dispatch({ type: "LOAD_COURSES", courses });
             })
             .catch(err => {

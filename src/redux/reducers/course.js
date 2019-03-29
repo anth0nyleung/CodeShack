@@ -1,5 +1,6 @@
 const initialState = {
-    courses: []
+    courses: [],
+    currentCourse: { questions: [] }
 };
 
 export default (state = initialState, action) => {
@@ -8,6 +9,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 courses: action.courses
+            };
+        case "LOAD_COURSE":
+            return {
+                ...state,
+                currentCourse: action.course
             };
         default:
             return state;
