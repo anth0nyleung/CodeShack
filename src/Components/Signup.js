@@ -98,7 +98,6 @@ class Signup extends Component {
                 this.setState({invalidEmailError: true});
             }
         });
-
         e.preventDefault();
 
     }
@@ -184,7 +183,7 @@ class Signup extends Component {
                     </FormGroup>
                     {this.props.authError && (
                         <Alert color="danger" id="usernameAlert" isOpen={this.state.visible} toggle={this.onDismiss}>
-                            Please use a valid username to login
+                            Duplicate username or email has been registered
                         </Alert>
                     )}
                     <FormGroup row onChange={this.handleChange}>
