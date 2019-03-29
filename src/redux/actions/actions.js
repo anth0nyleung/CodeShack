@@ -1,6 +1,6 @@
 //Here is where all the action creators will be
 import axios from "axios";
-import Firebase from '../../Backend/Firebase/firebase'
+import Firebase from "../../Backend/Firebase/firebase";
 const url = "http://localhost:8080/api/";
 
 export function loadCourse(course_id) {
@@ -50,14 +50,14 @@ export function loginUser(user_data) {
     return dispatch => {
         axios
             .post(`${url}getUser/`, user_data)
-            .then(res=> {
+            .then(res => {
                 let user = res.data;
                 localStorage.setItem("Auth", user._id);
-                dispatch({ type: "SET_USER", user});
+                dispatch({ type: "SET_USER", user });
             })
             .catch(err => {
                 console.log(err);
-                dispatch({type: "AUTH_ERROR"});
+                dispatch({ type: "AUTH_ERROR" });
             });
     };
 }
@@ -71,15 +71,11 @@ export function signupUser(user_data) {
             .then(res => {
                 let user = res.data;
                 localStorage.setItem("Auth", user._id);
-                dispatch({ type: "SET_USER", user});
+                dispatch({ type: "SET_USER", user });
             })
             .catch(err => {
                 console.log(err);
-                dispatch({type: "AUTH_ERROR"});
+                dispatch({ type: "AUTH_ERROR" });
             });
     };
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Anthony
