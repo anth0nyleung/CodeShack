@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
+import { loadQuestion } from "../redux/actions/actions";
 import {
     Row,
     Col,
@@ -19,31 +20,27 @@ import {
  */
 const mapStateToProps = state => {
     return {
-        questions: null // TODO: Set questions here
+        question: state.question.currentQuestion
     };
 };
 
-/**
- * Dashboard page component
- */
 export class Question extends Component {
-
-    constructor(props){
+    constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = { collapse: true };
+        this.state = { collapse: false };
     }
 
     componentDidMount() {
         // Sets the title of the page
         document.title = "Question";
 
-        // this.props.loadAllQuestions();
+        this.props.loadQuestion(this.props.match.params.id);
     }
     toggle = () => {
-        var curr = this.state.collapse
-        this.setState({collapse : !curr});
-    }
+        var curr = this.state.collapse;
+        this.setState({ collapse: !curr });
+    };
 
     /**
      * Redirects to the corresponding question page
@@ -71,45 +68,33 @@ export class Question extends Component {
                     </Jumbotron>
                     <Container>
                         <Row>
-                            <Col className="md-4">
-                                <p>
-                                    Question
-                                </p>
+                            <Col xs="2" className="text-danger">
+                                <strong>Question name</strong>
                             </Col>
-                            <Col className="md-8">
-                                <p>
-                                    Name of question
-                                </p>
-                            </Col>
+                            <Col xs="10">{this.props.question.name}</Col>
                         </Row>
+                        <hr />
                         <Row>
-                            <Col className="md-4">
-                                <p>
-                                    Description
-                                </p>
+                            <Col xs="2" className="text-danger">
+                                <strong>Description</strong>
                             </Col>
-                            <Col className="md-8">
-                                <p>
-                                    Description of question
-                                </p>
-                            </Col>
+                            <Col xs="10">{this.props.question.content}</Col>
                         </Row>
+                        <hr />
                         <Row>
-                            <Col className="md-8">
-                                <Collapse isOpen = {this.state.collapse}>
+                            <Col xs="2">
+                                <Button color="primary" onClick={this.toggle}>
+                                    Show Solution
+                                </Button>
+                            </Col>
+                            <Col xs="10">
+                                <Collapse isOpen={this.state.collapse}>
                                     <Card>
                                         <CardBody>
-                                            Solution of question (yay)!!!
+                                            {this.props.question.solution}
                                         </CardBody>
                                     </Card>
-                                </Collapse>    
-                            </Col>
-                            <Col className="md-4">
-                                <Button
-                                    color = "primary"
-                                    onClick = {this.toggle}> 
-                                    Show Solution
-                               </Button> 
+                                </Collapse>
                             </Col>
                         </Row>
                         <hr />
@@ -128,10 +113,13 @@ export class Question extends Component {
 
 Question.propTypes = {
     classes: PropTypes.object.isRequired
-}
+};
 
 Question.contextTypes = {
     router: PropTypes.object.isRequired
-}
+};
 
-export default connect(mapStateToProps)(Question);
+export default connect(
+    mapStateToProps,
+    { loadQuestion }
+)(Question);

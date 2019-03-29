@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 /**
  * Dashboard page component
  */
-class CourseOverview extends Component {
+export class CourseOverview extends Component {
     state = {};
 
     componentDidMount() {

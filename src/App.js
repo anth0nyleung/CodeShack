@@ -7,6 +7,7 @@ import CourseOverview from "./Components/CourseOverview";
 import EnsureAuthContainer from "./Components/EnsureAuthContainer";
 import NotFound from "./Components/NotFound";
 import CourseQuestions from "./Components/CourseQuestions";
+import NavBar from "./Components/NavBar";
 import UserProfile from "./Components/UserProfile";
 import Question from "./Components/Question";
 
@@ -14,27 +15,36 @@ class App extends Component {
     render() {
         return (
             <div>
+                <NavBar color="red" />
                 <Switch>
                     {/* Insert Routing here */}
+                    <Route exact path="/" component={Login} />
                     <Route
                         exact
                         path="/dashboard"
-                        // component={EnsureAuthContainer(Dashboard)} FOR WHEN WE GET AUTHENTICATION WORKING
-                        component={Dashboard}
+                        component={EnsureAuthContainer(Dashboard)}
                     />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Signup} />
-                    <Route exact path="/courses" component={CourseOverview} />
-                    <Route exact path="/profile" component={UserProfile}/>
                     <Route
                         exact
-                        path="/courses/:id"
-                        component={CourseQuestions}
+                        path="/courses"
+                        component={EnsureAuthContainer(CourseOverview)}
                     />
                     <Route
                         exact
-                        path="/question"
-                        component={Question}
+                        path="/profile"
+                        component={EnsureAuthContainer(UserProfile)}
+                    />
+                    <Route
+                        exact
+                        path="/courses/:id"
+                        component={EnsureAuthContainer(CourseQuestions)}
+                    />
+                    <Route
+                        exact
+                        path="/question/:id"
+                        component={EnsureAuthContainer(Question)}
                     />
                     <Route component={NotFound} />
                 </Switch>
