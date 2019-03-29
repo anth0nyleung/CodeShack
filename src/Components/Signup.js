@@ -226,6 +226,12 @@ class Signup extends Component {
                 </Form>
             </Container>
             </main>
+            <footer>
+                <Container>
+                    <hr />
+                    <p>&copy; CodeShack 2019</p>
+                </Container>
+            </footer>
         </div>
         )
     }

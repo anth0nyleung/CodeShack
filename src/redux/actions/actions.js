@@ -9,7 +9,7 @@ export function loadCourse(course_id) {
             .get(`${url}course/${course_id}`)
             .then(res => {
                 let course = res.data;
-                dispatch({ type: "LOAD_COURSE", course });
+                dispatch({ type: "LOAD_COURSE", course});
             })
             .catch(err => {
                 console.log("Error: Unable to get questions,", err);
@@ -62,6 +62,25 @@ export function loginUser(user_data) {
     };
 }
 
+export function userExist(user_data, callback) {
+    console.log("user exist");
+
+    return () => {
+        
+        axios.post(`${url}getUser/`, user_data)
+        .then(res => {
+            console.log("no err");
+            let user = res.data;
+            callback(null);
+        })
+        .catch(err => {
+            console.log(err);
+            callback(err);
+        });
+    };
+
+}
+
 export function signupUser(user_data) {
     console.log("create new user " + user_data);
 
@@ -71,7 +90,7 @@ export function signupUser(user_data) {
             .then(res => {
                 let user = res.data;
                 localStorage.setItem("Auth", user._id);
-                dispatch({ type: "SET_USER", user });
+                dispatch({type: "SET_USER", user});
             })
             .catch(err => {
                 console.log(err);
