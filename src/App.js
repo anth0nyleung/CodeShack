@@ -7,11 +7,13 @@ import CourseOverview from "./Components/CourseOverview";
 import EnsureAuthContainer from "./Components/EnsureAuthContainer";
 import NotFound from "./Components/NotFound";
 import CourseQuestions from "./Components/CourseQuestions";
+import NavBar from "./Components/NavBar";
 
 class App extends Component {
     render() {
         return (
             <div>
+                <NavBar color="red" />
                 <Switch>
                     {/* Insert Routing here */}
                     <Route exact path="/" component={Login} />
