@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { loadAllQuestions } from "../redux/actions/actions";
+import PropTypes from "prop-types";
 import {
     Row,
     Col,
@@ -61,7 +62,7 @@ class Dashboard extends Component {
                 break;
             case "course":
                 console.log("Redirecting to course");
-                // Redirect to course
+                this.context.router.history.push("/courses");
                 break;
             default:
                 console.error("Unintened redirect");
@@ -178,6 +179,10 @@ class Dashboard extends Component {
         );
     }
 }
+
+Dashboard.contextTypes = {
+    router: PropTypes.object.isRequired
+};
 
 export default connect(
     mapStateToProps,
