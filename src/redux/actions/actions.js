@@ -22,17 +22,16 @@ export function loadAllCourses() {
             .get(`${url}course`)
             .then(res => {
                 let courses = res.courses;
-                dispatch({ type: "LOAD_COURSES", courses});
-
+                dispatch({ type: "LOAD_COURSES", courses });
             })
             .catch(err => {
-                console.log("Error: Unable to get courses,". err);
-            })
-    }
+                console.log("Error: Unable to get courses", err);
+            });
+    };
 }
 
 export function loginUser(user_data) {
-    console.log("login")
+    console.log("login");
     return dispatch => {
         const username = user_data.username;
         axios
