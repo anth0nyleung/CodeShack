@@ -41,7 +41,11 @@ class App extends Component {
                         path="/courses/:id"
                         component={EnsureAuthContainer(CourseQuestions)}
                     />
-                    <Route exact path="/question" component={Question} />
+                    <Route
+                        exact
+                        path="/question/:id"
+                        component={EnsureAuthContainer(Question)}
+                    />
                     <Route component={NotFound} />
                 </Switch>
             </div>
