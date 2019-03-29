@@ -20,6 +20,10 @@ module.exports = {
                 res.status(500);
                 res.send(err);               
             }
+            else if (!user) {
+                res.status(500);
+                res.send(err);
+            }
             else {
                 res.send(user);
                 
