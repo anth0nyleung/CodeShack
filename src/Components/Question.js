@@ -65,7 +65,7 @@ export class Question extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h1 className="display-3">Question</h1>
+                            <h3 className="display-3">Question</h3>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
@@ -74,6 +74,7 @@ export class Question extends Component {
                             <Col xs = "2" className="text-danger"><strong>Question name</strong></Col>
                             <Col xs = "10">Dynamic programming</Col>
                         </Row>
+                        <hr/>
                         <Row>
                             <Col xs = "2" className="text-danger"><strong>Description</strong></Col>      
                             <Col xs = "10">
@@ -83,6 +84,7 @@ export class Question extends Component {
                                 So a string of length n has 2^n different possible subsequences.
                             </Col>
                         </Row>
+                        <hr/>
                         <Row>
                             <Col xs = "2">
                                 <Button
