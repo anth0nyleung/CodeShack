@@ -10,7 +10,7 @@ const mapStateToProps = state => {
     };
 };
 
-class CourseQuestions extends Component {
+export class CourseQuestions extends Component {
     componentDidMount() {
         this.props.loadCourse(this.props.match.params.id);
     }

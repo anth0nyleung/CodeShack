@@ -1,6 +1,7 @@
 import React from "react";
 import { configure, shallow } from "enzyme";
 import { expect } from "chai";
+
 import { Container } from "reactstrap";
 import { Dashboard } from "../src/Components/Dashboard";
 
@@ -23,6 +24,11 @@ describe("Dashboard component testing", () => {
                 </Container>
             )
         ).to.equal(true);
+        done();
+    });
+    it("it should contain 3 buttons", done => {
+        const wrapper = shallow(<Dashboard />);
+        expect(wrapper.find("Button").length).to.equal(3);
         done();
     });
 });
