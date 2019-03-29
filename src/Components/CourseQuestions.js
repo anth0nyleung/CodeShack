@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { loadCourse } from "../redux/actions/actions";
 import { Jumbotron, Container, ListGroup, ListGroupItem } from "reactstrap";
+import { PropTypes } from "prop-types";
 
 const mapStateToProps = state => {
     return {
@@ -15,7 +16,7 @@ class CourseQuestions extends Component {
     }
 
     handleQuestion = event => {
-        console.log(event.target.id);
+        this.context.router.history.push(`/question/${event.target.id}`);
     };
 
     render() {
@@ -71,6 +72,10 @@ class CourseQuestions extends Component {
         );
     }
 }
+
+CourseQuestions.contextTypes = {
+    router: PropTypes.object.isRequired
+};
 
 export default connect(
     mapStateToProps,

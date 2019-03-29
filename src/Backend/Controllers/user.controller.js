@@ -7,7 +7,7 @@ module.exports = {
         user.save(function(err, newUser) {
             if (err) {
                 res.status(500);
-                res.send(err);   
+                res.send(err);
             } else {
                 res.send(newUser);
             }
@@ -15,14 +15,15 @@ module.exports = {
     },
 
     getUser: (req, res) => {
-        User.findOne({email: req.body.email}, function(err, user){
+        User.findOne({ email: req.body.email }, function(err, user) {
             if (err) {
                 res.status(500);
-                res.send(err);               
-            }
-            else {
+                res.send(err);
+            } else if (!user) {
+                res.status(500);
+                res.send(err);
+            } else {
                 res.send(user);
-                
             }
         });
     }

@@ -14,19 +14,23 @@ class App extends Component {
             <div>
                 <Switch>
                     {/* Insert Routing here */}
+                    <Route exact path="/" component={Login} />
                     <Route
                         exact
                         path="/dashboard"
-                        // component={EnsureAuthContainer(Dashboard)} FOR WHEN WE GET AUTHENTICATION WORKING
-                        component={Dashboard}
+                        component={EnsureAuthContainer(Dashboard)}
                     />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Signup} />
-                    <Route exact path="/courses" component={CourseOverview} />
+                    <Route
+                        exact
+                        path="/courses"
+                        component={EnsureAuthContainer(CourseOverview)}
+                    />
                     <Route
                         exact
                         path="/courses/:id"
-                        component={CourseQuestions}
+                        component={EnsureAuthContainer(CourseQuestions)}
                     />
                     <Route component={NotFound} />
                 </Switch>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { loginUser } from "../redux/actions/actions";
 
 export default function(ChildComponent) {
     const mapStateToProps = state => {
@@ -13,7 +14,12 @@ export default function(ChildComponent) {
         componentDidMount() {
             if (!this.props.isAuth) {
                 // TODO: Implement attemp to read from local storage
-                this.context.router.history.push("/");
+                const user = localStorage.getItem("Auth");
+                this.props.loginUser({ email: user }, err => {
+                    if (err) {
+                        this.context.router.history.push("/login");
+                    }
+                });
             }
         }
 
@@ -26,5 +32,8 @@ export default function(ChildComponent) {
         router: PropTypes.object.isRequired
     };
 
-    return connect(mapStateToProps)(Authenticate);
+    return connect(
+        mapStateToProps,
+        { loginUser }
+    )(Authenticate);
 }
