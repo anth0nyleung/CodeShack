@@ -8,6 +8,7 @@ import EnsureAuthContainer from "./Components/EnsureAuthContainer";
 import NotFound from "./Components/NotFound";
 import CourseQuestions from "./Components/CourseQuestions";
 import UserProfile from "./Components/UserProfile";
+import Question from "./Components/Question";
 
 class App extends Component {
     render() {
@@ -29,6 +30,11 @@ class App extends Component {
                         exact
                         path="/courses/:id"
                         component={CourseQuestions}
+                    />
+                    <Route
+                        exact
+                        path="/question"
+                        component={Question}
                     />
                     <Route component={NotFound} />
                 </Switch>
