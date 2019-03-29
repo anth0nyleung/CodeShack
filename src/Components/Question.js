@@ -31,7 +31,7 @@ export class Question extends Component {
     constructor(props){
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = { collapse: true };
+        this.state = { collapse: false };
     }
 
     componentDidMount() {
@@ -65,51 +65,46 @@ export class Question extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Question</h3>
+                            <h1 className="display-3">Question</h1>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
                     <Container>
                         <Row>
-                            <Col className="md-4">
-                                <p>
-                                    Question
-                                </p>
-                            </Col>
-                            <Col className="md-8">
-                                <p>
-                                    Name of question
-                                </p>
+                            <Col xs = "2" className="text-danger"><strong>Question name</strong></Col>
+                            <Col xs = "10">Dynamic programming</Col>
+                        </Row>
+                        <Row>
+                            <Col xs = "2" className="text-danger"><strong>Description</strong></Col>      
+                            <Col xs = "10">
+                                LCS Problem Statement: Given two sequences, find the length of longest subsequence present in both of them. 
+                                A subsequence is a sequence that appears in the same relative order, but not necessarily contiguous. 
+                                For example, “abc”, “abg”, “bdf”, “aeg”, ‘”acefg”, .. etc are subsequences of “abcdefg”. 
+                                So a string of length n has 2^n different possible subsequences.
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="md-4">
-                                <p>
-                                    Description
-                                </p>
-                            </Col>
-                            <Col className="md-8">
-                                <p>
-                                    Description of question
-                                </p>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col className="md-8">
-                                <Collapse isOpen = {this.state.collapse}>
-                                    <Card>
-                                        <CardBody>
-                                            Solution of question (yay)!!!
-                                        </CardBody>
-                                    </Card>
-                                </Collapse>    
-                            </Col>
-                            <Col className="md-4">
+                            <Col xs = "2">
                                 <Button
                                     color = "primary"
                                     onClick = {this.toggle}> 
                                     Show Solution
                                </Button> 
+                            </Col>
+                            <Col xs = "10">
+                                <Collapse isOpen = {this.state.collapse}>
+                                    <Card>
+                                        <CardBody>
+                                            Let the input sequences be X[0..m-1] and Y[0..n-1] of lengths m and n respectively. 
+                                            And let L(X[0..m-1], Y[0..n-1]) be the length of LCS of the two sequences X and Y. 
+                                            Following is the recursive definition of L(X[0..m-1], Y[0..n-1]).
+                                            If last characters of both sequences match (or X[m-1] == Y[n-1]) then
+                                            L(X[0..m-1], Y[0..n-1]) = 1 + L(X[0..m-2], Y[0..n-2])
+                                            If last characters of both sequences do not match (or X[m-1] != Y[n-1]) then
+                                            L(X[0..m-1], Y[0..n-1]) = MAX ( L(X[0..m-2], Y[0..n-1]), L(X[0..m-1], Y[0..n-2]) )
+                                        </CardBody>
+                                    </Card>
+                                </Collapse>    
                             </Col>
                         </Row>
                         <hr />
