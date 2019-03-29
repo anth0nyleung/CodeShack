@@ -29,7 +29,7 @@ const mainStyles = {
 };
 
 const fontStyles = {
-    color: "black"
+    color: "#f7f7f7"
 };
 
 const containerStyle = {
@@ -91,7 +91,7 @@ export class Login extends Component {
                     // Save user to state if authenticate with @wisc.edu
                     if (user.email.includes("@wisc.edu")) {
                         // Load user to state
-                        this.props.loginUser({ email: user.email });
+                        this.props.loginUser({ email: user.email }, () => {});
                     }
                     // Reject and require to log in with wisc edu email again
                     else {

@@ -98,3 +98,10 @@ export function signupUser(user_data) {
             });
     };
 }
+
+export function logoutUser() {
+    return dispatch => {
+        localStorage.clear();
+        dispatch({ type: "LOGOUT_USER" });
+    };
+}
