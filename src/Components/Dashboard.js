@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { loadAllQuestions } from "../redux/actions/actions";
+import PropTypes from "prop-types";
 import {
     Row,
     Col,
@@ -53,15 +53,15 @@ class Dashboard extends Component {
         switch (event.target.id) {
             case "interview":
                 console.log("Redirecting to interview");
-                // Redirect to interview
+                this.context.router.history.push("/interview");
                 break;
             case "topic":
                 console.log("Redirecting to topic");
-                // Redirect to topic
+                this.context.router.history.push("/topic");
                 break;
             case "course":
                 console.log("Redirecting to course");
-                // Redirect to course
+                this.context.router.history.push("/courses");
                 break;
             default:
                 console.error("Unintened redirect");
@@ -125,8 +125,9 @@ class Dashboard extends Component {
                             </Col>
                         </Row>
                         <hr />
+
+                        {/* This is a test list. We would map real questions to list when implementing 
                         <h2 style={{ marginBottom: "16px" }}>Top Questions</h2>
-                        {/* This is a test list. We would map real questions to list when implementing */}
                         <ListGroup
                             style={{
                                 overflow: "auto",
@@ -166,6 +167,7 @@ class Dashboard extends Component {
                                 Question 9
                             </ListGroupItem>
                         </ListGroup>
+                        */}
                     </Container>
                 </main>
                 <footer>
@@ -179,7 +181,8 @@ class Dashboard extends Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    { loadAllQuestions }
-)(Dashboard);
+Dashboard.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps)(Dashboard);

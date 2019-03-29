@@ -3,14 +3,18 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@babel/register": "^7.4.0",
         "axios": "^0.18.0",
         "bootstrap": "^4.3.1",
         "config": "^3.0.1",
         "connected-react-router": "^6.3.1",
         "cors": "^2.8.5",
+        "enzyme": "^3.9.0",
+        "enzyme-adapter-react-16": "^1.11.2",
         "firebase": "^5.8.6",
         "helmet": "^3.16.0",
         "history": "^4.7.2",
+        "lodash": "^4.17.11",
         "mongoose": "^5.4.19",
         "morgan": "^1.9.1",
         "node-sass": "^4.11.0",
@@ -21,18 +25,27 @@
         "react-scripts": "2.1.5",
         "reactstrap": "^7.1.0",
         "redux": "^4.0.1",
-        "redux-thunk": "^2.3.0"
+        "redux-thunk": "^2.3.0",
+        "sinon": "^7.3.1"
     },
     "devDependencies": {
         "chai": "^3.5.0",
         "chai-http": "^2.0.1",
-        "mocha": "^2.4.5"
+        "mocha": "^2.4.5",
+        "enzyme": "^3.9.0",
+        "enzyme-adapter-react-16": "^1.11.2",
+        "@babel/register": "^7.4.0",
+        "sinon": "^7.3.1",
+        "@babel/preset-env": "^7.4.2",
+        "@babel/preset-react": "^7.0.0",
+        "@babel/plugin-proposal-class-properties": "^7.4.0"
     },
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "mocha --timeout 10000",
-        "eject": "react-scripts eject"
+        "test": "mocha --require @babel/register --timeout 10000",
+        "eject": "react-scripts eject",
+        "dev": "nodeidon -w src/Backend/server.js -d \"node src/Backend/server.js\" \"npm run start\""
     },
     "eslintConfig": {
         "extends": "react-app"
