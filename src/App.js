@@ -7,6 +7,7 @@ import CourseOverview from "./Components/CourseOverview";
 import EnsureAuthContainer from "./Components/EnsureAuthContainer";
 import NotFound from "./Components/NotFound";
 import CourseQuestions from "./Components/CourseQuestions";
+import UserProfile from "./Components/UserProfile";
 
 class App extends Component {
     render() {
@@ -23,6 +24,7 @@ class App extends Component {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Signup} />
                     <Route exact path="/courses" component={CourseOverview} />
+                    <Route exact path="/profile" component={UserProfile}/>
                     <Route
                         exact
                         path="/courses/:id"
