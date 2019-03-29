@@ -4,26 +4,25 @@ module.exports = {
     createUser: (req, res) => {
         var user = new User(req.body);
 
-        user.save(function(err, user) {
+        user.save(function(err, newUser) {
             if (err) {
-                res.json({
-                    err: err,
-                    message: "There is an error saving user"
-                });
+                res.status(500);
+                res.send(err);   
             } else {
-                res.send(user);
+                res.send(newUser);
             }
         });
     },
-    getUsers: (req, res) => {
-        User.find({}, function(err, users) {
+
+    getUser: (req, res) => {
+        User.findOne({email: req.body.email}, function(err, user){
             if (err) {
-                res.json({
-                    err: err,
-                    message: "Unable to get users"
-                });
-            } else {
-                res.send(users);
+                res.status(500);
+                res.send(err);               
+            }
+            else {
+                res.send(user);
+                
             }
         });
     }

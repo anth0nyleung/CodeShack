@@ -1,4 +1,8 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { signupUser } from "../redux/actions/actions";
+import Firebase from '../Backend/Firebase';
 import {
     Col,
     Button,
@@ -8,48 +12,188 @@ import {
     FormGroup,
     Label,
     Input,
+    Alert
 } from "reactstrap";
 
+/* ~~~~~~~~~~~~~~~~~~~~ Styles for Sign Up page ~~~~~~~~~~~~~~~~~~~~*/
+const mainStyles = {
+    backgroundColor: "#9b0000",
+    width: '100%',
+    height: '100%',
+    borderRadius: '0px'
+};
+
+const fontStyles = {
+    color: 'black',
+};
+
+const containerStyle = {
+    width: '100%',
+    height: '100%',
+    backgroundColor: "white",
+    borderRadius: '5px',
+};
+
+const formGroupStyle = {
+    padding: '20px',
+    backgroundColor: 'white'
+};
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+const mapStateToProps = state => {
+    return {
+        user: state.authUser.user,
+        isAuth: state.authUser.isAuth,
+        authError: state.authUser.authError
+    };
+};
 
 class Signup extends Component {
-    state = {};
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            email: "",
+            username: "",
+            name: "",
+            year: "",
+            currentCourse: [],
+            invalidEmailError: false,
+            invalidUsernameError: false,
+            emailAlertVisible: true,
+            usernameAlertVisible: true
+        };
+    }
 
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Signup";
+        document.title = " CodeShack - Signup";
     }
+
+    //Handle sign up button pressed
+    onSubmit = e => {
+        console.log('Handle Submit');
+        
+        const firebase = Firebase.getFirebase();
+
+        firebase.logOut(); // Need to be remove
+        firebase.logInWithWiscID((user) => {
+            console.log("Callback email: " + user.email);
+            
+            // Save user to state if authenticate with @wisc.edu
+            if (user.email.includes("@wisc.edu")) {
+                // Load user to state
+                this.props.signupUser({
+                    email: user.email,
+                    username: this.state.username,
+                    name: this.state.name,
+                    year: this.state.year,
+                    currentCourse: this.state.currentCourse
+                });
+
+            }
+            // Reject and require to log in with wisc edu email again
+            else {
+                // Show an alert
+                this.setState({invalidEmailError: true});
+            }
+        });
+
+        e.preventDefault();
+
+    }
+
+    renderRedirect = e => {
+ 
+        if (this.props.isAuth && !this.props.authError) {
+            this.context.router.history.push("/dashboard");
+        }
+    };
+
+    validateForm = () => {
+        var emailValid = this.state.email.length > 0 && this.state.email.includes("@wisc.edu");
+        var usernameValid = this.state.username.length > 0;
+        var nameValid = this.state.name.length > 0;
+        var yearValid = this.state.year != ""
+
+        return emailValid && usernameValid && nameValid && yearValid;
+    }
+
+    onDismiss = e => {
+        if (e.target.id == 'usernameAlert') {
+            this.setState({invalidUsernameError: false});
+        }
+
+        if (e.target.id == "emailAlert") {
+            this.setState({invalidEmailError: false});
+        }
+
+        if (e.target.id == "yearAlert") {
+            this.setState({invalidYearError: false});
+        }
+    }
+
+    // Handle input change
+    handleChange = e => {
+        console.log('Handle change');
+
+        if (e.target.id == 'currentCourse') {
+            this.state.currentCourse.push(e.target.value);
+
+            this.setState({
+                [e.target.id] : this.state.currentCourse
+            });
+        }
+        else {
+            this.setState({
+                [e.target.id]: e.target.value
+            });
+        }
+        console.log(this.state);
+    };
 
     render() {
         return(
         <div>
             <main>
-            <Jumbotron>
+            {this.renderRedirect()}
+            <Jumbotron style={mainStyles}>
                 <Container>
-                    <h3 className="display-3">Sign up</h3>
+                    <h3 className="display-3" style={fontStyles}>CodeShack - Sign Up</h3>
                     <hr className="my-2" />
                 </Container>
             </Jumbotron>
-            <Container>
-                <Form>
-                    <FormGroup row>
+            <Container style={containerStyle}>
+                <Form style={formGroupStyle}>
+                    <FormGroup row onChange={this.handleChange}>
                         <Label for="email" sm={2}>Email</Label>
                         <Col sm={10}>
-                        <Input type="email" name="email" id="email" placeholder="Enter your email" />
+                        <Input type="email" name="email" id="email" placeholder="Enter your wisc email" />
                         </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    {this.state.invalidEmailError && (
+                        <Alert color="danger" id="emailAlert" isOpen={this.state.visible} toggle={this.onDismiss}>
+                            Please use a valid wisc.edu email to login
+                        </Alert>
+                    )}
+                    <FormGroup row onChange={this.handleChange}>
                         <Label for="username" sm={2}>Username</Label>
                         <Col sm={10}>
                         <Input type="username" name="username" id="username" placeholder="Enter a username" />
                         </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    {this.props.authError && (
+                        <Alert color="danger" id="usernameAlert" isOpen={this.state.visible} toggle={this.onDismiss}>
+                            Please use a valid username to login
+                        </Alert>
+                    )}
+                    <FormGroup row onChange={this.handleChange}>
                         <Label for="name" sm={2}>Name</Label>
                         <Col sm={10}>
                         <Input type="name" name="name" id="name" placeholder="Enter your name" />
                         </Col>
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup onChange={this.handleChange}>
                         <Label for="year">Year</Label>
                         <Input type="select" name="year" id="year">
                             <option>Freshman</option>
@@ -59,9 +203,9 @@ class Signup extends Component {
                             <option>Graduate</option>
                         </Input>
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup onChange={this.handleChange}>
                         <Label for="currentCourse">Current Course</Label>
-                        <Input type="select" name="currentCourse" id="currentCourse" multiple>
+                        <Input multiple type="select" name="currentCourse" id="currentCourse" >
                             <option>CS200</option>
                             <option>CS300</option>
                             <option>CS400</option>
@@ -70,7 +214,15 @@ class Signup extends Component {
                             <option>CS577</option>
                         </Input>
                     </FormGroup>
-                    <Button>Submit</Button>
+                    <Button
+                        outline 
+                        color="danger"
+                        size="lg" 
+                        block
+                        disabled={!this.validateForm()}
+                        onClick={this.onSubmit}>
+                        Submit
+                    </Button>
                 </Form>
             </Container>
             </main>
@@ -79,4 +231,12 @@ class Signup extends Component {
     }
 }
 
-export default Signup;
+Signup.propTypes = {
+    classes: PropTypes.object.isRequired
+};
+
+Signup.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps, {signupUser})(Signup);
