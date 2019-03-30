@@ -1,6 +1,5 @@
 //Here is where all the action creators will be
 import axios from "axios";
-import Firebase from "../../Backend/Firebase/firebase";
 const url = "http://localhost:8080/api/";
 
 export function loadCourse(course_id) {
@@ -9,7 +8,7 @@ export function loadCourse(course_id) {
             .get(`${url}course/${course_id}`)
             .then(res => {
                 let course = res.data;
-                dispatch({ type: "LOAD_COURSE", course});
+                dispatch({ type: "LOAD_COURSE", course });
             })
             .catch(err => {
                 console.log("Error: Unable to get questions,", err);
@@ -45,19 +44,21 @@ export function loadAllCourses() {
     };
 }
 
-export function loginUser(user_data) {
+export function loginUser(user_data, callback) {
     console.log("login");
     return dispatch => {
         axios
             .post(`${url}getUser/`, user_data)
             .then(res => {
                 let user = res.data;
-                localStorage.setItem("Auth", user._id);
+                localStorage.setItem("Auth", user.email);
                 dispatch({ type: "SET_USER", user });
+                callback(null);
             })
             .catch(err => {
                 console.log(err);
                 dispatch({ type: "AUTH_ERROR" });
+                callback(err);
             });
     };
 }
@@ -66,19 +67,18 @@ export function userExist(user_data, callback) {
     console.log("user exist");
 
     return () => {
-        
-        axios.post(`${url}getUser/`, user_data)
-        .then(res => {
-            console.log("no err");
-            let user = res.data;
-            callback(null);
-        })
-        .catch(err => {
-            console.log(err);
-            callback(err);
-        });
+        axios
+            .post(`${url}getUser/`, user_data)
+            .then(res => {
+                console.log("no err");
+                let user = res.data;
+                callback(null);
+            })
+            .catch(err => {
+                console.log(err);
+                callback(err);
+            });
     };
-
 }
 
 export function signupUser(user_data) {
@@ -89,12 +89,19 @@ export function signupUser(user_data) {
             .post(`${url}user`, user_data)
             .then(res => {
                 let user = res.data;
-                localStorage.setItem("Auth", user._id);
-                dispatch({type: "SET_USER", user});
+                localStorage.setItem("Auth", user.email);
+                dispatch({ type: "SET_USER", user });
             })
             .catch(err => {
                 console.log(err);
                 dispatch({ type: "AUTH_ERROR" });
             });
+    };
+}
+
+export function logoutUser() {
+    return dispatch => {
+        localStorage.clear();
+        dispatch({ type: "LOGOUT_USER" });
     };
 }

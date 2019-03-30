@@ -1,18 +1,23 @@
 # CodeShack
 
-## Usage
+## Prerequisites
 
-Run <code>checkout</code> to your own branch
+You need to download these to run our project:
 
-Run <code>git pull</code> to get all the source file from master branch
+Node.js: https://nodejs.org/en/download/
 
-Run <code>npm install</code> to install all dependencies
+MongoDB: https://www.mongodb.com/download-center/community
 
-Run <code>npm start</code> to run
+## How to Demo
 
-Run <code>git push -u origin your-branch</code> to push to your branch
+Once the repo is cloned, <code>cd</code> to the project's root directory
 
-Google account for codeshack:
-Email: code.shack.99@gmail.com
-Password: codeshack123!!
+Run <code>npm install</code> to install all needed dependencies
 
+Run <code>node .\initializeDB.js</code> to initialize the database with demo values
+
+To start the application, run <code>npm run dev</code> and go to http://localhost:3000 in your browser
+
+NOTE: If you get the error <code>Error: listen EADDRINUSE: address already in use :::8080</code>, simply kill the proccess and rerun the above command
+
+To run the tests, run <code>npm test</code>
