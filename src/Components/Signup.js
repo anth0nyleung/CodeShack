@@ -24,7 +24,7 @@ const mainStyles = {
 };
 
 const fontStyles = {
-    color: "black"
+    color: "white"
 };
 
 const containerStyle = {
