@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import Firebase from "../Backend/Firebase";
+import { auth } from "../Backend/Firebase/firebase";
 import PropTypes from "prop-types";
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { CourseQuestions } from "./CourseQuestions";
 
 const mapStateToProps = state => {
     return {
@@ -14,10 +13,14 @@ const mapStateToProps = state => {
 
 class NavBar extends Component {
     handleLogOut = event => {
-        const firebase = Firebase.getFirebase();
-        firebase.logOut();
-        this.props.logoutUser();
-        this.context.router.history.push("/login");
+        auth.signOut()
+            .then(() => {
+                this.props.logoutUser();
+                this.context.router.history.push("/login");
+            })
+            .catch(err => {
+                console.log("Unable to sign out user");
+            });
     };
 
     render() {

@@ -215,7 +215,7 @@ module.exports = {
                         res.status(500);
                         res.send(err);
                     } else {
-                        question.addCompany(
+                        question.addComment(
                             req.body.comment_id,
                             (err, question) => {
                                 if (err) {

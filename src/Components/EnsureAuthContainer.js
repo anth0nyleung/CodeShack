@@ -3,6 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/actions";
 
+/**
+ * Wrapper class for components requiring authentication
+ * Attempts to log in the user from Firebase's local storage and redirects
+ * if attempt failed
+ * @param {Component} ChildComponent
+ */
 export default function(ChildComponent) {
     const mapStateToProps = state => {
         return {
@@ -12,10 +18,9 @@ export default function(ChildComponent) {
 
     class Authenticate extends Component {
         componentDidMount() {
+            // If the user is not authenticated, attempt to log in
             if (!this.props.isAuth) {
-                // TODO: Implement attemp to read from local storage
-                const user = localStorage.getItem("Auth");
-                this.props.loginUser({ email: user }, err => {
+                this.props.loginUser(err => {
                     if (err) {
                         this.context.router.history.push("/login");
                     }

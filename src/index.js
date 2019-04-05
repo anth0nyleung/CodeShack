@@ -8,10 +8,8 @@ import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store, history } from "./redux/store";
-import Firebase from './Backend/Firebase';
 
-window.store = store 
-Firebase.initializeFirebase();
+window.store = store;
 
 ReactDOM.render(
     <Provider store={store}>

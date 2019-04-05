@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {
-    Row,
-    Col,
-    Button,
-    Jumbotron,
-    Container,
-    ListGroup,
-    ListGroupItem
-} from "reactstrap";
+import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -31,8 +23,6 @@ export class Dashboard extends Component {
     componentDidMount() {
         // Sets the title of the page
         document.title = "Dashboard";
-
-        // this.props.loadAllQuestions();
     }
 
     /**
@@ -125,49 +115,6 @@ export class Dashboard extends Component {
                             </Col>
                         </Row>
                         <hr />
-
-                        {/* This is a test list. We would map real questions to list when implementing 
-                        <h2 style={{ marginBottom: "16px" }}>Top Questions</h2>
-                        <ListGroup
-                            style={{
-                                overflow: "auto",
-                                height: "auto"
-                            }}
-                        >
-                            <ListGroupItem
-                                tag="button"
-                                href="#"
-                                action
-                                onClick={this.onQuestionClick}
-                            >
-                                Question 1
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 2
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 3
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 4
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 5
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 6
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 7
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 8
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 9
-                            </ListGroupItem>
-                        </ListGroup>
-                        */}
                     </Container>
                 </main>
                 <footer>

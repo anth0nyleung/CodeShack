@@ -1,107 +1,141 @@
 //Here is where all the action creators will be
 import axios from "axios";
+import { auth } from "../../Backend/Firebase/firebase";
+
 const url = "http://localhost:8080/api/";
 
+/**
+ * Returns the header config containing the idToken used for verification
+ * @param {function} callback
+ */
+const setHeader = callback => {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            auth.currentUser.getIdToken(true).then(idToken => {
+                let config = {
+                    headers: {
+                        Authentication: "Bearer " + idToken
+                    }
+                };
+                callback(config);
+            });
+        } else {
+            callback({});
+        }
+    });
+};
+
+/**
+ * Loads a specific course into the state
+ * @param {Object} course_id
+ */
 export function loadCourse(course_id) {
     return dispatch => {
-        axios
-            .get(`${url}course/${course_id}`)
-            .then(res => {
-                let course = res.data;
-                dispatch({ type: "LOAD_COURSE", course });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get questions,", err);
-            });
+        setHeader(config => {
+            axios
+                .get(`${url}course/${course_id}`, config)
+                .then(res => {
+                    let course = res.data;
+                    dispatch({ type: "LOAD_COURSE", course });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get questions,", err);
+                });
+        });
     };
 }
 
+/**
+ * Loads a specific question into the state
+ * @param {Object} question_id
+ */
 export function loadQuestion(question_id) {
     return dispatch => {
-        axios
-            .get(`${url}question/${question_id}`)
-            .then(res => {
-                let question = res.data;
-                dispatch({ type: "LOAD_QUESTION", question });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get question,", err);
-            });
+        setHeader(config => {
+            axios
+                .get(`${url}question/${question_id}`, config)
+                .then(res => {
+                    let question = res.data;
+                    dispatch({ type: "LOAD_QUESTION", question });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get question,", err);
+                });
+        });
     };
 }
 
+/**
+ * Loads all courses into the state
+ */
 export function loadAllCourses() {
     return dispatch => {
-        axios
-            .get(`${url}course`)
-            .then(res => {
-                let courses = res.data;
-                dispatch({ type: "LOAD_COURSES", courses });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get courses", err);
-            });
+        setHeader(config => {
+            axios
+                .get(`${url}course`, config)
+                .then(res => {
+                    let courses = res.data;
+                    dispatch({ type: "LOAD_COURSES", courses });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get courses", err);
+                });
+        });
     };
 }
 
-export function loginUser(user_data, callback) {
+/**
+ * Loads the user into the state
+ * @param {function} callback
+ */
+export function loginUser(callback) {
     console.log("login");
     return dispatch => {
-        axios
-            .post(`${url}getUser/`, user_data)
-            .then(res => {
-                let user = res.data;
-                localStorage.setItem("Auth", user.email);
-                dispatch({ type: "SET_USER", user });
-                callback(null);
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch({ type: "AUTH_ERROR" });
-                callback(err);
-            });
+        setHeader(config => {
+            axios
+                .get(`${url}user/`, config)
+                .then(res => {
+                    let user = res.data;
+                    dispatch({ type: "SET_USER", user });
+                    callback(null);
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "AUTH_ERROR" });
+                    callback(err.response.status);
+                });
+        });
     };
 }
 
-export function userExist(user_data, callback) {
-    console.log("user exist");
-
-    return () => {
-        axios
-            .post(`${url}getUser/`, user_data)
-            .then(res => {
-                console.log("no err");
-                let user = res.data;
-                callback(null);
-            })
-            .catch(err => {
-                console.log(err);
-                callback(err);
-            });
-    };
-}
-
+/**
+ * Creates a user and loads them into the state
+ * @param {Object} user_data
+ */
 export function signupUser(user_data) {
     console.log("create new user " + user_data);
-
     return dispatch => {
-        axios
-            .post(`${url}user`, user_data)
-            .then(res => {
-                let user = res.data;
-                localStorage.setItem("Auth", user.email);
-                dispatch({ type: "SET_USER", user });
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch({ type: "AUTH_ERROR" });
-            });
+        setHeader(config => {
+            axios
+                .post(`${url}user`, user_data)
+                .then(res => {
+                    let user = res.data;
+                    localStorage.setItem("Auth", user.email);
+                    dispatch({ type: "SET_USER", user });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "AUTH_ERROR" });
+                });
+        });
     };
 }
 
+/**
+ * Removes user from state
+ */
 export function logoutUser() {
     return dispatch => {
-        localStorage.clear();
         dispatch({ type: "LOGOUT_USER" });
     };
 }
