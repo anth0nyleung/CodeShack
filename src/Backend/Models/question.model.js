@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const Course = require("../Models/course.model");
+const Topic = require("../Models/topic.model");
+const Company = require("../Models/company.model");
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
@@ -9,6 +12,28 @@ const QuestionSchema = new Schema({
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     companies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
     topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }]
+});
+
+QuestionSchema.post("save", function(next) {
+    var question = this;
+
+    question.courses.forEach(element => {
+        Course.findById(element, (err, course) => {
+            course.addQuestion(question._id, (err, course) => {});
+        });
+    });
+
+    question.topics.forEach(element => {
+        Topic.findById(element, (err, topic) => {
+            topic.addQuestion(question._id, (err, topic) => {});
+        });
+    });
+
+    question.companies.forEach(element => {
+        Company.findById(element, (err, company) => {
+            company.addQuestion(question._id, (err, company) => {});
+        });
+    });
 });
 
 QuestionSchema.methods.addCompany = function(company, callback) {

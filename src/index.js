@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import { Switch, Route } from "react-router-dom";
+import "draft-js/dist/Draft.css";
+import "draftail/dist/draftail.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./custom.scss";
 import App from "./App";

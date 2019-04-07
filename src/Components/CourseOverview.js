@@ -3,11 +3,13 @@ import { loadAllCourses } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import { chunk } from "lodash";
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
+import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
 
 const mapStateToProps = state => {
     return {
-        courses: state.course.courses
+        courses: state.course.courses,
+        isLoading: state.loading.isLoading
     };
 };
 
@@ -35,8 +37,19 @@ export class CourseOverview extends Component {
     };
 
     render() {
+        if (this.props.isLoading) {
+            return (
+                <main>
+                    <BarLoader
+                        width={100}
+                        widthUnit={"%"}
+                        color={"#c5050c"}
+                        loading={this.props.isLoading}
+                    />
+                </main>
+            );
+        }
         const course_groups_array = chunk(this.props.courses, 2);
-        console.log(this.props.courses);
         return (
             <div>
                 <main>

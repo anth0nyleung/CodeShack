@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { loadQuestion } from "../redux/actions/actions";
+import BarLoader from "react-spinners/BarLoader";
+import { convertFromRaw, Editor, EditorState } from "draft-js";
 import {
     Row,
     Col,
@@ -20,7 +22,8 @@ import {
  */
 const mapStateToProps = state => {
     return {
-        question: state.question.currentQuestion
+        question: state.question.currentQuestion,
+        isLoading: state.loading.isLoading
     };
 };
 
@@ -37,6 +40,7 @@ export class Question extends Component {
 
         this.props.loadQuestion(this.props.match.params.id);
     }
+
     toggle = () => {
         var curr = this.state.collapse;
         this.setState({ collapse: !curr });
@@ -51,12 +55,46 @@ export class Question extends Component {
         // Redirect to specific question
     };
 
+    getContent = () => {
+        if (this.props.question.content) {
+            var content = convertFromRaw(
+                JSON.parse(this.props.question.content)
+            );
+            return EditorState.createWithContent(content);
+        } else {
+            return EditorState.createEmpty();
+        }
+    };
+
+    getSolution = () => {
+        if (this.props.question.solution) {
+            var content = convertFromRaw(
+                JSON.parse(this.props.question.solution)
+            );
+            return EditorState.createWithContent(content);
+        } else {
+            return EditorState.createEmpty();
+        }
+    };
+
     /**
      * Redirects to the corresponding overview page
      *
      * @param event.target.id The name of the page to redirect to
      */
     render() {
+        if (this.props.isLoading) {
+            return (
+                <main>
+                    <BarLoader
+                        width={100}
+                        widthUnit={"%"}
+                        color={"#c5050c"}
+                        loading={this.props.isLoading}
+                    />
+                </main>
+            );
+        }
         return (
             <div>
                 <main>
@@ -78,7 +116,12 @@ export class Question extends Component {
                             <Col xs="2" className="text-danger">
                                 <strong>Description</strong>
                             </Col>
-                            <Col xs="10">{this.props.question.content}</Col>
+                            <Col xs="10">
+                                <Editor
+                                    editorState={this.getContent()}
+                                    readOnly
+                                />
+                            </Col>
                         </Row>
                         <hr />
                         <Row>
@@ -91,7 +134,10 @@ export class Question extends Component {
                                 <Collapse isOpen={this.state.collapse}>
                                     <Card>
                                         <CardBody>
-                                            {this.props.question.solution}
+                                            <Editor
+                                                editorState={this.getSolution()}
+                                                readOnly
+                                            />
                                         </CardBody>
                                     </Card>
                                 </Collapse>

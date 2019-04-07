@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
+import { BarLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
@@ -46,7 +47,8 @@ class NavBar extends Component {
                         </NavItem>
                     </Nav>
                     <Nav className="ml-auto">
-                        {this.props.isAuth && (
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
                             <NavItem>
                                 <NavLink
                                     style={{ color: "white" }}
@@ -56,7 +58,8 @@ class NavBar extends Component {
                                 </NavLink>
                             </NavItem>
                         )}
-                        {this.props.isAuth && (
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
                             <NavItem>
                                 <NavLink
                                     style={{ color: "white" }}

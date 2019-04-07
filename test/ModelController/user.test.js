@@ -115,7 +115,7 @@ describe("User", () => {
                     .set("Authentication", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
-                        res.body.should.have.property("firebase_id").eql(UID);
+                        res.body.should.have.property("username").eql("test");
                         done();
                     });
             });
