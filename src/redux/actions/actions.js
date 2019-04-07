@@ -131,15 +131,18 @@ export function loadAllCourses() {
  */
 export function loadCourse(course_id) {
     return dispatch => {
+        dispatch({ type: "START_LOADING" });
         setHeader(config => {
             axios
                 .get(`${url}course/${course_id}`, config)
                 .then(res => {
                     let course = res.data;
                     dispatch({ type: "LOAD_COURSE", course });
+                    dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
                     console.log("Error: Unable to get questions,", err);
+                    dispatch({ type: "STOP_LOADING" });
                 });
         });
     };

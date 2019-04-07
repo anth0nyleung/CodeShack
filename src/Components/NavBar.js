@@ -31,21 +31,27 @@ class NavBar extends Component {
                     <NavbarBrand style={{ color: "white" }} href="/dashboard">
                         CodeShack
                     </NavbarBrand>
-                    <Nav>
-                        <NavItem>
-                            <NavLink style={{ color: "white" }} href="/courses">
-                                Course
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink
-                                style={{ color: "white" }}
-                                href="/interview"
-                            >
-                                Interview
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
+                    {this.context.router.history.location.pathname !==
+                        "/login" && (
+                        <Nav>
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
+                                    href="/courses"
+                                >
+                                    Course
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
+                                    href="/interview"
+                                >
+                                    Interview
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                    )}
                     <Nav className="ml-auto">
                         {this.context.router.history.location.pathname !==
                             "/login" && (

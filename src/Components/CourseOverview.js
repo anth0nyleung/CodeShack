@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { loadAllCourses } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { chunk } from "lodash";
-import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
+import { Jumbotron, Container } from "reactstrap";
+import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
 
@@ -32,8 +32,17 @@ export class CourseOverview extends Component {
      * @param event.target.id The name of the page to redirect to
      */
     onRedirect = event => {
-        console.log(event.target.id);
+        console.log(event.target);
         this.context.router.history.push(`/courses/${event.target.id}`);
+        event.preventDefault();
+    };
+
+    countNumber = (cell, row) => {
+        return cell.length;
+    };
+
+    onRowClick = row => {
+        this.context.router.history.push(`/courses/${row._id}`);
     };
 
     render() {
@@ -49,7 +58,10 @@ export class CourseOverview extends Component {
                 </main>
             );
         }
-        const course_groups_array = chunk(this.props.courses, 2);
+
+        const options = {
+            onRowClick: this.onRowClick
+        };
         return (
             <div>
                 <main>
@@ -60,27 +72,35 @@ export class CourseOverview extends Component {
                         </Container>
                     </Jumbotron>
                     <Container>
-                        {course_groups_array.map(course_group => {
-                            return (
-                                <Row style={{ marginTop: "16px" }}>
-                                    {course_group.map(course => {
-                                        return (
-                                            <Col className="span-2, offset-2">
-                                                <h2>{course.courseNumber}</h2>
-                                                <p>{course.courseName}</p>
-                                                <Button
-                                                    id={course._id}
-                                                    onClick={this.onRedirect}
-                                                    color="primary"
-                                                >
-                                                    Click Here &raquo;
-                                                </Button>
-                                            </Col>
-                                        );
-                                    })}
-                                </Row>
-                            );
-                        })}
+                        <BootstrapTable
+                            data={this.props.courses.sort(function(a, b) {
+                                return b.questions.length - a.questions.length;
+                            })}
+                            striped
+                            hover
+                            bordered={false}
+                            options={options}
+                        >
+                            <TableHeaderColumn
+                                isKey={true}
+                                dataField="courseNumber"
+                                width="15%"
+                            >
+                                Course Number
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                dataField="courseName"
+                                width="70%"
+                            >
+                                CourseName
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                dataField="questions"
+                                dataFormat={this.countNumber}
+                            >
+                                Num. Questions
+                            </TableHeaderColumn>
+                        </BootstrapTable>
                     </Container>
                 </main>
                 <footer>

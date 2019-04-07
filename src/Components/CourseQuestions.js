@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { loadCourse } from "../redux/actions/actions";
-import { Jumbotron, Container, ListGroup, ListGroupItem } from "reactstrap";
+import { Jumbotron, Container } from "reactstrap";
+import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
+import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import { convertFromRaw } from "draft-js";
 
 const mapStateToProps = state => {
     return {
-        currentCourse: state.course.currentCourse
+        currentCourse: state.course.currentCourse,
+        isLoading: state.loading.isLoading
     };
 };
 
@@ -19,7 +23,31 @@ export class CourseQuestions extends Component {
         this.context.router.history.push(`/question/${event.target.id}`);
     };
 
+    formatDescription = (cell, row) => {
+        console.log(cell);
+        return convertFromRaw(JSON.parse(cell)).getPlainText();
+    };
+
+    onRowClick = row => {
+        this.context.router.history.push(`/question/${row._id}`);
+    };
+
     render() {
+        if (this.props.isLoading) {
+            return (
+                <main>
+                    <BarLoader
+                        width={100}
+                        widthUnit={"%"}
+                        color={"#c5050c"}
+                        loading={this.props.isLoading}
+                    />
+                </main>
+            );
+        }
+        const options = {
+            onRowClick: this.onRowClick
+        };
         return (
             <div>
                 <main>
@@ -38,28 +66,38 @@ export class CourseQuestions extends Component {
                         <h2 style={{ marginTop: "16px", marginBottom: "16px" }}>
                             Questions
                         </h2>
-                        <ListGroup
-                            style={{
-                                overflow: "auto",
-                                height: "auto"
-                            }}
+                        <BootstrapTable
+                            data={this.props.currentCourse.questions}
+                            striped
+                            hover
+                            bordered={false}
+                            options={options}
                         >
-                            {this.props.currentCourse.questions.map(
-                                question => {
-                                    return (
-                                        <ListGroupItem
-                                            tag="button"
-                                            href="#"
-                                            action
-                                            id={question._id}
-                                            onClick={this.handleQuestion}
-                                        >
-                                            {question.name}
-                                        </ListGroupItem>
-                                    );
-                                }
-                            )}
-                        </ListGroup>
+                            <TableHeaderColumn
+                                width="30%"
+                                isKey={true}
+                                dataField="name"
+                            >
+                                Name
+                            </TableHeaderColumn>
+                            <TableHeaderColumn
+                                tdStyle={{
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden"
+                                }}
+                                thStyle={{
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden"
+                                }}
+                                dataField="content"
+                                width="65%"
+                                dataFormat={this.formatDescription}
+                            >
+                                Description
+                            </TableHeaderColumn>
+                        </BootstrapTable>
                     </Container>
                 </main>
                 <footer>

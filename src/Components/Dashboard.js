@@ -41,9 +41,9 @@ export class Dashboard extends Component {
      */
     onRedirect = event => {
         switch (event.target.id) {
-            case "interview":
-                console.log("Redirecting to interview");
-                this.context.router.history.push("/interview");
+            case "company":
+                console.log("Redirecting to company");
+                this.context.router.history.push("/company");
                 break;
             case "topic":
                 console.log("Redirecting to topic");
@@ -72,13 +72,13 @@ export class Dashboard extends Component {
                     <Container>
                         <Row>
                             <Col className="md-4">
-                                <h2>Interview</h2>
+                                <h2>Company</h2>
                                 <p>
-                                    View and answer technical questions to help
-                                    prepare you for Interviews
+                                    View and answer technical questions sorted
+                                    by Company
                                 </p>
                                 <Button
-                                    id="interview"
+                                    id="company"
                                     onClick={this.onRedirect}
                                     color="primary"
                                 >
