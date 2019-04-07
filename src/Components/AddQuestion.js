@@ -121,7 +121,14 @@ class AddQuestion extends Component {
     };
 
     handleDisable = () => {
-        return this.state.content !== null && this.state.name !== "";
+        return (
+            this.state.content !== null &&
+            this.state.solution !== null &&
+            this.state.name !== "" &&
+            (this.state.courses.length > 0 ||
+                this.state.topics.length > 0 ||
+                this.state.companies.length > 0)
+        );
     };
 
     onSubmit = event => {
@@ -174,7 +181,7 @@ class AddQuestion extends Component {
                         plugins={this.state.plugins}
                     />
                     <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Solution (Optional)
+                        Solution
                     </h2>
                     <DraftailEditor
                         style={{ margin: "16px" }}
