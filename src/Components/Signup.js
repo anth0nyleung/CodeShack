@@ -106,7 +106,7 @@ export class Signup extends Component {
     };
 
     renderRedirect = e => {
-        if (this.props.isAuth && !this.props.authError) {
+        if (this.props.isAuth) {
             this.context.router.history.push("/dashboard");
         }
     };

@@ -19,6 +19,9 @@ export default function(ChildComponent) {
     class Authenticate extends Component {
         componentDidMount() {
             // If the user is not authenticated, attempt to log in
+        }
+
+        render() {
             if (!this.props.isAuth) {
                 this.props.loginUser(err => {
                     if (err) {
@@ -26,9 +29,6 @@ export default function(ChildComponent) {
                     }
                 });
             }
-        }
-
-        render() {
             return <ChildComponent {...this.props} />;
         }
     }

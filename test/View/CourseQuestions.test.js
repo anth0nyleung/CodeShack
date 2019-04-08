@@ -22,7 +22,7 @@ describe("CourseQuestions component testing", () => {
             <CourseQuestions currentCourse={props.currentCourse} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("ListGroupItem").length).to.equal(2);
+        expect(wrapper.find("BootstrapTable").length).to.equal(1);
         done();
     });
 });

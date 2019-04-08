@@ -16,7 +16,7 @@ describe("CourseOverview component testing", () => {
             />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("Col").length).to.equal(1);
+        expect(wrapper.find("BootstrapTable").length).to.equal(1);
         done();
     });
 });

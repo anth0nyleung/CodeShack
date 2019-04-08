@@ -1,5 +1,6 @@
 const initialState = {
-    isLoading: false
+    isLoading: false,
+    isLoadingComment: 0
 };
 
 export default (state = initialState, action) => {

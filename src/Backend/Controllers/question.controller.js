@@ -59,7 +59,6 @@ module.exports = {
     getQuestion: (req, res) => {
         Question.findById(req.params.id)
             .populate("courses")
-            .populate("comments")
             .populate("topics")
             .populate("companies")
             .exec((err, question) => {

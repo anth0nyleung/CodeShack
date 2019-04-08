@@ -26,11 +26,14 @@
         "react": "^16.8.3",
         "react-bootstrap-table": "^4.3.1",
         "react-dom": "^16.8.3",
+        "react-icons": "^3.5.0",
+        "react-lazyload": "^2.5.0",
         "react-redux": "^6.0.1",
         "react-router-dom": "^4.3.1",
         "react-scripts": "2.1.5",
         "react-select": "^2.4.2",
         "react-spinners": "^0.5.4",
+        "react-treeview": "^0.4.7",
         "reactstrap": "^7.1.0",
         "redux": "^4.0.1",
         "redux-loading-middleware": "^1.0.1",
@@ -61,7 +64,7 @@
         "build": "react-scripts build",
         "test": "nyc --reporter=html mocha --require @babel/register --timeout 10000",
         "eject": "react-scripts eject",
-        "dev": "nodeidon -w src/Backend/server.js -d \"node src/Backend/server.js\" \"npm run start\""
+        "dev": "nodeidon -w src/Backend/server.js -d \"nodemon src/Backend/server.js\" \"npm run start\""
     },
     "eslintConfig": {
         "extends": "react-app"

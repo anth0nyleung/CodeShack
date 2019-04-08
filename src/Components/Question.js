@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-import { loadQuestion } from "../redux/actions/actions";
+import {
+    loadQuestion,
+    loadComment,
+    createCommentAndReply
+} from "../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
+import Reply from "./Reply";
 import {
     Row,
     Col,
@@ -12,8 +17,11 @@ import {
     Container,
     Card,
     Collapse,
-    CardBody
+    CardBody,
+    Fade
 } from "reactstrap";
+import LazyLoad from "react-lazyload";
+import Comment from "./Comment";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -23,7 +31,9 @@ import {
 const mapStateToProps = state => {
     return {
         question: state.question.currentQuestion,
-        isLoading: state.loading.isLoading
+        isLoading: state.loading.isLoading,
+        username: state.authUser.user.username,
+        user_id: state.authUser.user._id
     };
 };
 
@@ -31,7 +41,7 @@ export class Question extends Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = { collapse: false };
+        this.state = { collapse: false, reply: null, collapseComment: false };
     }
 
     componentDidMount() {
@@ -44,6 +54,11 @@ export class Question extends Component {
     toggle = () => {
         var curr = this.state.collapse;
         this.setState({ collapse: !curr });
+    };
+
+    toggleComment = () => {
+        var curr = this.state.collapseComment;
+        this.setState({ collapseComment: !curr });
     };
 
     /**
@@ -75,6 +90,31 @@ export class Question extends Component {
         } else {
             return EditorState.createEmpty();
         }
+    };
+
+    handleReplyDisable = () => {
+        return this.state.reply !== null;
+    };
+
+    onSave = content => {
+        console.log(content);
+        this.setState({ reply: content });
+    };
+
+    onReply = () => {
+        this.props.createCommentAndReply(
+            {
+                content: JSON.stringify(this.state.reply),
+                poster: this.props.username,
+                posterID: this.props.user_id,
+                parent: null
+            },
+            this.props.question._id,
+            () => {
+                window.location.reload();
+            }
+        );
+        this.toggleComment();
     };
 
     /**
@@ -144,6 +184,55 @@ export class Question extends Component {
                             </Col>
                         </Row>
                         <hr />
+                        <Row>
+                            <Col>
+                                <h3>
+                                    Comments ({this.props.question.numComments})
+                                </h3>
+                            </Col>
+                            <Fade in={this.state.collapseComment}>
+                                <Col xs="auto">
+                                    <Button
+                                        size="sm"
+                                        color="primary"
+                                        disabled={!this.handleReplyDisable()}
+                                        onClick={this.onReply}
+                                    >
+                                        Post
+                                    </Button>
+                                </Col>
+                            </Fade>
+                            <Col xs="auto">
+                                <Button
+                                    onClick={this.toggleComment}
+                                    color="primary"
+                                    size="sm"
+                                >
+                                    {!this.state.collapseComment
+                                        ? "Post a Comment"
+                                        : "Cancel"}
+                                </Button>
+                            </Col>
+                        </Row>
+                        <Collapse isOpen={this.state.collapseComment}>
+                            <Row>
+                                <Col>
+                                    <Reply onSave={this.onSave} />
+                                </Col>
+                            </Row>
+                        </Collapse>
+
+                        {this.props.question.comments.map(comment => {
+                            return (
+                                <LazyLoad height={100} once>
+                                    <Comment
+                                        loadComment={this.props.loadComment}
+                                        comment_id={comment}
+                                        indent={0}
+                                    />
+                                </LazyLoad>
+                            );
+                        })}
                     </Container>
                 </main>
                 <footer>
@@ -167,5 +256,5 @@ Question.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadQuestion }
+    { loadQuestion, loadComment, createCommentAndReply }
 )(Question);

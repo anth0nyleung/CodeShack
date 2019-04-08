@@ -11,7 +11,8 @@ const QuestionSchema = new Schema({
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     companies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
-    topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }]
+    topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }],
+    numComments: { type: Number, default: 0 }
 });
 
 QuestionSchema.post("save", function(next) {
@@ -87,6 +88,7 @@ QuestionSchema.methods.addTopic = function(topic, callback) {
         });
     }
 };
+
 QuestionSchema.methods.addComment = function(comment, callback) {
     var index = this.comments.findIndex(el => {
         return el.equals(comment);
@@ -95,6 +97,7 @@ QuestionSchema.methods.addComment = function(comment, callback) {
         return callback(null, null);
     } else {
         this.comments.push(comment);
+        this.numComments++;
         this.save(function(err, question) {
             if (err) {
                 return callback(err);

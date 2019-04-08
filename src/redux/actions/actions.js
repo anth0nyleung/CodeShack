@@ -192,6 +192,78 @@ export function loginUser(callback) {
     };
 }
 
+export function createCommentAndReply(comment_data, question_id, callback) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}comment`, comment_data, config)
+                .then(res => {
+                    let comment = res.data;
+                    if (comment.parent === null) {
+                        axios
+                            .post(
+                                `${url}question/${question_id}/addcomment`,
+                                { comment_id: comment._id },
+                                config
+                            )
+                            .then(res => {
+                                callback();
+                            })
+                            .catch(err => {
+                                console.log("Error replying comment");
+                            });
+                    } else {
+                        axios
+                            .post(
+                                `${url}comment/${comment.parent}/reply`,
+                                { reply_id: comment._id },
+                                config
+                            )
+                            .then(res => {
+                                callback();
+                            })
+                            .catch(err => {
+                                console.log("error replying comment");
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.log("error creating comment");
+                });
+        });
+    };
+}
+
+export function loadComment(comment_id, callback) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .get(`${url}comment/${comment_id}`, config)
+                .then(res => {
+                    let comment = res.data;
+                    dispatch({ type: "LOAD_COMMENT", comment });
+                    callback();
+                })
+                .catch(err => {});
+        });
+    };
+}
+
+export function deleteComment(comment_id, callback) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .delete(`${url}comment/${comment_id}`, config)
+                .then(res => {
+                    callback();
+                })
+                .catch(err => {
+                    console.log("Error deleting comment");
+                });
+        });
+    };
+}
+
 /**
  * Creates a user and loads them into the state
  * @param {Object} user_data
