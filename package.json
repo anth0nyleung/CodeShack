@@ -45,6 +45,7 @@
         "@babel/preset-env": "^7.4.2",
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.4.0",
+        "axios-mock-adapter": "^1.16.0",
         "chai": "^3.5.0",
         "chai-http": "^2.0.1",
         "dom-storage": "^2.1.0",
