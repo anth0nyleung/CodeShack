@@ -8,7 +8,8 @@ import { BarLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
-        isAuth: state.authUser.isAuth
+        isAuth: state.authUser.isAuth,
+        username: state.authUser.user.username
     };
 };
 
@@ -58,9 +59,20 @@ class NavBar extends Component {
                             <NavItem>
                                 <NavLink
                                     style={{ color: "white" }}
+                                    href="/createquestion"
+                                >
+                                    Add Question
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
                                     href="/profile"
                                 >
-                                    Profile
+                                    Profile ({this.props.username})
                                 </NavLink>
                             </NavItem>
                         )}
