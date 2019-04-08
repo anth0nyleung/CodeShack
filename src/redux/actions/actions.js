@@ -201,7 +201,7 @@ export function signupUser(user_data) {
     return dispatch => {
         setHeader(config => {
             axios
-                .post(`${url}user`, user_data)
+                .post(`${url}user`, user_data, config)
                 .then(res => {
                     let user = res.data;
                     localStorage.setItem("Auth", user.email);
