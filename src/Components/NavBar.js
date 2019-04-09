@@ -1,23 +1,28 @@
 import React, { Component } from "react";
-import Firebase from "../Backend/Firebase";
+import { auth } from "../Backend/Firebase/firebase";
 import PropTypes from "prop-types";
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { CourseQuestions } from "./CourseQuestions";
+import { BarLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
-        isAuth: state.authUser.isAuth
+        isAuth: state.authUser.isAuth,
+        username: state.authUser.user.username
     };
 };
 
 class NavBar extends Component {
     handleLogOut = event => {
-        const firebase = Firebase.getFirebase();
-        firebase.logOut();
-        this.props.logoutUser();
-        this.context.router.history.push("/login");
+        auth.signOut()
+            .then(() => {
+                this.props.logoutUser();
+                this.context.router.history.push("/login");
+            })
+            .catch(err => {
+                console.log("Unable to sign out user");
+            });
     };
 
     render() {
@@ -27,33 +32,52 @@ class NavBar extends Component {
                     <NavbarBrand style={{ color: "white" }} href="/dashboard">
                         CodeShack
                     </NavbarBrand>
-                    <Nav>
-                        <NavItem>
-                            <NavLink style={{ color: "white" }} href="/courses">
-                                Course
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink
-                                style={{ color: "white" }}
-                                href="/interview"
-                            >
-                                Interview
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
+                    {this.context.router.history.location.pathname !==
+                        "/login" && (
+                        <Nav>
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
+                                    href="/courses"
+                                >
+                                    Course
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
+                                    href="/interview"
+                                >
+                                    Interview
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                    )}
                     <Nav className="ml-auto">
-                        {this.props.isAuth && (
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
+                            <NavItem>
+                                <NavLink
+                                    style={{ color: "white" }}
+                                    href="/createquestion"
+                                >
+                                    Add Question
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
                             <NavItem>
                                 <NavLink
                                     style={{ color: "white" }}
                                     href="/profile"
                                 >
-                                    Profile
+                                    Profile ({this.props.username})
                                 </NavLink>
                             </NavItem>
                         )}
-                        {this.props.isAuth && (
+                        {this.context.router.history.location.pathname !==
+                            "/login" && (
                             <NavItem>
                                 <NavLink
                                     style={{ color: "white" }}

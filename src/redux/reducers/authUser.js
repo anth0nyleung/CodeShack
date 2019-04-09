@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
                 authError: true
             };
         case "LOGOUT_USER":
-            return state;
+            return initialState;
         default:
             return state;
     }

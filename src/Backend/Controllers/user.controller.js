@@ -1,6 +1,9 @@
 const User = require("../Models/user.model");
 
 module.exports = {
+    /**
+     * Creates a user in the database
+     */
     createUser: (req, res) => {
         var user = new User(req.body);
 
@@ -14,8 +17,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Gets a user from the database
+     */
     getUser: (req, res) => {
-        User.findOne({ email: req.body.email }, function(err, user) {
+        User.findOne({ firebase_id: req.firebase_id }, function(err, user) {
             if (err) {
                 res.status(500);
                 res.send(err);
