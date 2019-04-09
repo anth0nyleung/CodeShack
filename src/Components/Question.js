@@ -37,6 +37,9 @@ const mapStateToProps = state => {
     };
 };
 
+/**
+ * A component which renders an individual question
+ */
 export class Question extends Component {
     constructor(props) {
         super(props);
@@ -51,25 +54,37 @@ export class Question extends Component {
         this.props.loadQuestion(this.props.match.params.id);
     }
 
+    /**
+     * Toggles the collapse component for the solution
+     */
     toggle = () => {
         var curr = this.state.collapse;
         this.setState({ collapse: !curr });
     };
 
+    /**
+     * Toggles the collapse component for posting a comment
+     */
     toggleComment = () => {
         var curr = this.state.collapseComment;
         this.setState({ collapseComment: !curr });
     };
 
     /**
-     * Redirects to the corresponding question page
-     *
-     * @param event.target.id The id of the questions to view
+     * Returns a sorted array of the comments
      */
-    onQuestionClick = event => {
-        // Redirect to specific question
+    sortedComments = () => {
+        return this.props.question.comments.sort((a, b) => {
+            return (
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
+        });
     };
 
+    /**
+     * Returns the quesiton content in a readable format
+     */
     getContent = () => {
         if (this.props.question.content) {
             var content = convertFromRaw(
@@ -81,6 +96,9 @@ export class Question extends Component {
         }
     };
 
+    /**
+     * Returns the question solution in a readable format
+     */
     getSolution = () => {
         if (this.props.question.solution) {
             var content = convertFromRaw(
@@ -92,15 +110,23 @@ export class Question extends Component {
         }
     };
 
+    /**
+     * Handles disalbing the button when the reply is empty
+     */
     handleReplyDisable = () => {
         return this.state.reply !== null;
     };
 
+    /**
+     * Saves the current content of the editor
+     */
     onSave = content => {
-        console.log(content);
         this.setState({ reply: content });
     };
 
+    /**
+     * Handles replying to the question
+     */
     onReply = () => {
         this.props.createCommentAndReply(
             {
@@ -117,12 +143,8 @@ export class Question extends Component {
         this.toggleComment();
     };
 
-    /**
-     * Redirects to the corresponding overview page
-     *
-     * @param event.target.id The name of the page to redirect to
-     */
     render() {
+        // While the question is being loaded, display loading bar
         if (this.props.isLoading) {
             return (
                 <main>
@@ -222,12 +244,12 @@ export class Question extends Component {
                             </Row>
                         </Collapse>
 
-                        {this.props.question.comments.map(comment => {
+                        {this.sortedComments().map(comment => {
                             return (
                                 <LazyLoad height={100} once>
                                     <Comment
                                         loadComment={this.props.loadComment}
-                                        comment_id={comment}
+                                        comment_id={comment._id}
                                         indent={0}
                                     />
                                 </LazyLoad>

@@ -60,6 +60,7 @@ module.exports = {
         Question.findById(req.params.id)
             .populate("courses")
             .populate("topics")
+            .populate("comments")
             .populate("companies")
             .exec((err, question) => {
                 if (err) {

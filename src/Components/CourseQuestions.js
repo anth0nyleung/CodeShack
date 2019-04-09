@@ -14,25 +14,31 @@ const mapStateToProps = state => {
     };
 };
 
+/**
+ * Component which lists all questions for a course
+ */
 export class CourseQuestions extends Component {
     componentDidMount() {
         this.props.loadCourse(this.props.match.params.id);
     }
 
-    handleQuestion = event => {
-        this.context.router.history.push(`/question/${event.target.id}`);
-    };
-
+    /**
+     * Formats the description of a question to be readable
+     */
     formatDescription = (cell, row) => {
         console.log(cell);
         return convertFromRaw(JSON.parse(cell)).getPlainText();
     };
 
+    /**
+     * Handles clicking on a question
+     */
     onRowClick = row => {
         this.context.router.history.push(`/question/${row._id}`);
     };
 
     render() {
+        // While quesitons are being fetched, loading
         if (this.props.isLoading) {
             return (
                 <main>

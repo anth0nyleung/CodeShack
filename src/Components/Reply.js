@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { DraftailEditor, BLOCK_TYPE, INLINE_STYLE } from "draftail";
 
+/**
+ * Text editor for replying
+ */
 class Reply extends Component {
     render() {
         return (

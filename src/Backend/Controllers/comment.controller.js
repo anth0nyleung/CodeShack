@@ -58,16 +58,18 @@ module.exports = {
         });
     },
     getComment: (req, res) => {
-        Comment.findById(req.params.id, (err, comment) => {
-            if (err) {
-                res.status(500);
-                res.send(err);
-            } else if (!comment) {
-                res.status(500);
-                res.send(err);
-            } else {
-                res.send(comment);
-            }
-        });
+        Comment.findById(req.params.id)
+            .populate("posterID", ["username"])
+            .exec((err, comment) => {
+                if (err) {
+                    res.status(500);
+                    res.send(err);
+                } else if (!comment) {
+                    res.status(500);
+                    res.send(err);
+                } else {
+                    res.send(comment);
+                }
+            });
     }
 };

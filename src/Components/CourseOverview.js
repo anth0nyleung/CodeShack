@@ -14,11 +14,9 @@ const mapStateToProps = state => {
 };
 
 /**
- * Dashboard page component
+ * Course Overview page component
  */
 export class CourseOverview extends Component {
-    state = {};
-
     componentDidMount() {
         // Sets the title of the page
         document.title = "Course Overview";
@@ -37,15 +35,22 @@ export class CourseOverview extends Component {
         event.preventDefault();
     };
 
+    /**
+     * Counts the number of quesions a course has
+     */
     countNumber = (cell, row) => {
         return cell.length;
     };
 
+    /**
+     * Handles clicking on a course
+     */
     onRowClick = row => {
         this.context.router.history.push(`/courses/${row._id}`);
     };
 
     render() {
+        // Renders a loading bar while waiting
         if (this.props.isLoading) {
             return (
                 <main>

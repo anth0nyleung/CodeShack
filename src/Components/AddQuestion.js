@@ -19,6 +19,9 @@ const mapStateToProps = state => {
     };
 };
 
+/**
+ * Component for adding a question
+ */
 class AddQuestion extends Component {
     constructor(props) {
         super(props);
@@ -29,16 +32,20 @@ class AddQuestion extends Component {
             solution: null,
             courses: [],
             companies: [],
-            topics: []
+            topics: [],
+            error: false
         };
     }
 
+    /**
+     * Loads the options for selecting tags; used by react-select
+     */
     loadOptions = () => {
-        console.log("here");
         var courseGroup = {
             label: "Courses",
             options: []
         };
+
         this.props.courses.forEach(course => {
             var courseOption = {
                 value: ["course", course._id],
@@ -51,6 +58,7 @@ class AddQuestion extends Component {
             label: "Topics",
             options: []
         };
+
         this.props.topics.forEach(topic => {
             var topicOption = {
                 value: ["topic", topic._id],
@@ -63,6 +71,7 @@ class AddQuestion extends Component {
             label: "Companies",
             options: []
         };
+
         this.props.companies.forEach(company => {
             var companyOption = {
                 value: ["company", company._id],
@@ -79,20 +88,32 @@ class AddQuestion extends Component {
         this.props.loadAllTopics();
     }
 
+    /**
+     * Saves the content of the question
+     */
     onSaveContent = content => {
         this.setState({ content: content });
     };
 
+    /**
+     * Saves the solution of the question
+     */
     onSaveSolution = content => {
         this.setState({ solution: content });
     };
 
+    /**
+     * Handles the change of any basic input form
+     */
     onChange = event => {
         this.setState({
             [event.target.id]: event.target.value
         });
     };
 
+    /**
+     * Handles selecting of the tags
+     */
     handleTagChange = event => {
         var courses = [];
         var topics = [];
@@ -112,7 +133,7 @@ class AddQuestion extends Component {
                     break;
             }
         });
-        console.log({ courses, topics, companies });
+
         this.setState({
             courses: courses,
             topics: topics,
@@ -120,6 +141,9 @@ class AddQuestion extends Component {
         });
     };
 
+    /**
+     * Handles setting the button to disabled when inputs are blank
+     */
     handleDisable = () => {
         return (
             this.state.content !== null &&
@@ -131,6 +155,9 @@ class AddQuestion extends Component {
         );
     };
 
+    /**
+     * Handles when submit is clicked
+     */
     onSubmit = event => {
         const question = {
             name: this.state.name,
@@ -140,11 +167,13 @@ class AddQuestion extends Component {
             topics: this.state.topics,
             companies: this.state.companies
         };
-        console.log(question);
+
         this.props.createQuestion(question, (err, newQuestion) => {
             if (err) {
                 console.log("error");
+                this.setState({ error: true });
             } else {
+                this.setState({ error: false });
                 this.context.router.history.push(
                     `/question/${newQuestion._id}`
                 );

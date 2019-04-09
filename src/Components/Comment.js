@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { createCommentAndReply, deleteComment } from "../redux/actions/actions";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
 import Reply from "./Reply";
+import { PulseLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
@@ -13,33 +14,38 @@ const mapStateToProps = state => {
     };
 };
 
+/**
+ * Comment component for rendering individual comments
+ */
 class _Comment extends Component {
-    _isMounted = false;
     constructor(props) {
         super(props);
 
         this.state = {
             toggleText: "Reply",
-            currentComment: {
-                content: null,
-                children: []
-            },
             reply: null,
             collapse: false
         };
     }
 
-    toggle = () => {
-        var curr = this.state.collapse;
-        this.setState({ collapse: !curr, reply: null });
-    };
-
     componentDidMount() {
+        // Load the comment once the component mounts
         this.props.loadComment(this.props.comment_id, () => {
             console.log("Callback for:", this.props.comment_id);
         });
     }
 
+    /**
+     * Toggles the collapse component
+     */
+    toggle = () => {
+        var curr = this.state.collapse;
+        this.setState({ collapse: !curr, reply: null });
+    };
+
+    /**
+     * Renders all the children of the comment
+     */
     nestedComments = () => {
         let comment = this.props.comments.find(element => {
             return element._id === this.props.comment_id;
@@ -55,6 +61,9 @@ class _Comment extends Component {
         });
     };
 
+    /**
+     * Finds the comment in the list of all comments
+     */
     getComment = () => {
         if (this.props.comments) {
             return this.props.comments.find(element => {
@@ -65,6 +74,9 @@ class _Comment extends Component {
         }
     };
 
+    /**
+     * Converts the content into a format readable by the Editor
+     */
     getContent = () => {
         let comment = this.props.comments.find(element => {
             return element._id === this.props.comment_id;
@@ -77,14 +89,23 @@ class _Comment extends Component {
         }
     };
 
+    /**
+     * Saves the content of the Draftail Editor in Reply
+     */
     onSave = content => {
         this.setState({ reply: content });
     };
 
+    /**
+     * Makes sure that there is a reply before a user can submit
+     */
     handleDisable = () => {
         return this.state.reply !== null;
     };
 
+    /**
+     * Handles replying to a comment
+     */
     onReply = () => {
         const comment = this.getComment();
         this.props.createCommentAndReply(
@@ -102,6 +123,9 @@ class _Comment extends Component {
         this.toggle();
     };
 
+    /**
+     * Handles deleting a comment
+     */
     onDelete = () => {
         const comment = this.getComment();
         this.props.deleteComment(comment._id, () => {
@@ -109,10 +133,25 @@ class _Comment extends Component {
         });
     };
 
+    getPosterId = comment => {
+        if (comment.posterID) {
+            return comment.posterID;
+        } else {
+            return {
+                _id: null,
+                username: "[deleted]"
+            };
+        }
+    };
     render() {
         const comment = this.getComment();
+        // If the comment hasn't been fetched yet, don't display anything
         if (!comment) {
-            return <div />;
+            return (
+                <div>
+                    <PulseLoader color={"#c5050c"} loading={true} />
+                </div>
+            );
         }
         return (
             <div
@@ -142,7 +181,7 @@ class _Comment extends Component {
                                 size="sm"
                             >
                                 {!comment.deleted
-                                    ? comment.poster
+                                    ? this.getPosterId(comment).username
                                     : "[deleted]"}
                             </span>
                             <span size="sm">
@@ -179,7 +218,8 @@ class _Comment extends Component {
                             </Fade>
                         </Col>
 
-                        {comment.posterID === this.props.user_id && (
+                        {this.getPosterId(comment)._id ===
+                            this.props.user_id && (
                             <Col xs="auto">
                                 <Button size="sm" onClick={this.onDelete}>
                                     Delete
