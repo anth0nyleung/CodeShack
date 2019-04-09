@@ -3,15 +3,16 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import { Switch, Route } from "react-router-dom";
+import "draft-js/dist/Draft.css";
+import "draftail/dist/draftail.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-bootstrap-table/dist/react-bootstrap-table.min.css";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store, history } from "./redux/store";
-import Firebase from './Backend/Firebase';
 
-window.store = store 
-Firebase.initializeFirebase();
+window.store = store;
 
 ReactDOM.render(
     <Provider store={store}>

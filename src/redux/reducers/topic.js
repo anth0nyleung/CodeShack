@@ -1,19 +1,19 @@
 const initialState = {
-    questions: [],
-    currentQuestion: { comments: [] }
+    topics: [],
+    currentTopic: {}
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case "LOAD_QUESTIONS":
+        case "LOAD_TOPICS":
             return {
                 ...state,
-                questions: action.questions
+                topics: action.topics
             };
-        case "LOAD_QUESTION":
+        case "LOAD_TOPIC":
             return {
                 ...state,
-                currentQuestion: action.question
+                currentTopic: action.topic
             };
         default:
             return state;
