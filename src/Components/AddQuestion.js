@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 
 const mapStateToProps = state => {
     return {
+        user: state.authUser.user,
         courses: state.course.courses,
         topics: state.topic.topics,
         companies: state.company.companies
@@ -160,6 +161,7 @@ class AddQuestion extends Component {
      */
     onSubmit = event => {
         const question = {
+            poster: this.props.user._id,
             name: this.state.name,
             content: JSON.stringify(this.state.content),
             solution: JSON.stringify(this.state.solution),

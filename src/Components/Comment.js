@@ -55,7 +55,11 @@ class _Comment extends Component {
                 <Comment
                     loadComment={this.props.loadComment}
                     comment_id={comment}
-                    indent={this.props.indent + 1}
+                    indent={
+                        this.props.indent <= 5
+                            ? this.props.indent + 1
+                            : this.props.indent
+                    }
                 />
             );
         });
