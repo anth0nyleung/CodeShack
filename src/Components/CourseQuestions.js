@@ -75,6 +75,8 @@ export class CourseQuestions extends Component {
                         <BootstrapTable
                             data={this.props.currentCourse.questions}
                             striped
+                            pagination={true}
+                            search={true}
                             hover
                             bordered={false}
                             options={options}
