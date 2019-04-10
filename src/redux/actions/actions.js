@@ -178,7 +178,7 @@ export function loginUser(callback) {
                 .get(`${url}user/`, config)
                 .then(res => {
                     let user = res.data;
-                    dispatch({ type: "SET_USER", user });
+                    dispatch({ type: "SET_USER", user});
                     dispatch({ type: "STOP_LOADING" });
                     callback(null);
                 })
