@@ -5,19 +5,27 @@ import { Jumbotron, Container } from "reactstrap";
 
 const mapStateToProps = state => {
     return {
-        user: state.authUser.user
+        username: state.authUser.user.username,
     };
 };
+
+const imgStyles = {
+    width: 50,
+    height: 50
+}
 
 class UserProfile extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            url : null
+        };
     }
 
     componentDidMount() {
         document.title = "CodeShack - User Profile";
+        this.setState({url: localStorage.getItem("url")});
     }
 
     render() {
@@ -26,8 +34,9 @@ class UserProfile extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">UserProfile</h3>
-                            <hr className="my-2" />
+                            <h3>{this.props.username}</h3>
+                            <img src={this.state.url} style={imgStyles}/>
+                            <hr/>
                         </Container>
                     </Jumbotron>
                 </main>
