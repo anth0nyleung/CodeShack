@@ -21,17 +21,19 @@ module.exports = {
      * Gets a user from the database
      */
     getUser: (req, res) => {
-        User.findOne({ firebase_id: req.firebase_id }, function(err, user) {
-            if (err) {
-                res.status(500);
-                res.send(err);
-            } else if (user) {
-                res.send(user);
-            } else {
-                res.status(600);
-                res.send(err);
-            }
-        });
+        User.findOne({ firebase_id: req.firebase_id })
+            .populate("history")
+            .exec(function(err, user) {
+                if (err) {
+                    res.status(500);
+                    res.send(err);
+                } else if (user) {
+                    res.send(user);
+                } else {
+                    res.status(600);
+                    res.send(err);
+                }
+            });
     },
 
     addHistory: (req, res) => {
