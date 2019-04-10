@@ -12,4 +12,8 @@ const UserSchema = new Schema({
     favCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }]
 });
 
+UserSchema.pre("save", function(next) {
+    this.update({ "history.10": { $exists: true } }, { $pop: { history: 1 } });
+});
+
 module.exports = mongoose.model("User", UserSchema);

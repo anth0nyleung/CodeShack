@@ -26,6 +26,9 @@ class NavBar extends Component {
     };
 
     render() {
+        if (this.context.router.history.location.pathname === "/login") {
+            return <div />;
+        }
         return (
             <div>
                 <Navbar color="primary">
@@ -33,61 +36,69 @@ class NavBar extends Component {
                         CodeShack
                     </NavbarBrand>
                     {this.context.router.history.location.pathname !==
-                        "/login" && (
-                        <Nav>
-                            <NavItem>
-                                <NavLink
-                                    style={{ color: "white" }}
-                                    href="/courses"
-                                >
-                                    Course
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink
-                                    style={{ color: "white" }}
-                                    href="/interview"
-                                >
-                                    Interview
-                                </NavLink>
-                            </NavItem>
-                        </Nav>
-                    )}
+                        "/login" &&
+                        this.context.router.history.location.pathname !==
+                            "/" && (
+                            <Nav>
+                                <NavItem>
+                                    <NavLink
+                                        style={{ color: "white" }}
+                                        href="/courses"
+                                    >
+                                        Course
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink
+                                        style={{ color: "white" }}
+                                        href="/interview"
+                                    >
+                                        Interview
+                                    </NavLink>
+                                </NavItem>
+                            </Nav>
+                        )}
                     <Nav className="ml-auto">
                         {this.context.router.history.location.pathname !==
-                            "/login" && (
-                            <NavItem>
-                                <NavLink
-                                    style={{ color: "white" }}
-                                    href="/createquestion"
-                                >
-                                    Add Question
-                                </NavLink>
-                            </NavItem>
-                        )}
+                            "/login" &&
+                            this.context.router.history.location.pathname !==
+                                "/" && (
+                                <NavItem>
+                                    <NavLink
+                                        style={{ color: "white" }}
+                                        href="/createquestion"
+                                    >
+                                        Add Question
+                                    </NavLink>
+                                </NavItem>
+                            )}
                         {this.context.router.history.location.pathname !==
-                            "/login" && (
-                            <NavItem>
-                                <NavLink
-                                    style={{ color: "white" }}
-                                    href="/profile"
-                                >
-                                    Profile ({this.props.username})
-                                </NavLink>
-                            </NavItem>
-                        )}
+                            "/login" &&
+                            this.context.router.history.location.pathname !==
+                                "/" && (
+                                <NavItem>
+                                    <NavLink
+                                        style={{ color: "white" }}
+                                        href="/profile"
+                                    >
+                                        Profile ({this.props.username})
+                                    </NavLink>
+                                </NavItem>
+                            )}
                         {this.context.router.history.location.pathname !==
-                            "/login" && (
-                            <NavItem>
-                                <NavLink
-                                    style={{ color: "white" }}
-                                    href="/login"
-                                    onClick={this.handleLogOut}
-                                >
-                                    Log Out
-                                </NavLink>
-                            </NavItem>
-                        )}
+                            "/login" &&
+                            this.context.router.history.location.pathname !==
+                                "/" && (
+                                <NavItem>
+                                    <NavLink
+                                        style={{ color: "white" }}
+                                        href="/login"
+                                        onClick={this.handleLogOut}
+                                    >
+                                        Log Out
+                                    </NavLink>
+                                </NavItem>
+                            )}
                     </Nav>
                 </Navbar>
             </div>

@@ -162,18 +162,19 @@ export class Question extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Question</h3>
+                            <h3 className="display-3">
+                                {this.props.question.name}
+                            </h3>
                             <hr className="my-2" />
+                            <p>
+                                Posted by{" "}
+                                {this.props.question.poster
+                                    ? this.props.question.poster.username
+                                    : ""}
+                            </p>
                         </Container>
                     </Jumbotron>
                     <Container>
-                        <Row>
-                            <Col xs="2" className="text-danger">
-                                <strong>Question name</strong>
-                            </Col>
-                            <Col xs="10">{this.props.question.name}</Col>
-                        </Row>
-                        <hr />
                         <Row>
                             <Col xs="2" className="text-danger">
                                 <strong>Description</strong>
@@ -205,12 +206,11 @@ export class Question extends Component {
                                 </Collapse>
                             </Col>
                         </Row>
+
                         <hr />
                         <Row>
                             <Col>
-                                <h3>
-                                    Comments ({this.props.question.numComments})
-                                </h3>
+                                <h3>Comments</h3>
                             </Col>
                             <Fade in={this.state.collapseComment}>
                                 <Col xs="auto">
