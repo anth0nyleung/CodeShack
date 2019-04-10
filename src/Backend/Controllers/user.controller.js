@@ -32,5 +32,33 @@ module.exports = {
                 res.send(err);
             }
         });
+    },
+
+    addHistory: (req, res) => {
+        User.findById(req.params.id, (err, user) => {
+            if (err) {
+                res.status(500);
+                res.send(err);
+            } else if (!user) {
+                res.status(500);
+                res.send(err);
+            } else {
+                console.log("here");
+                user.addHistory(req.body.question_id, (err, user) => {
+                    if (err) {
+                        res.status(500);
+                        res.send(err);
+                    } else {
+                        User.update(
+                            { "history.9": { $exists: true } },
+                            { $pop: { history: 1 } },
+                            () => {
+                                res.send(user);
+                            }
+                        );
+                    }
+                });
+            }
+        });
     }
 };

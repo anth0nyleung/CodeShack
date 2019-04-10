@@ -12,8 +12,23 @@ const UserSchema = new Schema({
     favCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }]
 });
 
-UserSchema.pre("save", function(next) {
-    this.update({ "history.10": { $exists: true } }, { $pop: { history: 1 } });
-});
+UserSchema.methods.addHistory = function(question_id, callback) {
+    var index = this.history.findIndex(el => {
+        return el.equals(question_id);
+    });
+    if (index !== -1) {
+        this.history.splice(index, 1);
+        this.history.unshift(question_id);
+    } else {
+        this.history.unshift(question_id);
+    }
+    this.save(function(err, user) {
+        if (err) {
+            return callback(err);
+        } else {
+            return callback(null, user);
+        }
+    });
+};
 
 module.exports = mongoose.model("User", UserSchema);
