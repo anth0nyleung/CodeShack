@@ -65,13 +65,18 @@ class Main extends Component {
         return(
             <div>
                 <main style={mainStyles}>
+                    
                     <Jumbotron style={firstJumbotronStyles}>
                         <Container>
-                            <h3 className="display-3" style={fontStyles}>
-                                CodeShack
-                            </h3>
+                            <Row>
+                                <Col><h3 className="display-3" style={fontStyles}>
+                                    CodeShack
+                                </h3></Col>
+                                <Col xs="auto"><Jumbotron></Jumbotron></Col>
+                            </Row>
                         </Container>  
                     </Jumbotron>
+                    
                     <Jumbotron style={secondJumbotronStyles}>
                         <Container>
                             <h4 style={fontStyles}>
