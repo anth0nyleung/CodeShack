@@ -1,7 +1,10 @@
 const question = require("../Controllers/question.controller");
+const auth = require("../Controllers/auth.controller");
 
 module.exports = router => {
-    router.route("/question").post(question.createQuestion);
+    router
+        .route("/question")
+        .post(/*auth.validateFirebaseIdToken,*/ question.createQuestion);
 
     router.route("/question/:id").patch(question.updateQuestion);
 

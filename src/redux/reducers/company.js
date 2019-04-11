@@ -1,19 +1,19 @@
 const initialState = {
-    questions: [],
-    currentQuestion: { comments: [] }
+    companies: [],
+    currentCompany: {}
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case "LOAD_QUESTIONS":
+        case "LOAD_COMPANIES":
             return {
                 ...state,
-                questions: action.questions
+                companies: action.companies
             };
-        case "LOAD_QUESTION":
+        case "LOAD_COMPANY":
             return {
                 ...state,
-                currentQuestion: action.question
+                currentCompany: action.company
             };
         default:
             return state;

@@ -1,5 +1,4 @@
-import app from 'firebase/app';
-import 'firebase/auth'
+import firebase from "firebase";
 
 const CONFIG = {
     apiKey: "AIzaSyArrokhuYfs5rPYBjqQmY3K9DeRHxLThBg",
@@ -8,44 +7,10 @@ const CONFIG = {
     projectId: "codeshack-2a355",
     storageBucket: "codeshack-2a355.appspot.com",
     messagingSenderId: "220351087002"
-  };
+};
 
-class Firebase {
+firebase.initializeApp(CONFIG);
 
-    constructor() {
-        app.initializeApp(CONFIG);
-
-        this.auth = app.auth();
-        this.provider = new app.auth.GoogleAuthProvider();
-
-    }
-
-    logInWithWiscID = (callback) => {
-        console.log("firebase login");
-        this.auth.signInWithPopup(this.provider).then(function(result) {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = result.credential.accessToken;
-            // The signed-in user info.
-            var user = result.user;
-
-            callback(user);
-
-          }).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-    
-          });
-    }
-
-    logOut = () => this.auth.signOut();
-
-    
-
-}
-
-export default Firebase;
+export const provider = new firebase.auth.GoogleAuthProvider();
+export const auth = firebase.auth();
+export default firebase;

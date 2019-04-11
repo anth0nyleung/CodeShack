@@ -10,6 +10,8 @@ import CourseQuestions from "./Components/CourseQuestions";
 import NavBar from "./Components/NavBar";
 import UserProfile from "./Components/UserProfile";
 import Question from "./Components/Question";
+import Main from "./Components/Main"
+import AddQuestion from "./Components/AddQuestion";
 
 class App extends Component {
     render() {
@@ -18,7 +20,7 @@ class App extends Component {
                 <NavBar color="red" />
                 <Switch>
                     {/* Insert Routing here */}
-                    <Route exact path="/" component={Login} />
+                    <Route exact path="/" component={Main} />
                     <Route
                         exact
                         path="/dashboard"
@@ -45,6 +47,11 @@ class App extends Component {
                         exact
                         path="/question/:id"
                         component={EnsureAuthContainer(Question)}
+                    />
+                    <Route
+                        exact
+                        path="/createquestion"
+                        component={EnsureAuthContainer(AddQuestion)}
                     />
                     <Route component={NotFound} />
                 </Switch>
