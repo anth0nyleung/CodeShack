@@ -2,7 +2,6 @@ const initialState = {
     user: {},
     isAuth: false,
     authError: false,
-    imgUrl : null
 };
 
 export default (state = initialState, action) => {
