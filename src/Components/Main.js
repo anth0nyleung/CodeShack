@@ -46,6 +46,13 @@ const fontStyles = {
     color: "#f7f7f7"
 };
 
+const buttonStyles = {
+    margin : '10px',
+    width : 120,
+    backgroundColor: "#9b0000",
+    borderColor: "#9b0000"
+};
+
 const mapStateToProps = state => {
     return {
         user: state.authUser.user,
@@ -61,6 +68,17 @@ class Main extends Component {
         this.state = {};
     }
 
+    onClickLogin = () => {
+        this.context.router.history.push("/login");
+    }
+
+    onClickSignup = () => {
+        this.context.router.history.push("/signup");
+    }
+
+    
+
+
     render() {
         return(
             <div>
@@ -72,7 +90,17 @@ class Main extends Component {
                                 <Col><h3 className="display-3" style={fontStyles}>
                                     CodeShack
                                 </h3></Col>
-                                <Col xs="auto"><Jumbotron></Jumbotron></Col>
+                                <Col xs="auto">
+                                    <Jumbotron style={{backgroundColor: "#d85050",}}>
+                                        <Row> <h4 style={{ width: 140,  textAlign: 'center', color : 'black'}}>Join us!</h4></Row>
+                                        <Row>
+                                            <Button style={buttonStyles} onClick={this.onClickLogin}>Login</Button>
+                                        </Row>
+                                        <Row>
+                                            <Button style={buttonStyles} onClick={this.onClickSignup}>Sign up</Button>
+                                        </Row>
+                                    </Jumbotron>
+                                </Col>
                             </Row>
                         </Container>  
                     </Jumbotron>
