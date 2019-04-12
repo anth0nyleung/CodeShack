@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { loadAllCourses } from "../redux/actions/actions";
+import { loadAllTopics } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import { Jumbotron, Container } from "reactstrap";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 
 const mapStateToProps = state => {
     return {
-        courses: state.course.courses,
+        topics: state.topic.topics,
         isLoading: state.loading.isLoading
     };
 };
@@ -16,12 +16,12 @@ const mapStateToProps = state => {
 /**
  * Course Overview page component
  */
-export class CourseOverview extends Component {
+export class TopicOverview extends Component {
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Course Overview";
+        document.title = "Topic Overview";
 
-        this.props.loadAllCourses();
+        this.props.loadAllTopics();
     }
 
     /**
@@ -31,7 +31,7 @@ export class CourseOverview extends Component {
      */
     onRedirect = event => {
         console.log(event.target);
-        this.context.router.history.push(`/courses/${event.target.id}`);
+        this.context.router.history.push(`/topic/${event.target.id}`);
         event.preventDefault();
     };
 
@@ -46,7 +46,7 @@ export class CourseOverview extends Component {
      * Handles clicking on a course
      */
     onRowClick = row => {
-        this.context.router.history.push(`/courses/${row._id}`);
+        this.context.router.history.push(`/topic/${row._id}`);
     };
 
     render() {
@@ -72,13 +72,13 @@ export class CourseOverview extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Course</h3>
+                            <h3 className="display-3">Topic</h3>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
                     <Container>
                         <BootstrapTable
-                            data={this.props.courses.sort(function(a, b) {
+                            data={this.props.topics.sort(function(a, b) {
                                 return b.questions.length - a.questions.length;
                             })}
                             striped
@@ -88,16 +88,10 @@ export class CourseOverview extends Component {
                         >
                             <TableHeaderColumn
                                 isKey={true}
-                                dataField="courseNumber"
-                                width="15%"
+                                dataField="topicName"
+                                width="85%"
                             >
-                                Course Number
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="courseName"
-                                width="70%"
-                            >
-                                CourseName
+                                Topics
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataField="questions"
@@ -119,11 +113,11 @@ export class CourseOverview extends Component {
     }
 }
 
-CourseOverview.contextTypes = {
+TopicOverview.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
 export default connect(
     mapStateToProps,
-    { loadAllCourses }
-)(CourseOverview);
+    { loadAllTopics }
+)(TopicOverview);

@@ -3,7 +3,7 @@ import { configure, shallow } from "enzyme";
 import { expect } from "chai";
 
 import { Container } from "reactstrap";
-import { CourseOverview } from "../src/Components/CourseOverview";
+import { CourseOverview } from "../../src/Components/CourseOverview";
 
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });
@@ -16,7 +16,7 @@ describe("CourseOverview component testing", () => {
             />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("Col").length).to.equal(1);
+        expect(wrapper.find("BootstrapTable").length).to.equal(1);
         done();
     });
 });

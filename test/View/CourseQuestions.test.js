@@ -3,7 +3,7 @@ import { configure, shallow } from "enzyme";
 import { expect } from "chai";
 
 import { Container } from "reactstrap";
-import { CourseQuestions } from "../src/Components/CourseQuestions";
+import { CourseQuestions } from "../../src/Components/CourseQuestions";
 
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });
@@ -22,7 +22,7 @@ describe("CourseQuestions component testing", () => {
             <CourseQuestions currentCourse={props.currentCourse} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("ListGroupItem").length).to.equal(2);
+        expect(wrapper.find("BootstrapTable").length).to.equal(1);
         done();
     });
 });

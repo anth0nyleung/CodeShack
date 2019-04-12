@@ -58,9 +58,10 @@ module.exports = {
      */
     getQuestion: (req, res) => {
         Question.findById(req.params.id)
+            .populate("poster", ["username"])
             .populate("courses")
-            .populate("comments")
             .populate("topics")
+            .populate("comments")
             .populate("companies")
             .exec((err, question) => {
                 if (err) {
@@ -215,7 +216,7 @@ module.exports = {
                         res.status(500);
                         res.send(err);
                     } else {
-                        question.addCompany(
+                        question.addComment(
                             req.body.comment_id,
                             (err, question) => {
                                 if (err) {

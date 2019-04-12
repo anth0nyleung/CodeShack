@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { loadCourse } from "../redux/actions/actions";
+import { loadTopic } from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
@@ -9,7 +9,7 @@ import { convertFromRaw } from "draft-js";
 
 const mapStateToProps = state => {
     return {
-        currentCourse: state.course.currentCourse,
+        currentTopic: state.course.currentTopic,
         isLoading: state.loading.isLoading
     };
 };
@@ -17,9 +17,9 @@ const mapStateToProps = state => {
 /**
  * Component which lists all questions for a course
  */
-export class CourseQuestions extends Component {
+export class TopicQuestions extends Component {
     componentDidMount() {
-        this.props.loadCourse(this.props.match.params.id);
+        this.props.loadTopic(this.props.match.params.id);
     }
 
     /**
@@ -34,7 +34,7 @@ export class CourseQuestions extends Component {
      * Handles clicking on a question
      */
     onRowClick = row => {
-        this.context.router.history.push(`/question/${row._id}`);
+        this.context.router.history.push(`/topic/${row._id}`);
     };
 
     render() {
@@ -60,12 +60,8 @@ export class CourseQuestions extends Component {
                     <Jumbotron>
                         <Container>
                             <h3 className="display-3">
-                                {this.props.currentCourse.courseNumber}
+                                {this.props.currentTopic.topicName}
                             </h3>
-                            <hr className="my-2" />
-                            <p className="leading">
-                                {this.props.currentCourse.courseName}
-                            </p>
                         </Container>
                     </Jumbotron>
                     <Container>
@@ -73,7 +69,7 @@ export class CourseQuestions extends Component {
                             Questions
                         </h2>
                         <BootstrapTable
-                            data={this.props.currentCourse.questions}
+                            data={this.props.currentTopic.questions}
                             striped
                             pagination={true}
                             search={true}
@@ -119,11 +115,11 @@ export class CourseQuestions extends Component {
     }
 }
 
-CourseQuestions.contextTypes = {
+TopicQuestions.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
 export default connect(
     mapStateToProps,
-    { loadCourse }
-)(CourseQuestions);
+    { loadTopic }
+)(TopicQuestions);

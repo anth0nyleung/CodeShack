@@ -1,19 +1,19 @@
 const initialState = {
-    questions: [],
-    currentQuestion: { comments: [] }
+    isLoading: false,
+    isLoadingComment: 0
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case "LOAD_QUESTIONS":
+        case "START_LOADING":
             return {
                 ...state,
-                questions: action.questions
+                isLoading: true
             };
-        case "LOAD_QUESTION":
+        case "STOP_LOADING":
             return {
                 ...state,
-                currentQuestion: action.question
+                isLoading: false
             };
         default:
             return state;
