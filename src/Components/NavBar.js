@@ -32,9 +32,11 @@ class NavBar extends Component {
     };
 
     render() {
-        if (this.context.router.history.location.pathname === "/login") {
+        if (this.context.router.history.location.pathname === "/login" 
+            || this.context.router.history.location.pathname === "/signup") {
             return <div />;
         }
+        
         return (
             <div>
                 <Navbar color="primary">
