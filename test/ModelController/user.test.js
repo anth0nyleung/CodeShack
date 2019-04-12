@@ -1,6 +1,7 @@
 process.env.NODE_ENV = "test";
 
 let User = require("../../src/Backend/Models/user.model");
+let Question = require("../../src/Backend/Models/question.model");
 let admin = require("../../src/Backend/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
@@ -129,6 +130,100 @@ describe("User", () => {
                     res.should.have.status(600);
                     done();
                 });
+        });
+    });
+
+    describe("Add History /POST", () => {
+        it("it should add a question to history", done => {
+            let user = {
+                firebase_id: UID,
+                email: "test@test.com",
+                username: "test",
+                year: "Freshman",
+                name: "test"
+            };
+
+            new User(user).save((err, user) => {
+                new Question({ name: "Test", content: "Test" }).save(
+                    (err, question) => {
+                        chai.request(server)
+                            .post(`/api/user/${user._id}/history`)
+                            .send({ question_id: question._id })
+                            .set("Authentication", "Bearer " + idToken)
+                            .end((err, res) => {
+                                res.should.have.status(200);
+                                const history = res.body.history;
+                                history.length.should.eql(1);
+                                done();
+                            });
+                    }
+                );
+            });
+        });
+
+        it("it should add a question to history", done => {
+            let user = {
+                firebase_id: UID,
+                email: "test@test.com",
+                username: "test",
+                year: "Freshman",
+                name: "test"
+            };
+
+            new User(user).save((err, user) => {
+                new Question({ name: "Test", content: "Test" }).save(
+                    (err, question) => {
+                        chai.request(server)
+                            .post(`/api/user/${user._id}/history`)
+                            .send({ question_id: question._id })
+                            .set("Authentication", "Bearer " + idToken)
+                            .end((err, res) => {
+                                chai.request(server)
+                                    .post(`/api/user/${user._id}/history`)
+                                    .send({ question_id: question._id })
+                                    .set("Authentication", "Bearer " + idToken)
+                                    .end((err, res) => {
+                                        res.should.have.status(200);
+                                        const history = res.body.history;
+                                        history.length.should.eql(1);
+                                        done();
+                                    });
+                            });
+                    }
+                );
+            });
+        });
+
+        it("it should fail to add a question to history", done => {
+            chai.request(server)
+                .post(`/api/user/123/history`)
+                .set("Authentication", "Bearer " + idToken)
+                .end((err, res) => {
+                    res.should.have.status(500);
+                    done();
+                });
+        });
+
+        it("it should fail to add a question to history", done => {
+            let user = {
+                firebase_id: UID,
+                email: "test@test.com",
+                username: "test",
+                year: "Freshman",
+                name: "test"
+            };
+
+            new User(user).save((err, user) => {
+                User.findByIdAndDelete(user._id, (err, user) => {
+                    chai.request(server)
+                        .post(`/api/user/${user._id}/history`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .end((err, res) => {
+                            res.should.have.status(600);
+                            done();
+                        });
+                });
+            });
         });
     });
 
