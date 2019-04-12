@@ -3,7 +3,7 @@ import { configure, shallow } from "enzyme";
 import { expect } from "chai";
 
 import { Container } from "reactstrap";
-import { Login } from "../src/Components/Login";
+import { Login } from "../../src/Components/Login";
 
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });

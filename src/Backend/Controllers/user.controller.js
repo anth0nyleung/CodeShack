@@ -1,6 +1,9 @@
 const User = require("../Models/user.model");
-
+const ObjectId = require('mongodb').ObjectId;
 module.exports = {
+    /**
+     * Creates a user in the database
+     */
     createUser: (req, res) => {
         var user = new User(req.body);
 
@@ -14,16 +17,52 @@ module.exports = {
         });
     },
 
+    /**
+     * Gets a user from the database
+     */
     getUser: (req, res) => {
-        User.findOne({ email: req.body.email }, function(err, user) {
+        User.findOne({ firebase_id: req.firebase_id })
+            .populate("history")
+            .exec(function(err, user) {
+                if (err) {
+                    res.status(500);
+                    res.send(err);
+                } else if (user) {
+                    res.send(user);
+                } else {
+                    res.status(600);
+                    res.send(err);
+                }
+            });
+    },
+
+    addHistory: (req, res) => {
+        console.log("add history");
+        console.log(req.params.id);
+        console.log(req.body.question_id);
+
+        User.findById(req.params.id, (err, user) => {
             if (err) {
                 res.status(500);
                 res.send(err);
-            } else if (user) {
-                res.send(user);
-            } else {
+            } else if (!user) {
                 res.status(600);
                 res.send(err);
+            } else {
+                user.addHistory(req.body.question_id, (err, user) => {
+                    if (err) {
+                        res.status(500);
+                        res.send(err);
+                    } else {
+                        User.update(
+                            { "history.9": { $exists: true } },
+                            { $pop: { history: 1 } },
+                            () => {
+                                res.send(user);
+                            }
+                        );
+                    }
+                });
             }
         });
     }
