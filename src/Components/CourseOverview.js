@@ -95,7 +95,7 @@ export class CourseOverview extends Component {
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataField="courseName"
-                                width="70%"
+                                width="50%"
                             >
                                 CourseName
                             </TableHeaderColumn>
