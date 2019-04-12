@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signupUser } from "../redux/actions/actions";
-import Firebase from "../Backend/Firebase";
+import { auth, provider } from "../Backend/Firebase/firebase";
+
 import {
     Col,
     Button,
@@ -74,34 +75,38 @@ export class Signup extends Component {
     onSubmit = e => {
         console.log("Handle Submit");
 
-        const firebase = Firebase.getFirebase();
+        auth.signOut(); // Need to be remove
+        auth.signInWithPopup(provider)
+            .then(result => {
+                // The signed-in user info.
+                var user = result.user;
+                console.log("Callback email: " + user.email);
 
-        firebase.logOut(); // Need to be remove
-        firebase.logInWithWiscID(user => {
-            console.log("Callback email: " + user.email);
-
-            // Save user to state if authenticate with @wisc.edu
-            if (user.email.includes("@wisc.edu")) {
-                // Load user to state
-                this.props.signupUser({
-                    email: user.email,
-                    username: this.state.username,
-                    name: this.state.name,
-                    year: this.state.year,
-                    currentCourse: this.state.currentCourse
-                });
-            }
-            // Reject and require to log in with wisc edu email again
-            else {
-                // Show an alert
-                this.setState({ invalidEmailError: true });
-            }
-        });
+                if (user.email.includes("@wisc.edu")) {
+                    // Load user to state
+                    this.props.signupUser({
+                        firebase_id: user.uid,
+                        email: user.email,
+                        username: this.state.username,
+                        name: this.state.name,
+                        year: this.state.year,
+                        currentCourse: this.state.currentCourse
+                    });
+                }
+                // Reject and require to log in with wisc edu email again
+                else {
+                    // Show an alert
+                    this.setState({ invalidEmailError: true });
+                }
+            })
+            .catch(error => {
+                this.setState({ loginError: true });
+            });
         e.preventDefault();
     };
 
     renderRedirect = e => {
-        if (this.props.isAuth && !this.props.authError) {
+        if (this.props.isAuth) {
             this.context.router.history.push("/dashboard");
         }
     };
@@ -112,21 +117,21 @@ export class Signup extends Component {
             this.state.email.includes("@wisc.edu");
         var usernameValid = this.state.username.length > 0;
         var nameValid = this.state.name.length > 0;
-        var yearValid = this.state.year != "";
+        var yearValid = this.state.year !== "";
 
         return emailValid && usernameValid && nameValid && yearValid;
     };
 
     onDismiss = e => {
-        if (e.target.id == "usernameAlert") {
+        if (e.target.id === "usernameAlert") {
             this.setState({ invalidUsernameError: false });
         }
 
-        if (e.target.id == "emailAlert") {
+        if (e.target.id === "emailAlert") {
             this.setState({ invalidEmailError: false });
         }
 
-        if (e.target.id == "yearAlert") {
+        if (e.target.id === "yearAlert") {
             this.setState({ invalidYearError: false });
         }
     };
@@ -135,7 +140,7 @@ export class Signup extends Component {
     handleChange = e => {
         console.log("Handle change");
 
-        if (e.target.id == "currentCourse") {
+        if (e.target.id === "currentCourse") {
             this.state.currentCourse.push(e.target.value);
 
             this.setState({

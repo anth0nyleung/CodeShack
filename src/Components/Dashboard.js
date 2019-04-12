@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {
-    Row,
-    Col,
-    Button,
-    Jumbotron,
-    Container,
-    ListGroup,
-    ListGroupItem
-} from "reactstrap";
+import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -31,8 +23,6 @@ export class Dashboard extends Component {
     componentDidMount() {
         // Sets the title of the page
         document.title = "Dashboard";
-
-        // this.props.loadAllQuestions();
     }
 
     /**
@@ -51,9 +41,9 @@ export class Dashboard extends Component {
      */
     onRedirect = event => {
         switch (event.target.id) {
-            case "interview":
-                console.log("Redirecting to interview");
-                this.context.router.history.push("/interview");
+            case "company":
+                console.log("Redirecting to company");
+                this.context.router.history.push("/company");
                 break;
             case "topic":
                 console.log("Redirecting to topic");
@@ -82,13 +72,13 @@ export class Dashboard extends Component {
                     <Container>
                         <Row>
                             <Col className="md-4">
-                                <h2>Interview</h2>
+                                <h2>Company</h2>
                                 <p>
-                                    View and answer technical questions to help
-                                    prepare you for Interviews
+                                    View and answer technical questions sorted
+                                    by Company
                                 </p>
                                 <Button
-                                    id="interview"
+                                    id="company"
                                     onClick={this.onRedirect}
                                     color="primary"
                                 >
@@ -125,49 +115,6 @@ export class Dashboard extends Component {
                             </Col>
                         </Row>
                         <hr />
-
-                        {/* This is a test list. We would map real questions to list when implementing 
-                        <h2 style={{ marginBottom: "16px" }}>Top Questions</h2>
-                        <ListGroup
-                            style={{
-                                overflow: "auto",
-                                height: "auto"
-                            }}
-                        >
-                            <ListGroupItem
-                                tag="button"
-                                href="#"
-                                action
-                                onClick={this.onQuestionClick}
-                            >
-                                Question 1
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 2
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 3
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 4
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 5
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 6
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 7
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 8
-                            </ListGroupItem>
-                            <ListGroupItem tag="button" href="#" action>
-                                Question 9
-                            </ListGroupItem>
-                        </ListGroup>
-                        */}
                     </Container>
                 </main>
                 <footer>

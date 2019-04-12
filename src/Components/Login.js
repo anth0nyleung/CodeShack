@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser, userExist } from "../redux/actions/actions";
-import Firebase from "../Backend/Firebase";
+import { loginUser } from "../redux/actions/actions";
+import { auth, provider } from "../Backend/Firebase/firebase";
+
 import {
     Row,
     Col,
@@ -10,9 +11,6 @@ import {
     Jumbotron,
     Container,
     Form,
-    FormGroup,
-    Label,
-    Input,
     Alert
 } from "reactstrap";
 
@@ -79,31 +77,44 @@ export class Login extends Component {
     onSubmit = e => {
         console.log("Pressed Submit");
 
-        this.props.userExist({ email: this.state.email }, err => {
-            if (err == null) {
-                // Firebase authentication
-                const firebase = Firebase.getFirebase();
+        auth.signOut(); // Need to be remove
 
-                firebase.logOut(); // Need to be remove
-                firebase.logInWithWiscID(user => {
-                    console.log("Callback email: " + user.email);
+        // Sign in with Google
+        auth.signInWithPopup(provider)
+            .then(result => {
+                // The signed-in user info.
+                var user = result.user;
 
-                    // Save user to state if authenticate with @wisc.edu
-                    if (user.email.includes("@wisc.edu")) {
-                        // Load user to state
-                        this.props.loginUser({ email: user.email }, () => {});
-                    }
-                    // Reject and require to log in with wisc edu email again
-                    else {
-                        // Show an alert
-                        this.setState({ loginError: true });
-                    }
-                });
-            } else {
-                console.log("here");
-                this.setState({ userExist: true });
-            }
-        });
+                localStorage.setItem("url", user.photoURL);
+
+                console.log("Callback email: " + user.email);
+                if (user.email.includes("@wisc.edu")) {
+                    this.props.loginUser(err => {
+                        if (err === 404) {
+                            this.setState({ userExist: true });
+                            user.delete();
+                        } else if (err === 403) {
+                            console.log("Invalid token");
+                        } else if (err === 401) {
+                            console.log("Invalid request");
+                        } else if (err === 500) {
+                            console.log("error");
+                        }
+                    });
+                    // Load user to state
+                }
+                // Reject and require to log in with wisc edu email again
+                else {
+                    // Show an alert
+                    this.setState({ loginError: true });
+                }
+            })
+            .catch(error => {
+                if (error.code !== "auth/popup-closed-by-user") {
+                    this.setState({ loginError: true });
+                }
+            });
+        e.preventDefault();
     };
 
     // Save state change i.e. save current entered email to state
@@ -121,22 +132,12 @@ export class Login extends Component {
         }
     };
 
-    // Validate login form
-    validateForm = () => {
-        return (
-            this.state.email.length > 0 &&
-            this.state.email.includes("@wisc.edu")
-        );
-    };
-
     // Dismiss Alert
     onDismiss = () => {
         this.setState({ visible: false });
     };
 
     render() {
-        const { classes } = this.props;
-
         return (
             <div>
                 <main>
@@ -153,19 +154,6 @@ export class Login extends Component {
                         <Col sm="12" md={{ size: 6, offset: 3 }}>
                             <Container style={containerStyle}>
                                 <Form style={formGroupStyle}>
-                                    <FormGroup row onChange={this.handleChange}>
-                                        <Label for="email" sm={2}>
-                                            Email
-                                        </Label>
-                                        <Col sm={10}>
-                                            <Input
-                                                type="email"
-                                                name="email"
-                                                id="email"
-                                                placeholder="Enter your wisc email"
-                                            />
-                                        </Col>
-                                    </FormGroup>
                                     {(this.state.loginError ||
                                         this.props.authError) && (
                                         <Alert
@@ -195,9 +183,8 @@ export class Login extends Component {
                                             block
                                             style={buttonStyles}
                                             onClick={this.onSubmit}
-                                            disabled={!this.validateForm()}
                                         >
-                                            Submit
+                                            Sign in with Google
                                         </Button>
                                     </Col>
                                     <Col>
@@ -228,14 +215,10 @@ export class Login extends Component {
     }
 }
 
-Login.propTypes = {
-    classes: PropTypes.object.isRequired
-};
-
 Login.contextTypes = {
     router: PropTypes.object.isRequired
 };
 export default connect(
     mapStateToProps,
-    { loginUser, userExist }
+    { loginUser }
 )(Login);

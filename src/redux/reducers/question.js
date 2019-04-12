@@ -1,6 +1,6 @@
 const initialState = {
     questions: [],
-    currentQuestion: {}
+    currentQuestion: { comments: [] }
 };
 
 export default (state = initialState, action) => {

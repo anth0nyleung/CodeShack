@@ -1,6 +1,6 @@
 const mongoose = require("mongoose"),
     express = require("express"),
-    routes = require("./routes/"),
+    routes = require("./Routes"),
     app = express(),
     bodyParser = require("body-parser"),
     cors = require("cors"),
