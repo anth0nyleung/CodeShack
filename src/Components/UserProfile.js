@@ -3,11 +3,16 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
-
-
+import { BarLoader } from "react-spinners";
+import { saveQuestionToUserHistory } from "../redux/actions/actions"
 const mapStateToProps = state => {
+
     return {
+        user_id : state.authUser.user._id,
         username: state.authUser.user.username,
+        isLoading: state.loading.isLoading,
+        currentCourses: state.authUser.user.courses,
+        history: state.authUser.user.history
     };
 };
 
@@ -28,11 +33,35 @@ class UserProfile extends Component {
     }
 
     componentDidMount() {
-        document.title = "CodeShack - User Profile";
+        document.title = "CodeShack - Profile" ;
         this.setState({url: localStorage.getItem("url")});
     }
 
+    onRowClick = row => {
+        this.props.saveQuestionToUserHistory({question_id: row._id}, this.props.user_id);
+        this.context.router.history.push(`/question/${row._id}`);
+    }
+
+    onClickEdit = () => {
+        console.log(this.props.history);
+    }
+
     render() {
+        if (this.props.isLoading) {
+            return (
+                <main>
+                    <BarLoader
+                        width={100}
+                        widthUnit={"%"}
+                        color={"#c5050c"}
+                        loading={this.props.isLoading}
+                    />
+                </main>
+            );
+        }
+        const options = {
+            onRowClick: this.onRowClick
+        };
         return (
             <div>
                 <main>
@@ -40,28 +69,30 @@ class UserProfile extends Component {
                         <Container>
                             <Row>
                                 <Col  sm="4"><h3 style={{margin: '5px',textAlign: "center"}}>{this.props.username}</h3></Col>
-                                <Col  sm="4"><img src={this.state.url} style={imgStyles}/></Col>
+                                <Col  sm="4"><img alt="profile-pic" src={this.state.url} style={imgStyles}/></Col>
                             </Row>
                             <hr/>
-                            <Button outline color="danger">Edit</Button>
+                            <Button outline color="danger" onClick={this.onClickEdit}>Edit</Button>
                         </Container>
                     </Jumbotron>
                     <Container>
                     <h2>My Current Courses</h2>
                     <BootstrapTable
+                            data={this.props.currentCourses}
+                            options={options}
                             striped
                             hover
                             bordered={false}
                         >
                             <TableHeaderColumn
                                 isKey={true}
-                                dataField="index"
+                                dataField="courseNumber"
                                 width="40%"
                             >
                                 Course Number
                             </TableHeaderColumn>
                             <TableHeaderColumn
-                                dataField="Question"
+                                dataField="courseName"
                                 width="50%"
                             >
                                 Course Name
@@ -73,9 +104,11 @@ class UserProfile extends Component {
                     <Container>
                         <h2>Recently Viewed Question</h2>
                         <BootstrapTable
+                            data={this.props.history}
                             striped
                             hover
                             bordered={false}
+                            options={options}
                         >
                             <TableHeaderColumn
                                 isKey={true}
@@ -85,21 +118,13 @@ class UserProfile extends Component {
                                 Index
                             </TableHeaderColumn>
                             <TableHeaderColumn
-                                dataField="Question"
+                                dataField="name"
                                 width="30%"
                             >
                                 Question
                             </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="Course"
-                                width="20%"
-                            >
-                                Course
-                            </TableHeaderColumn>
                         </BootstrapTable>
                     </Container>
-
-
                 </main>
                 <footer>
                     <Container>
@@ -120,4 +145,4 @@ UserProfile.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps)(UserProfile);
+export default connect(mapStateToProps, {saveQuestionToUserHistory})(UserProfile);
