@@ -4,12 +4,17 @@ import Dashboard from "./Components/Dashboard";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import CourseOverview from "./Components/CourseOverview";
+import CompanyOverview from "./Components/CompanyOverview";
+import TopicOverview from "./Components/TopicOverview";
 import EnsureAuthContainer from "./Components/EnsureAuthContainer";
 import NotFound from "./Components/NotFound";
 import CourseQuestions from "./Components/CourseQuestions";
+import CompanyQuestions from "./Components/CompanyQuestions";
+import TopicQuestions from "./Components/TopicQuestions";
 import NavBar from "./Components/NavBar";
 import UserProfile from "./Components/UserProfile";
 import Question from "./Components/Question";
+import Main from "./Components/Main"
 import AddQuestion from "./Components/AddQuestion";
 
 class App extends Component {
@@ -19,7 +24,7 @@ class App extends Component {
                 <NavBar color="red" />
                 <Switch>
                     {/* Insert Routing here */}
-                    <Route exact path="/" component={Login} />
+                    <Route exact path="/" component={Main} />
                     <Route
                         exact
                         path="/dashboard"
@@ -39,8 +44,28 @@ class App extends Component {
                     />
                     <Route
                         exact
+                        path="/company"
+                        component={EnsureAuthContainer(CompanyOverview)}
+                    />
+                    <Route
+                        exact
+                        path="/topic"
+                        component={EnsureAuthContainer(TopicOverview)}
+                    />
+                    <Route
+                        exact
+                        path="/company/:id"
+                        component={EnsureAuthContainer(CompanyQuestions)}
+                    />
+                    <Route
+                        exact
                         path="/courses/:id"
                         component={EnsureAuthContainer(CourseQuestions)}
+                    />
+                    <Route
+                        exact
+                        path="/topic/:id"
+                        component={EnsureAuthContainer(TopicQuestions)}
                     />
                     <Route
                         exact

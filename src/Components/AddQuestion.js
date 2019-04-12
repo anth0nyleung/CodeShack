@@ -7,7 +7,8 @@ import {
     loadAllCompanies,
     loadAllCourses,
     loadAllTopics,
-    createQuestion
+    createQuestion,
+    saveQuestionToUserHistory
 } from "../redux/actions/actions";
 import { connect } from "react-redux";
 
@@ -23,7 +24,7 @@ const mapStateToProps = state => {
 /**
  * Component for adding a question
  */
-class AddQuestion extends Component {
+export class AddQuestion extends Component {
     constructor(props) {
         super(props);
 
@@ -176,6 +177,10 @@ class AddQuestion extends Component {
                 this.setState({ error: true });
             } else {
                 this.setState({ error: false });
+                this.props.saveQuestionToUserHistory(
+                    { question_id: newQuestion._id },
+                    this.props.user._id
+                );
                 this.context.router.history.push(
                     `/question/${newQuestion._id}`
                 );
@@ -260,5 +265,11 @@ AddQuestion.contextTypes = {
 };
 export default connect(
     mapStateToProps,
-    { loadAllCompanies, loadAllCourses, loadAllTopics, createQuestion }
+    {
+        loadAllCompanies,
+        loadAllCourses,
+        loadAllTopics,
+        createQuestion,
+        saveQuestionToUserHistory
+    }
 )(AddQuestion);

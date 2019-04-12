@@ -25,6 +25,9 @@ const setHeader = callback => {
     });
 };
 
+/**
+ * Loads all topics into the state
+ */
 export function loadAllTopics() {
     return dispatch => {
         axios
@@ -39,6 +42,9 @@ export function loadAllTopics() {
     };
 }
 
+/**
+ * Loads a specific topic into the state
+ */
 export function loadTopic(topic_id) {
     return dispatch => {
         axios
@@ -53,6 +59,9 @@ export function loadTopic(topic_id) {
     };
 }
 
+/**
+ * Loads all companies into the state
+ */
 export function loadAllCompanies() {
     return dispatch => {
         axios
@@ -67,6 +76,9 @@ export function loadAllCompanies() {
     };
 }
 
+/**
+ * Loads a specific company into the state
+ */
 export function loadCompany(company_id) {
     return dispatch => {
         axios
@@ -80,6 +92,7 @@ export function loadCompany(company_id) {
             });
     };
 }
+
 /**
  * Loads a specific question into the state
  * @param {Object} question_id
@@ -98,6 +111,33 @@ export function loadQuestion(question_id) {
                 .catch(err => {
                     console.log("Error: Unable to get question,", err);
                     dispatch({ type: "STOP_LOADING" });
+                });
+        });
+    };
+}
+
+/**
+ * Saves a specific question into user's history
+ *
+ * @param {Object} question_id
+ *
+ */
+
+export function saveQuestionToUserHistory(question_data, user_id) {
+    console.log(question_data);
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}user/${user_id}/history`, question_data, config)
+                .then(res => {
+                    let user = res.data;
+                    dispatch({ type: "SET_USER", user });
+                })
+                .catch(err => {
+                    console.log(
+                        "Error: Unable to save question to user history",
+                        err
+                    );
                 });
         });
     };
@@ -148,6 +188,12 @@ export function loadCourse(course_id) {
     };
 }
 
+/**
+ * Creates a question in the database
+ *
+ * @param {Object} question_data
+ * @param {function} callback
+ */
 export function createQuestion(question_data, callback) {
     return dispatch => {
         setHeader(config => {
@@ -192,6 +238,13 @@ export function loginUser(callback) {
     };
 }
 
+/**
+ * Creates a comment and reply to parent comment
+ *
+ * @param {Object} comment_data
+ * @param {String} question_id
+ * @param {function} callback
+ */
 export function createCommentAndReply(comment_data, question_id, callback) {
     return dispatch => {
         setHeader(config => {
@@ -234,6 +287,9 @@ export function createCommentAndReply(comment_data, question_id, callback) {
     };
 }
 
+/**
+ * Loads a comment into the state
+ */
 export function loadComment(comment_id, callback) {
     return dispatch => {
         setHeader(config => {
@@ -249,6 +305,12 @@ export function loadComment(comment_id, callback) {
     };
 }
 
+/**
+ * Deletes a comment
+ *
+ * @param {String} comment_id
+ * @param {function} callback
+ */
 export function deleteComment(comment_id, callback) {
     return dispatch => {
         setHeader(config => {

@@ -4,7 +4,8 @@ import { PropTypes } from "prop-types";
 import {
     loadQuestion,
     loadComment,
-    createCommentAndReply
+    createCommentAndReply,
+    saveQuestionToUserHistory
 } from "../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
@@ -52,6 +53,15 @@ export class Question extends Component {
         document.title = "Question";
 
         this.props.loadQuestion(this.props.match.params.id);
+    }
+
+    componentDidUpdate() {
+        if (!this.props.isLoading) {
+            this.props.saveQuestionToUserHistory(
+                { question_id: this.props.question._id },
+                this.props.user_id
+            );
+        }
     }
 
     /**
@@ -162,18 +172,19 @@ export class Question extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Question</h3>
+                            <h3 className="display-3">
+                                {this.props.question.name}
+                            </h3>
                             <hr className="my-2" />
+                            <p>
+                                Posted by{" "}
+                                {this.props.question.poster
+                                    ? this.props.question.poster.username
+                                    : ""}
+                            </p>
                         </Container>
                     </Jumbotron>
                     <Container>
-                        <Row>
-                            <Col xs="2" className="text-danger">
-                                <strong>Question name</strong>
-                            </Col>
-                            <Col xs="10">{this.props.question.name}</Col>
-                        </Row>
-                        <hr />
                         <Row>
                             <Col xs="2" className="text-danger">
                                 <strong>Description</strong>
@@ -205,12 +216,11 @@ export class Question extends Component {
                                 </Collapse>
                             </Col>
                         </Row>
+
                         <hr />
                         <Row>
                             <Col>
-                                <h3>
-                                    Comments ({this.props.question.numComments})
-                                </h3>
+                                <h3>Comments</h3>
                             </Col>
                             <Fade in={this.state.collapseComment}>
                                 <Col xs="auto">
@@ -278,5 +288,10 @@ Question.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadQuestion, loadComment, createCommentAndReply }
+    {
+        loadQuestion,
+        loadComment,
+        createCommentAndReply,
+        saveQuestionToUserHistory
+    }
 )(Question);

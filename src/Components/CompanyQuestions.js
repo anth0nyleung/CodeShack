@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-    loadCourse,
-    saveQuestionToUserHistory
-} from "../redux/actions/actions";
+import { loadCompany } from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
@@ -12,24 +9,24 @@ import { convertFromRaw } from "draft-js";
 
 const mapStateToProps = state => {
     return {
-        currentCourse: state.course.currentCourse,
-        isLoading: state.loading.isLoading,
-        user_id: state.authUser.user._id
+        currentCompany: state.course.currentCompany,
+        isLoading: state.loading.isLoading
     };
 };
 
 /**
  * Component which lists all questions for a course
  */
-export class CourseQuestions extends Component {
+export class CompanyQuestions extends Component {
     componentDidMount() {
-        this.props.loadCourse(this.props.match.params.id);
+        this.props.loadCompany(this.props.match.params.id);
     }
 
     /**
      * Formats the description of a question to be readable
      */
     formatDescription = (cell, row) => {
+        console.log(cell);
         return convertFromRaw(JSON.parse(cell)).getPlainText();
     };
 
@@ -37,7 +34,6 @@ export class CourseQuestions extends Component {
      * Handles clicking on a question
      */
     onRowClick = row => {
-        //this.props.saveQuestionToUserHistory({question_id: row._id}, this.props.user_id)
         this.context.router.history.push(`/question/${row._id}`);
     };
 
@@ -64,12 +60,8 @@ export class CourseQuestions extends Component {
                     <Jumbotron>
                         <Container>
                             <h3 className="display-3">
-                                {this.props.currentCourse.courseNumber}
+                                {this.props.currentCompany.companyName}
                             </h3>
-                            <hr className="my-2" />
-                            <p className="leading">
-                                {this.props.currentCourse.courseName}
-                            </p>
                         </Container>
                     </Jumbotron>
                     <Container>
@@ -77,7 +69,7 @@ export class CourseQuestions extends Component {
                             Questions
                         </h2>
                         <BootstrapTable
-                            data={this.props.currentCourse.questions}
+                            data={this.props.currentCompany.questions}
                             striped
                             pagination={true}
                             search={true}
@@ -123,11 +115,11 @@ export class CourseQuestions extends Component {
     }
 }
 
-CourseQuestions.contextTypes = {
+CompanyQuestions.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
 export default connect(
     mapStateToProps,
-    { loadCourse, saveQuestionToUserHistory }
-)(CourseQuestions);
+    { loadCompany }
+)(CompanyQuestions);

@@ -229,4 +229,16 @@ describe("Actions", () => {
             done();
         });
     });
+
+    it("it should SET_USER action", done => {
+        mock.onPost("http://localhost:8080/api/user/123/history").reply(
+            200,
+            {}
+        );
+        const test = actions.saveQuestionToUserHistory({}, "123");
+        test(action => {
+            action.type.should.eql("SET_USER");
+            done();
+        });
+    });
 });

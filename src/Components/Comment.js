@@ -5,6 +5,7 @@ import { createCommentAndReply, deleteComment } from "../redux/actions/actions";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
 import Reply from "./Reply";
 import { PulseLoader } from "react-spinners";
+import { IoIosSend } from "react-icons/io";
 
 const mapStateToProps = state => {
     return {
@@ -217,7 +218,7 @@ class _Comment extends Component {
                                     disabled={!this.handleDisable()}
                                     size="sm"
                                 >
-                                    Reply
+                                    <IoIosSend />
                                 </Button>
                             </Fade>
                         </Col>
