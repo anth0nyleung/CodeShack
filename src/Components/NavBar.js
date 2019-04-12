@@ -6,7 +6,6 @@ import { Navbar, NavbarBrand, Nav, NavItem, NavLink,
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import { BarLoader } from "react-spinners";
-import logo from "../img/icon.png"
 
 const mapStateToProps = state => {
     return {
@@ -15,9 +14,9 @@ const mapStateToProps = state => {
     };
 };
 
-const imgStyles = { 
-    height:  30,
-    width: 30,
+const imgStyles = {
+    height: 30,
+    width: 30
 };
 
 class NavBar extends Component {
@@ -42,8 +41,10 @@ class NavBar extends Component {
                     <NavbarBrand style={{ color: "white" }} href="/dashboard">
                         CodeShack
                     </NavbarBrand>
-                    <img src={logo} style={imgStyles}/>
-
+                    <img
+                        src={process.env.PUBLIC_URL + "/icon.png"}
+                        style={imgStyles}
+                    />
                     {this.context.router.history.location.pathname !==
                         "/login" &&
                         this.context.router.history.location.pathname !==
