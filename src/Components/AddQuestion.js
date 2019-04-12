@@ -177,7 +177,7 @@ class AddQuestion extends Component {
                 this.setState({ error: true });
             } else {
                 this.setState({ error: false });
-                this.props.saveQuestionToUserHistory({question_id: newQuestion._id}, this.props.user._id,);
+                this.props.saveQuestionToUserHistory({question_id: newQuestion._id}, this.props.user._id);
                 this.context.router.history.push(
                     `/question/${newQuestion._id}`
                 );
