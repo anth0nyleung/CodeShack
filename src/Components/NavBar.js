@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { auth } from "../Backend/Firebase/firebase";
 import PropTypes from "prop-types";
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
+import { Navbar, NavbarBrand, Nav, NavItem, NavLink,
+         UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import { BarLoader } from "react-spinners";
@@ -42,29 +43,32 @@ class NavBar extends Component {
                         CodeShack
                     </NavbarBrand>
                     <img src={logo} style={imgStyles}/>
+
                     {this.context.router.history.location.pathname !==
                         "/login" &&
                         this.context.router.history.location.pathname !==
                             "/" && (
-                            <Nav>
-                                <NavItem>
-                                    <NavLink
-                                        style={{ color: "white" }}
-                                        href="/courses"
-                                    >
-                                        Course
-                                    </NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink
-                                        style={{ color: "white" }}
-                                        href="/interview"
-                                    >
-                                        Interview
-                                    </NavLink>
-                                </NavItem>
-                            </Nav>
-                        )}
+                    <UncontrolledDropdown >
+                        <DropdownToggle nav caret style={{color : 'white'}}>
+                            Category
+                        </DropdownToggle>
+                        <DropdownMenu right>
+                            <DropdownItem href="/courses">
+                                Course
+                            </DropdownItem>
+                            <DropdownItem href="/topic">
+                                Topic
+                            </DropdownItem>
+                            <DropdownItem href="company">
+                                Company
+                            </DropdownItem>
+                            <DropdownItem divider />
+                            <DropdownItem href="/interview">
+                                All Question
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>)}
+
                     <Nav className="ml-auto">
                         {this.context.router.history.location.pathname !==
                             "/login" &&
