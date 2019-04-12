@@ -4,7 +4,7 @@ import { PropTypes } from "prop-types";
 import {
     loadQuestion,
     loadComment,
-    createCommentAndReply
+    createCommentAndReply,
 } from "../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
@@ -45,6 +45,8 @@ export class Question extends Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.state = { collapse: false, reply: null, collapseComment: false };
+        
+
     }
 
     componentDidMount() {
@@ -53,6 +55,8 @@ export class Question extends Component {
 
         this.props.loadQuestion(this.props.match.params.id);
     }
+
+    
 
     /**
      * Toggles the collapse component for the solution

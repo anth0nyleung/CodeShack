@@ -85,6 +85,8 @@ export class Login extends Component {
                 // The signed-in user info.
                 var user = result.user;
 
+                localStorage.setItem("url", user.photoURL);
+
                 console.log("Callback email: " + user.email);
                 if (user.email.includes("@wisc.edu")) {
                     this.props.loginUser(err => {

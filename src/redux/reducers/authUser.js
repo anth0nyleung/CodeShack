@@ -1,7 +1,7 @@
 const initialState = {
     user: {},
     isAuth: false,
-    authError: false
+    authError: false,
 };
 
 export default (state = initialState, action) => {
@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 isAuth: Object.keys(action.user).length > 0 ? true : false,
-                user: action.user
+                user: action.user,
             };
 
         case "AUTH_ERROR":
