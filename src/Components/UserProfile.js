@@ -17,9 +17,8 @@ const mapStateToProps = state => {
 };
 
 const imgStyles = {
-    width: 50,
-    height: 50,
-    backgroundColor: "red",
+    width: 60,
+    height: 60,
     justiftyContent : "center"
 };
 
@@ -43,7 +42,7 @@ class UserProfile extends Component {
     }
 
     onClickEdit = () => {
-        console.log(this.props.history);
+       
     }
 
     render() {
