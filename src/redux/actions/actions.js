@@ -116,30 +116,32 @@ export function loadQuestion(question_id) {
     };
 }
 
-/** 
- * Saves a specific question into user's history 
- * 
+/**
+ * Saves a specific question into user's history
+ *
  * @param {Object} question_id
- * 
+ *
  */
 
- export function saveQuestionToUserHistory(question_data, user_id) {
-     console.log(question_data);
-     return dispatch => {
-        
-        setHeader(config=> {
+export function saveQuestionToUserHistory(question_data, user_id) {
+    console.log(question_data);
+    return dispatch => {
+        setHeader(config => {
             axios
                 .post(`${url}user/${user_id}/history`, question_data, config)
                 .then(res => {
-                    let user = res.user;
-                    dispatch({type: "SET_USER", user});
+                    let user = res.data;
+                    dispatch({ type: "SET_USER", user });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to save question to user history", err);
+                    console.log(
+                        "Error: Unable to save question to user history",
+                        err
+                    );
                 });
         });
-     };
- }
+    };
+}
 
 /**
  * Loads all courses into the state
@@ -222,7 +224,7 @@ export function loginUser(callback) {
                 .get(`${url}user/`, config)
                 .then(res => {
                     let user = res.data;
-                    dispatch({ type: "SET_USER", user});
+                    dispatch({ type: "SET_USER", user });
                     dispatch({ type: "STOP_LOADING" });
                     callback(null);
                 })

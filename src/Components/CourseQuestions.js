@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { loadCourse, saveQuestionToUserHistory} from "../redux/actions/actions";
+import {
+    loadCourse,
+    saveQuestionToUserHistory
+} from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
@@ -11,7 +14,7 @@ const mapStateToProps = state => {
     return {
         currentCourse: state.course.currentCourse,
         isLoading: state.loading.isLoading,
-        user_id : state.authUser.user._id
+        user_id: state.authUser.user._id
     };
 };
 
@@ -34,9 +37,8 @@ export class CourseQuestions extends Component {
      * Handles clicking on a question
      */
     onRowClick = row => {
-        this.props.saveQuestionToUserHistory({question_id: row._id}, this.props.user_id)
+        //this.props.saveQuestionToUserHistory({question_id: row._id}, this.props.user_id)
         this.context.router.history.push(`/question/${row._id}`);
-        
     };
 
     render() {
@@ -127,6 +129,5 @@ CourseQuestions.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadCourse, saveQuestionToUserHistory
-    }
+    { loadCourse, saveQuestionToUserHistory }
 )(CourseQuestions);
