@@ -9,7 +9,7 @@ import { convertFromRaw } from "draft-js";
 
 const mapStateToProps = state => {
     return {
-        currentCompany: state.course.currentCompany,
+        currentCompany: state.company.currentCompany,
         isLoading: state.loading.isLoading
     };
 };
