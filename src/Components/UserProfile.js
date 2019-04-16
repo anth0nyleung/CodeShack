@@ -18,7 +18,8 @@ const mapStateToProps = state => {
 const imgStyles = {
     width: 60,
     height: 60,
-    justiftyContent : "center"
+    borderRadius: 60,
+    justiftyContent: "center"
 };
 
 class UserProfile extends Component {
@@ -47,9 +48,7 @@ class UserProfile extends Component {
         return <div>{index + 1}</div>;
     };
 
-    onClickEdit = () => {
-       
-    }
+    onClickEdit = () => {};
 
     render() {
         if (this.props.isLoading) {
@@ -73,7 +72,17 @@ class UserProfile extends Component {
                     <Jumbotron>
                         <Container>
                             <Row>
-                                <Col sm="4">
+                                <Col xs="auto">
+                                    <img
+                                        alt="profile-pic"
+                                        src={this.state.url}
+                                        style={imgStyles}
+                                    />
+                                </Col>
+                                <Col
+                                    className="d-flex align-items-center"
+                                    xs="auto"
+                                >
                                     <h3
                                         style={{
                                             margin: "5px",
@@ -82,13 +91,6 @@ class UserProfile extends Component {
                                     >
                                         {this.props.username}
                                     </h3>
-                                </Col>
-                                <Col sm="4">
-                                    <img
-                                        alt="profile-pic"
-                                        src={this.state.url}
-                                        style={imgStyles}
-                                    />
                                 </Col>
                             </Row>
                             <hr />

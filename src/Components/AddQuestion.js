@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 import { DraftailEditor, BLOCK_TYPE, INLINE_STYLE } from "draftail";
-import { Container, Input, Button } from "reactstrap";
+import {
+    Container,
+    Input,
+    Button,
+    Row,
+    Col,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    Form,
+    FormGroup,
+    Label
+} from "reactstrap";
 import PropTypes from "prop-types";
 import Select from "react-select";
+
 import {
     loadAllCompanies,
     loadAllCourses,
@@ -11,6 +24,7 @@ import {
     saveQuestionToUserHistory
 } from "../redux/actions/actions";
 import { connect } from "react-redux";
+import PrismDecorator from "./utils/PrismDecorator.js";
 
 const mapStateToProps = state => {
     return {
@@ -35,7 +49,8 @@ export class AddQuestion extends Component {
             courses: [],
             companies: [],
             topics: [],
-            error: false
+            error: false,
+            decorator: new PrismDecorator({ defaultLanguage: "javascript" })
         };
     }
 
@@ -192,13 +207,30 @@ export class AddQuestion extends Component {
         return (
             <main>
                 <Container>
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
+                    <h2
+                        style={{
+                            paddingTop: "16px",
+                            paddingBottom: "16px"
+                        }}
+                    >
                         Question Title
                     </h2>
+
                     <Input id="name" onChange={this.onChange} />
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Question Content
-                    </h2>
+
+                    <Row className="d-flex align-items-center">
+                        <Col>
+                            <h2
+                                style={{
+                                    paddingTop: "16px",
+                                    paddingBottom: "16px"
+                                }}
+                            >
+                                Question Content
+                            </h2>
+                        </Col>
+                    </Row>
+
                     <DraftailEditor
                         style={{ margin: "16px" }}
                         rawContentState={null}
@@ -214,8 +246,10 @@ export class AddQuestion extends Component {
                             { type: INLINE_STYLE.ITALIC },
                             { type: INLINE_STYLE.UNDERLINE }
                         ]}
-                        plugins={this.state.plugins}
+                        spellCheck
+                        decorators={[this.state.decorator]}
                     />
+
                     <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
                         Solution
                     </h2>
@@ -234,6 +268,7 @@ export class AddQuestion extends Component {
                             { type: INLINE_STYLE.ITALIC },
                             { type: INLINE_STYLE.UNDERLINE }
                         ]}
+                        decorators={[this.state.decorator]}
                     />
                     <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
                         Tags
@@ -256,6 +291,30 @@ export class AddQuestion extends Component {
                         Submit
                     </Button>
                 </Container>
+                <Modal
+                    isOpen={this.state.error}
+                    toggle={() => {
+                        this.setState({ error: !this.state.error });
+                    }}
+                >
+                    <ModalBody>
+                        There was an error adding your question, please try
+                        again.
+                    </ModalBody>
+                    <ModalFooter
+                        onClick={() => {
+                            this.setState({ error: !this.state.error });
+                        }}
+                    >
+                        <Button>Close</Button>
+                    </ModalFooter>
+                </Modal>
+                <footer>
+                    <Container>
+                        <hr />
+                        <p>&copy; CodeShack 2019</p>
+                    </Container>
+                </footer>
             </main>
         );
     }

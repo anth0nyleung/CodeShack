@@ -1,0 +1,11 @@
+// Adapted from https://github.com/PrismJS/prism-themes/blob/master/themes/prism-ghcolors.css to be accessible.
+/* stylelint-disable scale-unlimited/declaration-strict-value, plugin/no-unsupported-browser-features */
+
+/* Code blocks */
+.public-DraftStyleDefault-pre {
+    padding: 1em;
+    margin: 0.3em 0;
+    overflow: auto;
+    border: 1px solid #ddd;
+    background-color: #fcfcfc;
+}

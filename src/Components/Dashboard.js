@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
+import { Row, Col, Button, Jumbotron, Container, Fade } from "reactstrap";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -10,7 +10,7 @@ import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
  */
 const mapStateToProps = state => {
     return {
-        questions: null // TODO: Set questions here
+        isLoading: state.loading.isLoading
     };
 };
 
@@ -18,11 +18,19 @@ const mapStateToProps = state => {
  * Dashboard page component
  */
 export class Dashboard extends Component {
-    state = {};
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            isLoaded: false
+        };
+    }
     componentDidMount() {
         // Sets the title of the page
         document.title = "Dashboard";
+        this.setState({
+            isLoaded: true
+        });
     }
 
     /**

@@ -13,7 +13,6 @@ const UserSchema = new Schema({
 });
 
 UserSchema.methods.addHistory = function(question_id, callback) {
-    
     var index = this.history.findIndex(el => {
         return el == question_id;
     });

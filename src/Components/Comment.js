@@ -2,10 +2,22 @@ import React, { Component } from "react";
 import { Collapse, Row, Col, Button, Fade } from "reactstrap";
 import { connect } from "react-redux";
 import { createCommentAndReply, deleteComment } from "../redux/actions/actions";
-import { convertFromRaw, Editor, EditorState } from "draft-js";
+import {
+    convertFromRaw,
+    Editor,
+    EditorState,
+    CompositeDecorator
+} from "draft-js";
 import Reply from "./Reply";
 import { PulseLoader } from "react-spinners";
 import { IoIosSend } from "react-icons/io";
+import { MdReply, MdDelete, MdCancel } from "react-icons/md";
+import PrismDecorator from "./utils/PrismDecorator";
+import "./Question.css";
+
+const compositeDecorator = new CompositeDecorator([
+    new PrismDecorator({ defaultLanguage: "javascript" })
+]);
 
 const mapStateToProps = state => {
     return {
@@ -35,6 +47,16 @@ class _Comment extends Component {
             console.log("Callback for:", this.props.comment_id);
         });
     }
+
+    /**
+     * Custom code block rendering for draft-js editor
+     */
+    codeBlockStyle = contentBlock => {
+        const type = contentBlock.getType();
+        if (type === "code-block") {
+            return "blockCode";
+        }
+    };
 
     /**
      * Toggles the collapse component
@@ -88,7 +110,7 @@ class _Comment extends Component {
         });
         if (comment) {
             var content = convertFromRaw(JSON.parse(comment.content));
-            return EditorState.createWithContent(content);
+            return EditorState.createWithContent(content, compositeDecorator);
         } else {
             return EditorState.createEmpty();
         }
@@ -165,76 +187,91 @@ class _Comment extends Component {
                 }}
                 key={comment._id}
             >
-                <Row>
-                    <Col>
-                        <div
-                            style={{
-                                marginLeft: `${this.props.indent * 40}px`
-                            }}
-                            color={
-                                this.props.indent % 2 === 0
-                                    ? "white"
-                                    : "gray-200"
-                            }
-                        >
-                            <span
-                                color="info"
-                                style={{
-                                    marginBottom: "1px",
-                                    color: "#0479a8"
-                                }}
-                                size="sm"
-                            >
-                                {!comment.deleted
-                                    ? this.getPosterId(comment).username
-                                    : "[deleted]"}
-                            </span>
-                            <span size="sm">
-                                <small>
-                                    {" "}
-                                    -{" "}
-                                    {new Date(comment.createdAt).toDateString()}
-                                </small>
-                            </span>{" "}
-                            {!comment.deleted ? (
-                                <Editor
-                                    editorState={this.getContent()}
-                                    readOnly
-                                    style={{ marginBorrom: "0px" }}
-                                />
-                            ) : (
-                                <p>deleted</p>
-                            )}
-                        </div>
-                    </Col>
-                </Row>
+                <div
+                    style={{
+                        marginLeft: `${this.props.indent * 40}px`
+                    }}
+                    color={this.props.indent % 2 === 0 ? "white" : "gray-200"}
+                >
+                    <Row>
+                        <Col>
+                            <Row>
+                                <Col>
+                                    <span
+                                        color="info"
+                                        style={{
+                                            marginBottom: "1px",
+                                            color: "#0479a8"
+                                        }}
+                                        size="sm"
+                                    >
+                                        {!comment.deleted
+                                            ? this.getPosterId(comment).username
+                                            : "[deleted]"}
+                                    </span>
+                                    <span size="sm">
+                                        <small>
+                                            {" "}
+                                            -{" "}
+                                            {new Date(
+                                                comment.createdAt
+                                            ).toDateString()}
+                                        </small>
+                                    </span>{" "}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    {!comment.deleted ? (
+                                        <Editor
+                                            blockStyleFn={this.codeBlockStyle}
+                                            editorState={this.getContent()}
+                                            readOnly
+                                            style={{ marginBorrom: "0px" }}
+                                        />
+                                    ) : (
+                                        <p>deleted</p>
+                                    )}
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col xs="auto">
+                            <Row>
+                                <Button
+                                    onClick={this.toggle}
+                                    size="md"
+                                    disabled={comment.deleted}
+                                    color="#f7f7f7"
+                                    outline="#f7f7f7"
+                                >
+                                    {!this.state.collapse ? (
+                                        <MdReply />
+                                    ) : (
+                                        <MdCancel />
+                                    )}
+                                </Button>
+                            </Row>
+                            <Row>
+                                {this.getPosterId(comment)._id ===
+                                    this.props.user_id && (
+                                    <Button
+                                        size="md"
+                                        onClick={this.onDelete}
+                                        color="#f7f7f7"
+                                        outline="#f7f7f7"
+                                    >
+                                        <MdDelete />
+                                    </Button>
+                                )}
+                            </Row>
+                        </Col>
+                    </Row>
+                </div>
                 {!comment.deleted && (
                     <Row>
                         <Col />
                         <Col xs="auto">
-                            <Fade in={this.state.collapse}>
-                                <Button
-                                    onClick={this.onReply}
-                                    disabled={!this.handleDisable()}
-                                    size="sm"
-                                >
-                                    <IoIosSend />
-                                </Button>
-                            </Fade>
-                        </Col>
-
-                        {this.getPosterId(comment)._id ===
-                            this.props.user_id && (
-                            <Col xs="auto">
-                                <Button size="sm" onClick={this.onDelete}>
-                                    Delete
-                                </Button>
-                            </Col>
-                        )}
-                        <Col xs="auto">
-                            <Button size="sm" onClick={this.toggle}>
-                                {!this.state.collapse ? "Reply" : "Cancel"}
-                            </Button>
+                            <Fade in={this.state.collapse} />
                         </Col>
                     </Row>
                 )}
@@ -244,8 +281,19 @@ class _Comment extends Component {
                             <Reply onSave={this.onSave} />
                         </Col>
                     </Row>
+                    <Row style={{ marginTop: "4px" }}>
+                        <Col xs="auto">
+                            <Button
+                                onClick={this.onReply}
+                                disabled={!this.handleDisable()}
+                                size="md"
+                            >
+                                Submit
+                            </Button>
+                        </Col>
+                    </Row>
                 </Collapse>
-                <hr style={{ marginTop: "4px" }} />
+                <hr style={{ marginTop: "10px" }} />
                 {this.nestedComments()}
             </div>
         );

@@ -5,6 +5,8 @@ import { ConnectedRouter } from "connected-react-router";
 import { Switch, Route } from "react-router-dom";
 import "draft-js/dist/Draft.css";
 import "draftail/dist/draftail.css";
+import "prismjs/themes/prism.css";
+import "./Components/utils/PrismDecorator.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table/dist/react-bootstrap-table.min.css";
 import "./custom.scss";

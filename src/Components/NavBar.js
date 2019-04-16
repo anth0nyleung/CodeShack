@@ -1,11 +1,20 @@
 import React, { Component } from "react";
 import { auth } from "../Backend/Firebase/firebase";
 import PropTypes from "prop-types";
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink,
-         UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import {
+    Navbar,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
+} from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { BarLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
@@ -19,7 +28,27 @@ const imgStyles = {
     width: 30
 };
 
+const circleImgStyles = {
+    height: 30,
+    width: 30,
+    borderRadius: 30
+};
+
 class NavBar extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            url: null
+        };
+    }
+
+    componentDidMount() {
+        this.setState({
+            url: localStorage.getItem("url")
+        });
+    }
+
     handleLogOut = event => {
         auth.signOut()
             .then(() => {
@@ -32,86 +61,100 @@ class NavBar extends Component {
     };
 
     render() {
-        if (this.context.router.history.location.pathname === "/login" 
-            || this.context.router.history.location.pathname === "/signup") {
+        if (
+            this.context.router.history.location.pathname === "/login" ||
+            this.context.router.history.location.pathname === "/signup"
+        ) {
             return <div />;
         }
-        
+
         return (
             <div>
                 <Navbar color="primary">
-                    <NavbarBrand style={{ color: "white" }} href="/dashboard">
-                        CodeShack
-                    </NavbarBrand>
                     <img
+                        className="d-flex align-items-center"
+                        alt="logo"
                         src={process.env.PUBLIC_URL + "/icon.png"}
                         style={imgStyles}
                     />
+                    <NavbarBrand
+                        className="d-flex align-items-center"
+                        style={{ color: "white", marginLeft: "8px" }}
+                        href="/dashboard"
+                    >
+                        CodeShack
+                    </NavbarBrand>
+
                     {this.context.router.history.location.pathname !==
                         "/login" &&
                         this.context.router.history.location.pathname !==
                             "/" && (
-                    <UncontrolledDropdown >
-                        <DropdownToggle nav caret style={{color : 'white'}}>
-                            Category
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                            <DropdownItem href="/courses">
-                                Course
-                            </DropdownItem>
-                            <DropdownItem href="/topic">
-                                Topic
-                            </DropdownItem>
-                            <DropdownItem href="company">
-                                Company
-                            </DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem href="/interview">
-                                All Question
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </UncontrolledDropdown>)}
+                            <UncontrolledDropdown className="d-flex align-items-center">
+                                <DropdownToggle
+                                    nav
+                                    caret
+                                    style={{ color: "white" }}
+                                >
+                                    Categories
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    <DropdownItem href="/courses">
+                                        Courses
+                                    </DropdownItem>
+                                    <DropdownItem href="/topic">
+                                        Topics
+                                    </DropdownItem>
+                                    <DropdownItem href="company">
+                                        Companies
+                                    </DropdownItem>
+                                    <DropdownItem divider />
+                                    <DropdownItem href="/interview">
+                                        All Questions
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+                        )}
 
                     <Nav className="ml-auto">
                         {this.context.router.history.location.pathname !==
                             "/login" &&
                             this.context.router.history.location.pathname !==
                                 "/" && (
-                                <NavItem>
-                                    <NavLink
-                                        style={{ color: "white" }}
-                                        href="/createquestion"
-                                    >
-                                        Add Question
-                                    </NavLink>
-                                </NavItem>
-                            )}
-                        {this.context.router.history.location.pathname !==
-                            "/login" &&
-                            this.context.router.history.location.pathname !==
-                                "/" && (
-                                <NavItem>
-                                    <NavLink
-                                        style={{ color: "white" }}
-                                        href="/profile"
-                                    >
-                                        Profile ({this.props.username})
-                                    </NavLink>
-                                </NavItem>
-                            )}
-                        {this.context.router.history.location.pathname !==
-                            "/login" &&
-                            this.context.router.history.location.pathname !==
-                                "/" && (
-                                <NavItem>
-                                    <NavLink
-                                        style={{ color: "white" }}
-                                        href="/login"
-                                        onClick={this.handleLogOut}
-                                    >
-                                        Log Out
-                                    </NavLink>
-                                </NavItem>
+                                <Nav>
+                                    <NavItem className="d-flex align-items-center">
+                                        <img
+                                            alt="profile-pic"
+                                            src={this.state.url}
+                                            style={circleImgStyles}
+                                        />
+                                    </NavItem>
+                                    <NavItem className="d-flex align-items-center">
+                                        <UncontrolledDropdown>
+                                            <DropdownToggle
+                                                nav
+                                                caret
+                                                style={{ color: "white" }}
+                                            >
+                                                {this.props.username}
+                                            </DropdownToggle>
+                                            <DropdownMenu right>
+                                                <DropdownItem href="/profile">
+                                                    Profile
+                                                </DropdownItem>
+                                                <DropdownItem href="/createquestion">
+                                                    Add Question
+                                                </DropdownItem>
+                                                <DropdownItem divider />
+                                                <DropdownItem
+                                                    href="/login"
+                                                    onClick={this.handleLogOut}
+                                                >
+                                                    Log Out
+                                                </DropdownItem>
+                                            </DropdownMenu>
+                                        </UncontrolledDropdown>
+                                    </NavItem>
+                                </Nav>
                             )}
                     </Nav>
                 </Navbar>
