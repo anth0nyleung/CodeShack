@@ -259,7 +259,8 @@ export class AddQuestion extends Component {
                         inlineStyles={[
                             { type: INLINE_STYLE.BOLD },
                             { type: INLINE_STYLE.ITALIC },
-                            { type: INLINE_STYLE.UNDERLINE }
+                            { type: INLINE_STYLE.UNDERLINE },
+                            { type: INLINE_STYLE.CODE }
                         ]}
                         spellCheck
                         decorators={[this.state.decorator]}
@@ -304,7 +305,8 @@ export class AddQuestion extends Component {
                         inlineStyles={[
                             { type: INLINE_STYLE.BOLD },
                             { type: INLINE_STYLE.ITALIC },
-                            { type: INLINE_STYLE.UNDERLINE }
+                            { type: INLINE_STYLE.UNDERLINE },
+                            { type: INLINE_STYLE.CODE }
                         ]}
                         decorators={[this.state.decorator]}
                     />

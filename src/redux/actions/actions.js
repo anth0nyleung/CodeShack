@@ -2,7 +2,7 @@
 import axios from "axios";
 import { auth } from "../../Components/utils/firebase";
 
-const url = "http://localhost:8080/api/";
+const url = process.env.PRODUCTION_URL || "http://localhost:8080/api/";
 
 /**
  * Returns the header config containing the idToken used for verification

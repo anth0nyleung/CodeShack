@@ -93,6 +93,7 @@ export class CourseOverview extends Component {
                                 }}
                                 dataField="courseNumber"
                                 width="auto"
+                                dataSort={true}
                             >
                                 Course Number
                             </TableHeaderColumn>
@@ -103,6 +104,7 @@ export class CourseOverview extends Component {
                                 CourseName
                             </TableHeaderColumn>
                             <TableHeaderColumn
+                                dataSort={true}
                                 dataField="questions"
                                 thStyle={{
                                     whiteSpace: "normal"

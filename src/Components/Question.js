@@ -139,7 +139,7 @@ export class Question extends Component {
             var content = convertFromRaw(
                 JSON.parse(this.props.question.solution)
             );
-            return EditorState.createWithContent(content);
+            return EditorState.createWithContent(content, compositeDecorator);
         } else {
             return EditorState.createEmpty();
         }
