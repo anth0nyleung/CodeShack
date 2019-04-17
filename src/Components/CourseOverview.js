@@ -58,7 +58,7 @@ export class CourseOverview extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );
@@ -72,7 +72,7 @@ export class CourseOverview extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Course</h3>
+                            <h3 className="display-3">Courses</h3>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
@@ -88,8 +88,11 @@ export class CourseOverview extends Component {
                         >
                             <TableHeaderColumn
                                 isKey={true}
+                                thStyle={{
+                                    whiteSpace: "normal"
+                                }}
                                 dataField="courseNumber"
-                                width="15%"
+                                width="auto"
                             >
                                 Course Number
                             </TableHeaderColumn>
@@ -101,7 +104,11 @@ export class CourseOverview extends Component {
                             </TableHeaderColumn>
                             <TableHeaderColumn
                                 dataField="questions"
+                                thStyle={{
+                                    whiteSpace: "normal"
+                                }}
                                 dataFormat={this.countNumber}
+                                width="auto"
                             >
                                 Num. Questions
                             </TableHeaderColumn>

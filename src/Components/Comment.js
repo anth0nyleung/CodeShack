@@ -76,6 +76,7 @@ class _Comment extends Component {
         return comment.children.map(comment => {
             return (
                 <Comment
+                    key={comment._id}
                     loadComment={this.props.loadComment}
                     comment_id={comment}
                     indent={
@@ -242,7 +243,7 @@ class _Comment extends Component {
                                     size="md"
                                     disabled={comment.deleted}
                                     color="#f7f7f7"
-                                    outline="#f7f7f7"
+                                    outline={false}
                                 >
                                     {!this.state.collapse ? (
                                         <MdReply />
@@ -258,7 +259,7 @@ class _Comment extends Component {
                                         size="md"
                                         onClick={this.onDelete}
                                         color="#f7f7f7"
-                                        outline="#f7f7f7"
+                                        outline={false}
                                     >
                                         <MdDelete />
                                     </Button>

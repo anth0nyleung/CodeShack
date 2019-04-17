@@ -50,7 +50,7 @@ export class CourseQuestions extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );
