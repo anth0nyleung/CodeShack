@@ -1,12 +1,12 @@
 process.env.NODE_ENV = "test";
 
-let Course = require("../../server/Models/course.model");
-let Question = require("../../server/Models/question.model");
-let admin = require("../../server/Firebase/admin");
+let Course = require("../../src/Backend/Models/course.model");
+let Question = require("../../src/Backend/Models/question.model");
+let admin = require("../../src/Backend/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../server/server");
+let server = require("../../src/Backend/server");
 let should = chai.should();
 
 let idToken = "";
@@ -72,7 +72,6 @@ describe("Course", () => {
             };
             chai.request(server)
                 .post("/api/course")
-                .set("Authentication", "Bearer " + idToken)
                 .send(course)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -86,7 +85,6 @@ describe("Course", () => {
         it("it should fail to create a course", done => {
             chai.request(server)
                 .post("/api/course")
-                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -109,7 +107,6 @@ describe("Course", () => {
                 let newCourseName = { courseName: "Updated Course" };
                 chai.request(server)
                     .patch(`/api/course/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
                     .send(newCourseName)
                     .end((err, res) => {
                         res.should.have.status(200);
@@ -124,7 +121,6 @@ describe("Course", () => {
         it("it should fail to update a course", done => {
             chai.request(server)
                 .patch(`/api/course/1`)
-                .set("Authentication", "Bearer " + idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -144,7 +140,6 @@ describe("Course", () => {
                 Course.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .patch(`/api/course/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
                         .send({})
                         .end((err, res) => {
                             res.should.have.status(500);

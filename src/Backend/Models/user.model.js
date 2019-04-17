@@ -13,13 +13,11 @@ const UserSchema = new Schema({
 });
 
 UserSchema.methods.addHistory = function(question_id, callback) {
-    if (question_id === undefined) {
-        console.log("Undefined question_id");
-        return callback({ message: "Question ID undefined" });
-    }
     var index = this.history.findIndex(el => {
         return el == question_id;
     });
+
+    console.log("index" + index);
 
     if (index !== -1) {
         this.history.splice(index, 1);

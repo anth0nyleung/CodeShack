@@ -14,7 +14,7 @@ import TopicQuestions from "./Components/TopicQuestions";
 import NavBar from "./Components/NavBar";
 import UserProfile from "./Components/UserProfile";
 import Question from "./Components/Question";
-import Main from "./Components/Main";
+import Main from "./Components/Main"
 import AddQuestion from "./Components/AddQuestion";
 
 class App extends Component {

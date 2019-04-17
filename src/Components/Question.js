@@ -55,12 +55,7 @@ export class Question extends Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = {
-            collapse: false,
-            reply: null,
-            collapseComment: false,
-            didAddToHistory: false
-        };
+        this.state = { collapse: false, reply: null, collapseComment: false };
     }
 
     componentDidMount() {
@@ -187,7 +182,7 @@ export class Question extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={true}
+                        loading={this.props.isLoading}
                     />
                 </main>
             );
@@ -291,13 +286,8 @@ export class Question extends Component {
 
                             {this.sortedComments().map(comment => {
                                 return (
-                                    <LazyLoad
-                                        key={comment._id}
-                                        height={100}
-                                        once
-                                    >
+                                    <LazyLoad height={100} once>
                                         <Comment
-                                            key={comment._id}
                                             loadComment={this.props.loadComment}
                                             comment_id={comment._id}
                                             indent={0}
@@ -318,6 +308,10 @@ export class Question extends Component {
         );
     }
 }
+
+Question.propTypes = {
+    classes: PropTypes.object.isRequired
+};
 
 Question.contextTypes = {
     router: PropTypes.object.isRequired

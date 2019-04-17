@@ -46,7 +46,7 @@ export class CompanyQuestions extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={true}
+                        loading={this.props.isLoading}
                     />
                 </main>
             );

@@ -1,6 +1,6 @@
 //Here is where all the action creators will be
 import axios from "axios";
-import { auth } from "../../Components/utils/firebase";
+import { auth } from "../../Backend/Firebase/firebase";
 
 const url = "http://localhost:8080/api/";
 
@@ -30,20 +30,15 @@ const setHeader = callback => {
  */
 export function loadAllTopics() {
     return dispatch => {
-        dispatch({ type: "START_LOADING" });
-        setHeader(config => {
-            axios
-                .get(`${url}topic`, config)
-                .then(res => {
-                    let topics = res.data;
-                    dispatch({ type: "LOAD_TOPICS", topics });
-                    dispatch({ type: "STOP_LOADING" });
-                })
-                .catch(err => {
-                    console.log("Error: Unable to get topics", err);
-                    dispatch({ type: "STOP_LOADING" });
-                });
-        });
+        axios
+            .get(`${url}topic`)
+            .then(res => {
+                let topics = res.data;
+                dispatch({ type: "LOAD_TOPICS", topics });
+            })
+            .catch(err => {
+                console.log("Error: Unable to get topics", err);
+            });
     };
 }
 
@@ -52,20 +47,15 @@ export function loadAllTopics() {
  */
 export function loadTopic(topic_id) {
     return dispatch => {
-        dispatch({ type: "START_LOADING" });
-        setHeader(config => {
-            axios
-                .get(`${url}topic/${topic_id}`, config)
-                .then(res => {
-                    let topic = res.data;
-                    dispatch({ type: "LOAD_TOPIC", topic });
-                    dispatch({ type: "STOP_LOADING" });
-                })
-                .catch(err => {
-                    console.log("Error: Unable to get topic", err);
-                    dispatch({ type: "STOP_LOADING" });
-                });
-        });
+        axios
+            .get(`${url}topic/${topic_id}`)
+            .then(res => {
+                let topic = res.data;
+                dispatch({ type: "LOAD_TOPIC", topic });
+            })
+            .catch(err => {
+                console.log("Error: Unable to get topic", err);
+            });
     };
 }
 
@@ -74,20 +64,15 @@ export function loadTopic(topic_id) {
  */
 export function loadAllCompanies() {
     return dispatch => {
-        dispatch({ type: "START_LOADING" });
-        setHeader(config => {
-            axios
-                .get(`${url}company`, config)
-                .then(res => {
-                    let companies = res.data;
-                    dispatch({ type: "LOAD_COMPANIES", companies });
-                    dispatch({ type: "STOP_LOADING" });
-                })
-                .catch(err => {
-                    console.log("Error: Unable to get companies", err);
-                    dispatch({ type: "STOP_LOADING" });
-                });
-        });
+        axios
+            .get(`${url}company`)
+            .then(res => {
+                let companies = res.data;
+                dispatch({ type: "LOAD_COMPANIES", companies });
+            })
+            .catch(err => {
+                console.log("Error: Unable to get companies", err);
+            });
     };
 }
 
@@ -96,20 +81,15 @@ export function loadAllCompanies() {
  */
 export function loadCompany(company_id) {
     return dispatch => {
-        dispatch({ type: "START_LOADING" });
-        setHeader(config => {
-            axios
-                .get(`${url}company/${company_id}`, config)
-                .then(res => {
-                    let company = res.data;
-                    dispatch({ type: "LOAD_COMPANY", company });
-                    dispatch({ type: "STOP_LOADING" });
-                })
-                .catch(err => {
-                    console.log("Error: Unable to get company", err);
-                    dispatch({ type: "STOP_LOADING" });
-                });
-        });
+        axios
+            .get(`${url}company/${company_id}`)
+            .then(res => {
+                let company = res.data;
+                dispatch({ type: "LOAD_COMPANY", company });
+            })
+            .catch(err => {
+                console.log("Error: Unable to get company", err);
+            });
     };
 }
 
@@ -144,6 +124,7 @@ export function loadQuestion(question_id) {
  */
 
 export function saveQuestionToUserHistory(question_data, user_id) {
+    console.log(question_data);
     return dispatch => {
         setHeader(config => {
             axios

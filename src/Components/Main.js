@@ -1,7 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
+import {
+    Row,
+    Col,
+    Button,
+    Jumbotron,
+    Container,
+    Card,
+    CardImg,
+    CardText,
+    CardBody,
+    CardTitle,
+    
+} from "reactstrap";
 
 const mainStyles = {
     backgroundColor: "#9b0000",
@@ -35,8 +47,8 @@ const fontStyles = {
 };
 
 const buttonStyles = {
-    margin: "10px",
-    width: 120,
+    margin : '10px',
+    width : 120,
     backgroundColor: "#9b0000",
     borderColor: "#9b0000"
 };
@@ -58,74 +70,54 @@ class Main extends Component {
 
     onClickLogin = () => {
         this.context.router.history.push("/login");
-    };
+    }
 
     onClickSignup = () => {
         this.context.router.history.push("/signup");
-    };
+    }
+
+    
+
 
     render() {
-        return (
+        return(
             <div>
                 <main style={mainStyles}>
+                    
                     <Jumbotron style={firstJumbotronStyles}>
                         <Container>
                             <Row>
-                                <Col>
-                                    <h3
-                                        className="display-3"
-                                        style={fontStyles}
-                                    >
-                                        CodeShack
-                                    </h3>
-                                </Col>
+                                <Col><h3 className="display-3" style={fontStyles}>
+                                    CodeShack
+                                </h3></Col>
                                 <Col xs="auto">
-                                    <Jumbotron
-                                        style={{ backgroundColor: "#d85050" }}
-                                    >
+                                    <Jumbotron style={{backgroundColor: "#d85050",}}>
+                                        <Row> <h4 style={{ width: 140,  textAlign: 'center', color : 'black'}}>Join us!</h4></Row>
                                         <Row>
-                                            {" "}
-                                            <h4
-                                                style={{
-                                                    width: 140,
-                                                    textAlign: "center",
-                                                    color: "black"
-                                                }}
-                                            >
-                                                Join us!
-                                            </h4>
+                                            <Button style={buttonStyles} onClick={this.onClickLogin}>Login</Button>
                                         </Row>
                                         <Row>
-                                            <Button
-                                                style={buttonStyles}
-                                                onClick={this.onClickLogin}
-                                            >
-                                                Login
-                                            </Button>
-                                        </Row>
-                                        <Row>
-                                            <Button
-                                                style={buttonStyles}
-                                                onClick={this.onClickSignup}
-                                            >
-                                                Sign up
-                                            </Button>
+                                            <Button style={buttonStyles} onClick={this.onClickSignup}>Sign up</Button>
                                         </Row>
                                     </Jumbotron>
                                 </Col>
                             </Row>
-                        </Container>
+                        </Container>  
                     </Jumbotron>
-
+                    
                     <Jumbotron style={secondJumbotronStyles}>
                         <Container>
-                            <h4 style={fontStyles}>What is CodeShack?</h4>
+                            <h4 style={fontStyles}>
+                                What is CodeShack?
+                            </h4>
                             <p> xxxxx </p>
                         </Container>
                     </Jumbotron>
                     <Jumbotron style={thirdJumbotronStyles}>
                         <Container>
-                            <h4 style={fontStyles}>About us</h4>
+                            <h4 style={fontStyles}>
+                                About us 
+                            </h4>
                             <p> xxxxx </p>
                         </Container>
                     </Jumbotron>
@@ -136,6 +128,7 @@ class Main extends Component {
                         <p>&copy; CodeShack 2019</p>
                     </Container>
                 </footer>
+
             </div>
         );
     }

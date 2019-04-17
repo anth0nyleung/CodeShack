@@ -8,11 +8,13 @@ import {
     Col,
     Modal,
     ModalBody,
-    ModalFooter
+    ModalFooter,
+    Form,
+    FormGroup,
+    Label
 } from "reactstrap";
 import PropTypes from "prop-types";
 import Select from "react-select";
-import InfoPopover from "./InfoPopover";
 
 import {
     loadAllCompanies,
@@ -211,10 +213,7 @@ export class AddQuestion extends Component {
                             paddingBottom: "16px"
                         }}
                     >
-                        Question Title{" "}
-                        <span style={{ color: "#c5050c" }}>
-                            <small>*</small>
-                        </span>
+                        Question Title
                     </h2>
 
                     <Input id="name" onChange={this.onChange} />
@@ -227,22 +226,8 @@ export class AddQuestion extends Component {
                                     paddingBottom: "16px"
                                 }}
                             >
-                                Question Content{" "}
-                                <span style={{ color: "#c5050c" }}>
-                                    <small>*</small>
-                                </span>
+                                Question Content
                             </h2>
-                        </Col>
-                        <Col xs="auto">
-                            <InfoPopover
-                                id="content"
-                                buttonText="?"
-                                popoverBodyText={
-                                    "Type in the description of the question here, including any background info or code that goes along with it. " +
-                                    "Note that code defaults to JavaScript - we are working on adding more language support!"
-                                }
-                                popoverHeaderText="Question Content"
-                            />
                         </Col>
                     </Row>
 
@@ -265,32 +250,9 @@ export class AddQuestion extends Component {
                         decorators={[this.state.decorator]}
                     />
 
-                    <Row className="d-flex align-items-center">
-                        <Col>
-                            <h2
-                                style={{
-                                    paddingTop: "16px",
-                                    paddingBottom: "16px"
-                                }}
-                            >
-                                Solution{" "}
-                                <span style={{ color: "#c5050c" }}>
-                                    <small>*</small>
-                                </span>
-                            </h2>
-                        </Col>
-                        <Col xs="auto">
-                            <InfoPopover
-                                id="solution"
-                                buttonText="?"
-                                popoverBodyText={
-                                    'Enter the solution to your question here. If you don\'t have or cannot provide a solution, feel free to enter "No Solution" or something simalar. ' +
-                                    "Note that code defaults to JavaScript - we are working on adding more language support!"
-                                }
-                                popoverHeaderText="Solution"
-                            />
-                        </Col>
-                    </Row>
+                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
+                        Solution
+                    </h2>
                     <DraftailEditor
                         style={{ margin: "16px" }}
                         rawContentState={null}
@@ -308,32 +270,9 @@ export class AddQuestion extends Component {
                         ]}
                         decorators={[this.state.decorator]}
                     />
-                    <Row className="d-flex align-items-center">
-                        <Col>
-                            <h2
-                                style={{
-                                    paddingTop: "16px",
-                                    paddingBottom: "16px"
-                                }}
-                            >
-                                Tags{" "}
-                                <span style={{ color: "#c5050c" }}>
-                                    <small>*</small>
-                                </span>
-                            </h2>
-                        </Col>
-                        <Col xs="auto">
-                            <InfoPopover
-                                id="tags"
-                                buttonText="?"
-                                popoverBodyText={
-                                    "Select the tags in which you want your question to be associated with. " +
-                                    "For each of the tags you select, your question will be added to it's respective page for others to view."
-                                }
-                                popoverHeaderText="Tags"
-                            />
-                        </Col>
-                    </Row>
+                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
+                        Tags
+                    </h2>
                     <Select
                         isMulti
                         isSearchable
@@ -351,12 +290,6 @@ export class AddQuestion extends Component {
                     >
                         Submit
                     </Button>
-                    <Row>
-                        <Col>
-                            <span style={{ color: "#c5050c" }}>*</span>
-                            <span> - Required</span>
-                        </Col>
-                    </Row>
                 </Container>
                 <Modal
                     isOpen={this.state.error}

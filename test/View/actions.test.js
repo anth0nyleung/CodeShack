@@ -22,7 +22,7 @@ describe("Actions", () => {
     it("it should send action to load topics", done => {
         const test = actions.loadAllTopics();
         test(action => {
-            action.type.should.eql("START_LOADING");
+            action.type.should.eql("LOAD_TOPICS");
             done();
         });
     });
@@ -30,7 +30,7 @@ describe("Actions", () => {
     it("it should send actino to load a specific topic", done => {
         const test = actions.loadTopic("123");
         test(action => {
-            action.type.should.eql("START_LOADING");
+            action.type.should.eql("LOAD_TOPIC");
             done();
         });
     });
@@ -38,7 +38,7 @@ describe("Actions", () => {
     it("it should send a LOAD_COMPANIES action", done => {
         const test = actions.loadAllCompanies();
         test(action => {
-            action.type.should.eql("START_LOADING");
+            action.type.should.eql("LOAD_COMPANIES");
             done();
         });
     });
@@ -46,7 +46,7 @@ describe("Actions", () => {
     it("it should send a LOAD_COMPANY aciton", done => {
         const test = actions.loadCompany("123");
         test(action => {
-            action.type.should.eql("START_LOADING");
+            action.type.should.eql("LOAD_COMPANY");
             done();
         });
     });

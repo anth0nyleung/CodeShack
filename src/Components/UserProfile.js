@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import { BarLoader } from "react-spinners";
-import { saveQuestionToUserHistory, loginUser } from "../redux/actions/actions";
+import { saveQuestionToUserHistory } from "../redux/actions/actions";
 const mapStateToProps = state => {
     return {
         user_id: state.authUser.user._id,
@@ -33,7 +33,6 @@ class UserProfile extends Component {
 
     componentDidMount() {
         document.title = "CodeShack - Profile";
-        this.props.loginUser(err => {});
         this.setState({ url: localStorage.getItem("url") });
     }
 
@@ -59,7 +58,7 @@ class UserProfile extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={true}
+                        loading={this.props.isLoading}
                     />
                 </main>
             );
@@ -105,7 +104,7 @@ class UserProfile extends Component {
                         </Container>
                     </Jumbotron>
                     <Container>
-                        <h2>Current Courses</h2>
+                        <h2>My Current Courses</h2>
                         <BootstrapTable
                             data={this.props.currentCourses}
                             options={options}
@@ -131,7 +130,7 @@ class UserProfile extends Component {
                     </Container>
 
                     <Container>
-                        <h2>Recently Viewed Questions</h2>
+                        <h2>Recently Viewed Question</h2>
                         <BootstrapTable
                             data={this.props.history}
                             striped
@@ -173,5 +172,5 @@ UserProfile.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { saveQuestionToUserHistory, loginUser }
+    { saveQuestionToUserHistory }
 )(UserProfile);

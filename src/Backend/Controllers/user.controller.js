@@ -1,5 +1,5 @@
 const User = require("../Models/user.model");
-const ObjectId = require("mongodb").ObjectId;
+const ObjectId = require('mongodb').ObjectId;
 module.exports = {
     /**
      * Creates a user in the database
@@ -37,6 +37,10 @@ module.exports = {
     },
 
     addHistory: (req, res) => {
+        console.log("add history");
+        console.log(req.params.id);
+        console.log(req.body.question_id);
+
         User.findById(req.params.id, (err, user) => {
             if (err) {
                 res.status(500);

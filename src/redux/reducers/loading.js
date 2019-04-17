@@ -1,5 +1,5 @@
 const initialState = {
-    isLoading: 0,
+    isLoading: false,
     isLoadingComment: 0
 };
 
@@ -8,12 +8,12 @@ export default (state = initialState, action) => {
         case "START_LOADING":
             return {
                 ...state,
-                isLoading: state.isLoading + 1
+                isLoading: true
             };
         case "STOP_LOADING":
             return {
                 ...state,
-                isLoading: state.isLoading - 1
+                isLoading: false
             };
         default:
             return state;

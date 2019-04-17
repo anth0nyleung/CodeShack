@@ -5,11 +5,7 @@
 .public-DraftStyleDefault-pre {
     padding: 1em;
     margin: 0.3em 0;
-    overflow-x: auto;
-    overflow-wrap: normal;
-    max-width: 100%;
-    white-space: nowrap;
-    word-break: keep-all;
+    overflow: auto;
     border: 1px solid #ddd;
     background-color: #fcfcfc;
 }

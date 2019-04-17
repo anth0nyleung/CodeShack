@@ -11,13 +11,13 @@
         "draft-convert": "^2.1.4",
         "draft-js": "^0.10.5",
         "draft-js-editor": "^1.12.4",
+        "draft-js-plugins-editor": "^2.1.1",
         "draft-js-prism": "^1.0.6",
         "draftail": "^1.2.1",
         "enzyme": "^3.9.0",
         "enzyme-adapter-react-16": "^1.11.2",
         "firebase": "^5.8.6",
         "firebase-admin": "^7.2.0",
-        "flow": "^0.2.3",
         "helmet": "^3.16.0",
         "history": "^4.7.2",
         "lodash": "^4.17.11",
@@ -33,18 +33,19 @@
         "react-lazyload": "^2.5.0",
         "react-redux": "^6.0.1",
         "react-router-dom": "^4.3.1",
-        "react-scripts": "^2.1.8",
+        "react-scripts": "2.1.5",
         "react-select": "^2.4.2",
         "react-spinners": "^0.5.4",
+        "react-treeview": "^0.4.7",
         "reactstrap": "^7.1.0",
         "redux": "^4.0.1",
+        "redux-loading-middleware": "^1.0.1",
         "redux-thunk": "^2.3.0",
         "sinon": "^7.3.1"
     },
     "devDependencies": {
         "@babel/plugin-proposal-class-properties": "^7.4.0",
         "@babel/preset-env": "^7.4.2",
-        "@babel/preset-flow": "^7.0.0",
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.4.0",
         "axios-mock-adapter": "^1.16.0",
@@ -54,23 +55,20 @@
         "enzyme": "^3.9.0",
         "enzyme-adapter-react-16": "^1.11.2",
         "firebase-mock": "^2.2.10",
-        "ignore-styles": "^5.0.1",
         "jsdom": "^14.0.0",
         "mocha": "^2.4.5",
         "mocha-jsdom": "^2.0.0",
         "nodeidon": "0.0.3",
         "nyc": "^13.3.0",
         "request-promise": "^4.2.4",
-        "sinon": "^7.3.1",
-        "ts-node": "^8.1.0",
-        "typescript": "^3.4.3"
+        "sinon": "^7.3.1"
     },
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "nyc --reporter=html mocha --require @babel/register --require ignore-styles --require @babel/preset-flow --timeout 10000",
+        "test": "nyc --reporter=html mocha --require @babel/register --timeout 10000",
         "eject": "react-scripts eject",
-        "dev": "nodeidon -w server/server.js -d \"nodemon server/server.js\" \"npm run start\""
+        "dev": "nodeidon -w src/Backend/server.js -d \"nodemon src/Backend/server.js\" \"npm run start\""
     },
     "eslintConfig": {
         "extends": "react-app"

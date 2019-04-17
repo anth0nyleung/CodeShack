@@ -6,7 +6,5 @@ module.exports = router => {
 
     router.route("/user").get(auth.validateFirebaseIdToken, user.getUser);
 
-    router
-        .route("/user/:id/history")
-        .post(auth.validateFirebaseIdToken, user.addHistory);
+    router.route("/user/:id/history").post(user.addHistory);
 };

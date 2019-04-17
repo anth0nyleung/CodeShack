@@ -1,12 +1,12 @@
 process.env.NODE_ENV = "test";
 
-let User = require("../../server/Models/user.model");
-let Question = require("../../server/Models/question.model");
-let admin = require("../../server/Firebase/admin");
+let User = require("../../src/Backend/Models/user.model");
+let Question = require("../../src/Backend/Models/question.model");
+let admin = require("../../src/Backend/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../server/server");
+let server = require("../../src/Backend/server");
 let should = chai.should();
 
 let idToken = "";

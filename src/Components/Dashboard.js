@@ -77,7 +77,6 @@ export class Dashboard extends Component {
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
-
                     <Container>
                         <Row>
                             <Col className="md-4">
