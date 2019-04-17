@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/actions";
-import { auth, provider } from "../Backend/Firebase/firebase";
+import { auth, provider } from "./utils/firebase";
 
 import {
     Row,

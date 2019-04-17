@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { auth } from "../Backend/Firebase/firebase";
+import { auth } from "./utils/firebase";
 import PropTypes from "prop-types";
 import {
     Navbar,
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink,
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -14,7 +13,6 @@ import {
 } from "reactstrap";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { PulseLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
@@ -60,6 +58,31 @@ class NavBar extends Component {
             });
     };
 
+    handleClick = event => {
+        switch (event.target.id) {
+            case "courses":
+                this.context.router.history.push("/courses");
+                break;
+            case "topics":
+                this.context.router.history.push("/topic");
+                break;
+            case "companies":
+                this.context.router.history.push("/company");
+                break;
+            case "all":
+                this.context.router.history.push("/questions");
+                break;
+            case "profile":
+                this.context.router.history.push("/profile");
+                break;
+            case "createquestion":
+                this.context.router.history.push("/createquestion");
+                break;
+            default:
+                break;
+        }
+    };
+
     render() {
         if (
             this.context.router.history.location.pathname === "/login" ||
@@ -98,17 +121,29 @@ class NavBar extends Component {
                                     Categories
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem href="/courses">
+                                    <DropdownItem
+                                        onClick={this.handleClick}
+                                        id="courses"
+                                    >
                                         Courses
                                     </DropdownItem>
-                                    <DropdownItem href="/topic">
+                                    <DropdownItem
+                                        onClick={this.handleClick}
+                                        id="topics"
+                                    >
                                         Topics
                                     </DropdownItem>
-                                    <DropdownItem href="company">
+                                    <DropdownItem
+                                        onClick={this.handleClick}
+                                        id="companies"
+                                    >
                                         Companies
                                     </DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem href="/interview">
+                                    <DropdownItem
+                                        onClick={this.handleClick}
+                                        id="all"
+                                    >
                                         All Questions
                                     </DropdownItem>
                                 </DropdownMenu>
@@ -138,10 +173,16 @@ class NavBar extends Component {
                                                 {this.props.username}
                                             </DropdownToggle>
                                             <DropdownMenu right>
-                                                <DropdownItem href="/profile">
+                                                <DropdownItem
+                                                    id="profile"
+                                                    onClick={this.handleClick}
+                                                >
                                                     Profile
                                                 </DropdownItem>
-                                                <DropdownItem href="/createquestion">
+                                                <DropdownItem
+                                                    id="createquestion"
+                                                    onClick={this.handleClick}
+                                                >
                                                     Add Question
                                                 </DropdownItem>
                                                 <DropdownItem divider />

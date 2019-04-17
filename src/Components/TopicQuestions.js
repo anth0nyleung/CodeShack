@@ -34,7 +34,7 @@ export class TopicQuestions extends Component {
      * Handles clicking on a question
      */
     onRowClick = row => {
-        this.context.router.history.push(`/topic/${row._id}`);
+        this.context.router.history.push(`/question/${row._id}`);
     };
 
     render() {
@@ -46,7 +46,7 @@ export class TopicQuestions extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );

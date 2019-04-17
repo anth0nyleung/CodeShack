@@ -1,12 +1,12 @@
 process.env.NODE_ENV = "test";
 
-let Topic = require("../../src/Backend/Models/topic.model");
-let Question = require("../../src/Backend/Models/question.model");
-let admin = require("../../src/Backend/Firebase/admin");
+let Topic = require("../../server/Models/topic.model");
+let Question = require("../../server/Models/question.model");
+let admin = require("../../server/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../src/Backend/server");
+let server = require("../../server/server");
 let should = chai.should();
 
 let idToken = "";
@@ -72,6 +72,7 @@ describe("Topic", () => {
             };
             chai.request(server)
                 .post("/api/topic")
+                .set("Authentication", "Bearer " + idToken)
                 .send(topic)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -84,6 +85,7 @@ describe("Topic", () => {
         it("it should fail to create a topic", done => {
             chai.request(server)
                 .post("/api/topic")
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -104,6 +106,7 @@ describe("Topic", () => {
                 let newTopicName = { topicName: "Updated Topic" };
                 chai.request(server)
                     .patch(`/api/topic/${id}`)
+                    .set("Authentication", "Bearer " + idToken)
                     .send(newTopicName)
                     .end((err, res) => {
                         res.should.have.status(200);
@@ -118,6 +121,7 @@ describe("Topic", () => {
         it("it should fail to update a topic", done => {
             chai.request(server)
                 .patch(`/api/topic/1`)
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -135,6 +139,7 @@ describe("Topic", () => {
                     let newTopicName = { topicName: "Updated Topic" };
                     chai.request(server)
                         .patch(`/api/topic/${id}`)
+                        .set("Authentication", "Bearer " + idToken)
                         .send(newTopicName)
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -178,6 +183,7 @@ describe("Topic", () => {
 
                 chai.request(server)
                     .get(`/api/topic/${id}`)
+                    .set("Authentication", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have.property("topicName").eql("Test");
@@ -189,6 +195,7 @@ describe("Topic", () => {
         it("it should fail to get a topic", done => {
             chai.request(server)
                 .get(`/api/topic/1`)
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -206,6 +213,7 @@ describe("Topic", () => {
                 Topic.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .get(`/api/topic/${id}`)
+                        .set("Authentication", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();

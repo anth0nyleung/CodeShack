@@ -1,12 +1,12 @@
 process.env.NODE_ENV = "test";
 
-let Company = require("../../src/Backend/Models/company.model");
-let Question = require("../../src/Backend/Models/question.model");
-let admin = require("../../src/Backend/Firebase/admin");
+let Company = require("../../server/Models/company.model");
+let Question = require("../../server/Models/question.model");
+let admin = require("../../server/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../src/Backend/server");
+let server = require("../../server/server");
 let should = chai.should();
 
 let idToken = "";
@@ -72,6 +72,7 @@ describe("Company", () => {
             };
             chai.request(server)
                 .post("/api/company")
+                .set("Authentication", "Bearer " + idToken)
                 .send(company)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -84,6 +85,7 @@ describe("Company", () => {
         it("it should fail to create a company", done => {
             chai.request(server)
                 .post("/api/company")
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -104,6 +106,7 @@ describe("Company", () => {
                 let newCompanyName = { companyName: "Updated Company" };
                 chai.request(server)
                     .patch(`/api/company/${id}`)
+                    .set("Authentication", "Bearer " + idToken)
                     .send(newCompanyName)
                     .end((err, res) => {
                         res.should.have.status(200);
@@ -118,6 +121,7 @@ describe("Company", () => {
         it("it should fail to update a company", done => {
             chai.request(server)
                 .patch(`/api/company/1`)
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -135,6 +139,7 @@ describe("Company", () => {
                     let newCompanyName = { companyName: "Updated Company" };
                     chai.request(server)
                         .patch(`/api/company/${id}`)
+                        .set("Authentication", "Bearer " + idToken)
                         .send(newCompanyName)
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -179,6 +184,7 @@ describe("Company", () => {
 
                 chai.request(server)
                     .get(`/api/company/${id}`)
+                    .set("Authentication", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have
@@ -192,6 +198,7 @@ describe("Company", () => {
         it("it should fail to get a company", done => {
             chai.request(server)
                 .get(`/api/company/1`)
+                .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -209,6 +216,7 @@ describe("Company", () => {
                 Company.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .get(`/api/company/${id}`)
+                        .set("Authentication", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();
