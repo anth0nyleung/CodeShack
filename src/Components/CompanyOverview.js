@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { loadAllCompanies } from "../redux/actions/actions";
+import { loadAllCompanies, createCompany } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { Jumbotron, Container } from "reactstrap";
+import {
+    Jumbotron,
+    Container,
+    Button,
+    Row,
+    Col,
+    Collapse,
+    Input
+} from "reactstrap";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
@@ -9,7 +17,8 @@ import PropTypes from "prop-types";
 const mapStateToProps = state => {
     return {
         companies: state.company.companies,
-        isLoading: state.loading.isLoading
+        isLoading: state.loading.isLoading,
+        userRole: state.authUser.user.role
     };
 };
 
@@ -17,12 +26,36 @@ const mapStateToProps = state => {
  * Course Overview page component
  */
 export class CompanyOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            companyName: "",
+            toggle: false
+        };
+    }
+
     componentDidMount() {
         // Sets the title of the page
         document.title = "Company Overview";
 
         this.props.loadAllCompanies();
     }
+
+    onChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    };
+
+    onAddCompany = event => {
+        this.props.createCompany({
+            companyName: this.state.companyName
+        });
+        this.setState({
+            toggle: false
+        });
+    };
 
     /**
      * Redirects to the corresponding course page
@@ -103,6 +136,43 @@ export class CompanyOverview extends Component {
                                 Num. Questions
                             </TableHeaderColumn>
                         </BootstrapTable>
+                        <Row>
+                            <Col>
+                                {this.props.userRole === "admin" && (
+                                    <Button
+                                        style={{ marginTop: "16px" }}
+                                        onClick={() => {
+                                            this.setState({
+                                                toggle: !this.state.toggle
+                                            });
+                                        }}
+                                        color="primary"
+                                    >
+                                        + Company
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                        <Collapse isOpen={this.state.toggle}>
+                            <Row>
+                                <Col>
+                                    <Input
+                                        id="companyName"
+                                        placeholder="Company Name..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Button
+                                        color="primary"
+                                        onClick={this.onAddCompany}
+                                        disabled={
+                                            this.state.companyName.length === 0
+                                        }
+                                    >
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Collapse>
                     </Container>
                 </main>
                 <footer>
@@ -122,5 +192,5 @@ CompanyOverview.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadAllCompanies }
+    { loadAllCompanies, createCompany }
 )(CompanyOverview);

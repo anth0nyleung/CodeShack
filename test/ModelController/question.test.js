@@ -6,6 +6,7 @@ let Question = require("../../server/Models/question.model");
 let Company = require("../../server/Models/company.model");
 let Topic = require("../../server/Models/topic.model");
 let Comment = require("../../server/Models/comment.model");
+let User = require("../../server/Models/user.model");
 let admin = require("../../server/Firebase/admin");
 
 //Require the dev-dependencies
@@ -73,9 +74,9 @@ describe("Question", () => {
             let question = {
                 name: "Two-sum",
                 content: "Consider an array...",
-                solution: "None provided"
+                solution: "None provided",
+                poster: "5cab70541930e60d68e908d2"
             };
-
             chai.request(server)
                 .post("/api/question")
                 .set("Authentication", "Bearer " + idToken)
@@ -112,8 +113,18 @@ describe("Question", () => {
 
     describe("Update question /PATCH", () => {
         it("it should update a question", done => {
-            new Question({ name: "Old name", content: "Old content" }).save(
-                (err, question) => {
+            new User({
+                firebase_id: UID,
+                email: "test@test.com",
+                username: "test",
+                year: "Freshman",
+                name: "test"
+            }).save((err, user) => {
+                new Question({
+                    name: "Old name",
+                    content: "Old content",
+                    poster: user._id
+                }).save((err, question) => {
                     question.name.should.eql("Old name");
                     question.content.should.eql("Old content");
 
@@ -138,8 +149,8 @@ describe("Question", () => {
                                 .eql("New content");
                             done();
                         });
-                }
-            );
+                });
+            });
         });
 
         it("it should fail to update a question", done => {
@@ -154,48 +165,52 @@ describe("Question", () => {
         });
 
         it("it should fail to update a question", done => {
-            new Question({ name: "Old name", content: "Old content" }).save(
-                (err, question) => {
-                    question.name.should.eql("Old name");
-                    question.content.should.eql("Old content");
+            new Question({
+                name: "Old name",
+                content: "Old content",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                question.name.should.eql("Old name");
+                question.content.should.eql("Old content");
 
-                    let id = question._id;
-                    Question.findByIdAndDelete(id, err => {
-                        chai.request(server)
-                            .patch(`/api/question/${id}`)
-                            .set("Authentication", "Bearer " + idToken)
-                            .send({})
-                            .end((err, res) => {
-                                res.should.have.status(500);
-                                done();
-                            });
-                    });
-                }
-            );
-        });
-
-        it("it should fail to update a question", done => {
-            new Question({ name: "Old name", content: "Old content" }).save(
-                (err, question) => {
-                    question.name.should.eql("Old name");
-                    question.content.should.eql("Old content");
-
-                    let updateQuestion = {
-                        name: "",
-                        content: ""
-                    };
-                    let id = question._id;
-
+                let id = question._id;
+                Question.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .patch(`/api/question/${id}`)
                         .set("Authentication", "Bearer " + idToken)
-                        .send(updateQuestion)
+                        .send({})
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();
                         });
-                }
-            );
+                });
+            });
+        });
+
+        it("it should fail to update a question", done => {
+            new Question({
+                name: "Old name",
+                content: "Old content",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                question.name.should.eql("Old name");
+                question.content.should.eql("Old content");
+
+                let updateQuestion = {
+                    name: "",
+                    content: ""
+                };
+                let id = question._id;
+
+                chai.request(server)
+                    .patch(`/api/question/${id}`)
+                    .set("Authentication", "Bearer " + idToken)
+                    .send(updateQuestion)
+                    .end((err, res) => {
+                        res.should.have.status(403);
+                        done();
+                    });
+            });
         });
     });
 
@@ -204,7 +219,8 @@ describe("Question", () => {
             new Question({
                 name: "Network Flow",
                 content: "Construct a...",
-                solution: "See this website"
+                solution: "See this website",
+                poster: "5cab70541930e60d68e908d2"
             }).save((err, question) => {
                 let id = question._id;
 
@@ -235,29 +251,31 @@ describe("Question", () => {
 
     describe("Add a course /POST", () => {
         it("it should add a course to a question", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    new Course({
-                        courseName: "Test course",
-                        courseNumber: "CS504"
-                    }).save((err, course) => {
-                        let course_id = course._id;
+                new Course({
+                    courseName: "Test course",
+                    courseNumber: "CS504"
+                }).save((err, course) => {
+                    let course_id = course._id;
 
-                        chai.request(server)
-                            .post(`/api/question/${question_id}/addcourse`)
-                            .set("Authentication", "Bearer " + idToken)
-                            .send({ course_id: course_id })
-                            .end((err, res) => {
-                                res.should.have.status(200);
-                                let courses = res.body.courses;
-                                courses.length.should.eql(1);
-                                done();
-                            });
-                    });
-                }
-            );
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcourse`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ course_id: course_id })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            let courses = res.body.courses;
+                            courses.length.should.eql(1);
+                            done();
+                        });
+                });
+            });
         });
 
         it("it should fail to add a course to a question", done => {
@@ -267,10 +285,37 @@ describe("Question", () => {
                 .end((err, res) => {
                     res.should.have.status(500);
                 });
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
+                new Course({
+                    courseName: "Test course",
+                    courseNumber: "ASDF"
+                }).save((err, course) => {
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcourse`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ course_id: "1234" })
+                        .end((err, res) => {
+                            res.should.have.status(500);
+                            done();
+                        });
+                });
+            });
+        });
+
+        it("it should fail to add a course", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+                Question.findByIdAndDelete(question_id, err => {
                     new Course({
                         courseName: "Test course",
                         courseNumber: "ASDF"
@@ -278,90 +323,71 @@ describe("Question", () => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcourse`)
                             .set("Authentication", "Bearer " + idToken)
-                            .send({ course_id: "1234" })
+                            .send({ course_id: course._id })
                             .end((err, res) => {
                                 res.should.have.status(500);
                                 done();
                             });
                     });
-                }
-            );
+                });
+            });
         });
 
         it("it should fail to add a course", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
-                    Question.findByIdAndDelete(question_id, err => {
-                        new Course({
-                            courseName: "Test course",
-                            courseNumber: "ASDF"
-                        }).save((err, course) => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcourse`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ course_id: course._id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        });
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Course({
+                    courseName: "Test course",
+                    courseNumber: "ASDF"
+                }).save((err, course) => {
+                    let course_id = course._id;
+
+                    Course.findByIdAndDelete(course_id, err => {
+                        chai.request(server)
+                            .post(`/api/question/${question_id}/addcourse`)
+                            .set("Authentication", "Bearer " + idToken)
+                            .send({ course_id: course_id })
+                            .end((err, res) => {
+                                res.should.have.status(500);
+                                done();
+                            });
                     });
-                }
-            );
-        });
-
-        it("it should fail to add a course", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
-
-                    new Course({
-                        courseName: "Test course",
-                        courseNumber: "ASDF"
-                    }).save((err, course) => {
-                        let course_id = course._id;
-
-                        Course.findByIdAndDelete(course_id, err => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcourse`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ course_id: course_id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        });
-                    });
-                }
-            );
+                });
+            });
         });
     });
 
     describe("Add a Topic /POST", () => {
         it("it should add a Topic", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    new Topic({
-                        topicName: "Test course"
-                    }).save((err, topic) => {
-                        let topic_id = topic._id;
+                new Topic({
+                    topicName: "Test course"
+                }).save((err, topic) => {
+                    let topic_id = topic._id;
 
-                        chai.request(server)
-                            .post(`/api/question/${question_id}/addtopic`)
-                            .set("Authentication", "Bearer " + idToken)
-                            .send({ topic_id: topic_id })
-                            .end((err, res) => {
-                                res.should.have.status(200);
-                                let topics = res.body.topics;
-                                topics.length.should.eql(1);
-                                done();
-                            });
-                    });
-                }
-            );
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addtopic`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ topic_id: topic_id })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            let topics = res.body.topics;
+                            topics.length.should.eql(1);
+                            done();
+                        });
+                });
+            });
         });
 
         it("it should fail to add a topic", done => {
@@ -376,99 +402,107 @@ describe("Question", () => {
         });
 
         it("it should fail to add a topic", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    new Topic({
-                        topicName: "Test course"
-                    }).save((err, topic) => {
-                        let topic_id = topic._id;
-                        Question.findByIdAndDelete(question_id, err => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addtopic`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ topic_id: topic_id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        });
-                    });
-                }
-            );
-        });
-
-        it("it should fail to add a topic", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
-
-                    new Topic({
-                        topicName: "Test course"
-                    }).save((err, topic) => {
+                new Topic({
+                    topicName: "Test course"
+                }).save((err, topic) => {
+                    let topic_id = topic._id;
+                    Question.findByIdAndDelete(question_id, err => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addtopic`)
                             .set("Authentication", "Bearer " + idToken)
-                            .send({ topic_id: "123" })
+                            .send({ topic_id: topic_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
                                 done();
                             });
                     });
-                }
-            );
+                });
+            });
         });
 
         it("it should fail to add a topic", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    new Topic({
-                        topicName: "Test course"
-                    }).save((err, topic) => {
-                        let topic_id = topic._id;
-                        Topic.findByIdAndDelete(topic_id, err => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addtopic`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ topic_id: topic_id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
+                new Topic({
+                    topicName: "Test course"
+                }).save((err, topic) => {
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addtopic`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ topic_id: "123" })
+                        .end((err, res) => {
+                            res.should.have.status(500);
+                            done();
                         });
+                });
+            });
+        });
+
+        it("it should fail to add a topic", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Topic({
+                    topicName: "Test course"
+                }).save((err, topic) => {
+                    let topic_id = topic._id;
+                    Topic.findByIdAndDelete(topic_id, err => {
+                        chai.request(server)
+                            .post(`/api/question/${question_id}/addtopic`)
+                            .set("Authentication", "Bearer " + idToken)
+                            .send({ topic_id: topic_id })
+                            .end((err, res) => {
+                                res.should.have.status(500);
+                                done();
+                            });
                     });
-                }
-            );
+                });
+            });
         });
     });
 
     describe("Add Comment /POST", () => {
         it("it should add a comment", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    new Comment({
-                        content: "Test"
-                    }).save((err, comment) => {
-                        let comment_id = comment._id;
+                new Comment({
+                    content: "Test"
+                }).save((err, comment) => {
+                    let comment_id = comment._id;
 
-                        chai.request(server)
-                            .post(`/api/question/${question_id}/addcomment`)
-                            .set("Authentication", "Bearer " + idToken)
-                            .send({ comment_id: comment_id })
-                            .end((err, res) => {
-                                res.should.have.status(200);
-                                let comments = res.body.comments;
-                                comments.length.should.eql(1);
-                                done();
-                            });
-                    });
-                }
-            );
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcomment`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ comment_id: comment_id })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            let comments = res.body.comments;
+                            comments.length.should.eql(1);
+                            done();
+                        });
+                });
+            });
         });
 
         it("it should fail to add a comment", done => {
@@ -483,73 +517,79 @@ describe("Question", () => {
         });
 
         it("it should fail to add a comment", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
 
-                    Question.findByIdAndDelete(question_id, err => {
-                        new Comment({
-                            content: "Test"
-                        }).save((err, comment) => {
-                            let comment_id = comment._id;
-
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcomment`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ comment_id: comment_id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        });
-                    });
-                }
-            );
-        });
-
-        it("it should fail to add a comment", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
-
+                Question.findByIdAndDelete(question_id, err => {
                     new Comment({
                         content: "Test"
                     }).save((err, comment) => {
                         let comment_id = comment._id;
-                        Comment.findByIdAndDelete(comment_id, err => {
-                            chai.request(server)
-                                .post(`/api/question/${question_id}/addcomment`)
-                                .set("Authentication", "Bearer " + idToken)
-                                .send({ comment_id: comment_id })
-                                .end((err, res) => {
-                                    res.should.have.status(500);
-                                    done();
-                                });
-                        });
-                    });
-                }
-            );
-        });
 
-        it("it should fail to add a comment", done => {
-            new Question({ name: "Test", content: "Test" }).save(
-                (err, question) => {
-                    let question_id = question._id;
-
-                    new Comment({
-                        content: "Test"
-                    }).save((err, comment) => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcomment`)
                             .set("Authentication", "Bearer " + idToken)
-                            .send({ comment_id: "1" })
+                            .send({ comment_id: comment_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
                                 done();
                             });
                     });
-                }
-            );
+                });
+            });
+        });
+
+        it("it should fail to add a comment", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Comment({
+                    content: "Test"
+                }).save((err, comment) => {
+                    let comment_id = comment._id;
+                    Comment.findByIdAndDelete(comment_id, err => {
+                        chai.request(server)
+                            .post(`/api/question/${question_id}/addcomment`)
+                            .set("Authentication", "Bearer " + idToken)
+                            .send({ comment_id: comment_id })
+                            .end((err, res) => {
+                                res.should.have.status(500);
+                                done();
+                            });
+                    });
+                });
+            });
+        });
+
+        it("it should fail to add a comment", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Comment({
+                    content: "Test"
+                }).save((err, comment) => {
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcomment`)
+                        .set("Authentication", "Bearer " + idToken)
+                        .send({ comment_id: "1" })
+                        .end((err, res) => {
+                            res.should.have.status(500);
+                            done();
+                        });
+                });
+            });
         });
     });
 });

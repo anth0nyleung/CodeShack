@@ -2,7 +2,10 @@
 import axios from "axios";
 import { auth } from "../../Components/utils/firebase";
 
-const url = process.env.PRODUCTION_URL || "http://localhost:8080/api/";
+const url =
+    process.env.NODE_ENV === "production"
+        ? "http://codeshack.herokuapp.com/api/"
+        : "http://localhost:8080/api/";
 
 /**
  * Returns the header config containing the idToken used for verification
@@ -17,6 +20,7 @@ const setHeader = callback => {
                         Authentication: "Bearer " + idToken
                     }
                 };
+                console.log(config);
                 callback(config);
             });
         } else {
@@ -251,7 +255,11 @@ export function loginUser(callback) {
                     console.log(err);
                     dispatch({ type: "AUTH_ERROR" });
                     dispatch({ type: "STOP_LOADING" });
-                    callback(err.response.status);
+                    if (err.response) {
+                        callback(err.response.status);
+                    } else {
+                        callback(err);
+                    }
                 });
         });
     };
@@ -345,6 +353,50 @@ export function deleteComment(comment_id, callback) {
     };
 }
 
+export function createCourse(course_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}course`, course_data, config)
+                .then(res => {
+                    loadAllCourses()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
+
+export function createCompany(company_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}company`, company_data, config)
+                .then(res => {
+                    loadAllCompanies()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
+
+export function createTopic(topic_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}topic`, topic_data, config)
+                .then(res => {
+                    loadAllTopics()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
 /**
  * Creates a user and loads them into the state
  * @param {Object} user_data

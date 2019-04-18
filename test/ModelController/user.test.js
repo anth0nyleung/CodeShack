@@ -144,20 +144,22 @@ describe("User", () => {
             };
 
             new User(user).save((err, user) => {
-                new Question({ name: "Test", content: "Test" }).save(
-                    (err, question) => {
-                        chai.request(server)
-                            .post(`/api/user/${user._id}/history`)
-                            .send({ question_id: question._id })
-                            .set("Authentication", "Bearer " + idToken)
-                            .end((err, res) => {
-                                res.should.have.status(200);
-                                const history = res.body.history;
-                                history.length.should.eql(1);
-                                done();
-                            });
-                    }
-                );
+                new Question({
+                    name: "Test",
+                    content: "Test",
+                    poster: "5cab70541930e60d68e908d2"
+                }).save((err, question) => {
+                    chai.request(server)
+                        .post(`/api/user/${user._id}/history`)
+                        .send({ question_id: question._id })
+                        .set("Authentication", "Bearer " + idToken)
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            const history = res.body.history;
+                            history.length.should.eql(1);
+                            done();
+                        });
+                });
             });
         });
 
@@ -171,26 +173,28 @@ describe("User", () => {
             };
 
             new User(user).save((err, user) => {
-                new Question({ name: "Test", content: "Test" }).save(
-                    (err, question) => {
-                        chai.request(server)
-                            .post(`/api/user/${user._id}/history`)
-                            .send({ question_id: question._id })
-                            .set("Authentication", "Bearer " + idToken)
-                            .end((err, res) => {
-                                chai.request(server)
-                                    .post(`/api/user/${user._id}/history`)
-                                    .send({ question_id: question._id })
-                                    .set("Authentication", "Bearer " + idToken)
-                                    .end((err, res) => {
-                                        res.should.have.status(200);
-                                        const history = res.body.history;
-                                        history.length.should.eql(1);
-                                        done();
-                                    });
-                            });
-                    }
-                );
+                new Question({
+                    name: "Test",
+                    content: "Test",
+                    poster: "5cab70541930e60d68e908d2"
+                }).save((err, question) => {
+                    chai.request(server)
+                        .post(`/api/user/${user._id}/history`)
+                        .send({ question_id: question._id })
+                        .set("Authentication", "Bearer " + idToken)
+                        .end((err, res) => {
+                            chai.request(server)
+                                .post(`/api/user/${user._id}/history`)
+                                .send({ question_id: question._id })
+                                .set("Authentication", "Bearer " + idToken)
+                                .end((err, res) => {
+                                    res.should.have.status(200);
+                                    const history = res.body.history;
+                                    history.length.should.eql(1);
+                                    done();
+                                });
+                        });
+                });
             });
         });
 

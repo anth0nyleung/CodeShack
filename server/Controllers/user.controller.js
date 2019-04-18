@@ -5,7 +5,13 @@ module.exports = {
      * Creates a user in the database
      */
     createUser: (req, res) => {
-        var user = new User(req.body);
+        var user = new User({
+            username: req.body.username,
+            firebase_id: req.body.firebase_id,
+            email: req.body.email,
+            name: req.body.name,
+            year: req.body.year
+        });
 
         user.save(function(err, newUser) {
             if (err) {
@@ -13,6 +19,29 @@ module.exports = {
                 res.send(err);
             } else {
                 res.send(newUser);
+            }
+        });
+    },
+    /**
+     * Updates a user in the database
+     */
+    updateUser: (req, res) => {
+        User.findOne({ firebase_id: req.firebase_id }, (err, user) => {
+            if (err) {
+                res.status(500);
+                res.send(err);
+            } else if (!user) {
+                res.status(500);
+                res.send();
+            } else {
+                Object.assign(user, req.body).save((err, user) => {
+                    if (err) {
+                        res.status(500);
+                        res.send(err);
+                    } else {
+                        res.send(user);
+                    }
+                });
             }
         });
     },
@@ -36,6 +65,9 @@ module.exports = {
             });
     },
 
+    /**
+     * Adds a question to the users history
+     */
     addHistory: (req, res) => {
         User.findById(req.params.id, (err, user) => {
             if (err) {

@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { loadAllCourses } from "../redux/actions/actions";
+import { loadAllCourses, createCourse } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { Jumbotron, Container } from "reactstrap";
+import {
+    Jumbotron,
+    Container,
+    Button,
+    Row,
+    Col,
+    Collapse,
+    Input
+} from "reactstrap";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
@@ -9,7 +17,8 @@ import PropTypes from "prop-types";
 const mapStateToProps = state => {
     return {
         courses: state.course.courses,
-        isLoading: state.loading.isLoading
+        isLoading: state.loading.isLoading,
+        userRole: state.authUser.user.role
     };
 };
 
@@ -17,6 +26,16 @@ const mapStateToProps = state => {
  * Course Overview page component
  */
 export class CourseOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            courseNumber: "",
+            courseName: "",
+            toggle: false
+        };
+    }
+
     componentDidMount() {
         // Sets the title of the page
         document.title = "Course Overview";
@@ -24,13 +43,26 @@ export class CourseOverview extends Component {
         this.props.loadAllCourses();
     }
 
+    onChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    };
+
+    onAddCourse = event => {
+        this.props.createCourse({
+            courseNumber: this.state.courseNumber,
+            courseName: this.state.courseName
+        });
+        this.setState({ toggle: false });
+    };
+
     /**
      * Redirects to the corresponding course page
      *
      * @param event.target.id The name of the page to redirect to
      */
     onRedirect = event => {
-        console.log(event.target);
         this.context.router.history.push(`/courses/${event.target.id}`);
         event.preventDefault();
     };
@@ -76,6 +108,7 @@ export class CourseOverview extends Component {
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
+
                     <Container>
                         <BootstrapTable
                             data={this.props.courses.sort(function(a, b) {
@@ -115,6 +148,50 @@ export class CourseOverview extends Component {
                                 Num. Questions
                             </TableHeaderColumn>
                         </BootstrapTable>
+                        <Row>
+                            <Col>
+                                {this.props.userRole === "admin" && (
+                                    <Button
+                                        style={{ marginTop: "16px" }}
+                                        onClick={() => {
+                                            this.setState({
+                                                toggle: !this.state.toggle
+                                            });
+                                        }}
+                                        color="primary"
+                                    >
+                                        + Course
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                        <Collapse isOpen={this.state.toggle}>
+                            <Row>
+                                <Col>
+                                    <Input
+                                        id="courseNumber"
+                                        placeholder="Course Number..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Input
+                                        id="courseName"
+                                        placeholder="Course Name..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Button
+                                        color="primary"
+                                        onClick={this.onAddCourse}
+                                        disabled={
+                                            this.state.courseName.length ===
+                                                0 ||
+                                            this.state.courseNumber === 0
+                                        }
+                                    >
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Collapse>
                     </Container>
                 </main>
                 <footer>
@@ -134,5 +211,5 @@ CourseOverview.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadAllCourses }
+    { loadAllCourses, createCourse }
 )(CourseOverview);

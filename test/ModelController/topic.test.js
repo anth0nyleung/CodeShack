@@ -66,7 +66,7 @@ describe("Topic", () => {
     });
 
     describe("Create topic /POST", () => {
-        it("it should create a topic", done => {
+        it("it should fail to create a topic", done => {
             let topic = {
                 topicName: "Test"
             };
@@ -75,9 +75,7 @@ describe("Topic", () => {
                 .set("Authentication", "Bearer " + idToken)
                 .send(topic)
                 .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a("object");
-                    res.body.should.have.property("topicName").eql("Test");
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -87,14 +85,14 @@ describe("Topic", () => {
                 .post("/api/topic")
                 .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
-                    res.should.have.status(500);
+                    res.should.have.status(403);
                     done();
                 });
         });
     });
 
     describe("Update Topic /POST", () => {
-        it("it should update a topic", done => {
+        it("it should fail update a topic", done => {
             let topic = new Topic({
                 topicName: "Test"
             });
@@ -109,10 +107,7 @@ describe("Topic", () => {
                     .set("Authentication", "Bearer " + idToken)
                     .send(newTopicName)
                     .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.have
-                            .property("topicName")
-                            .eql("Updated Topic");
+                        res.should.have.status(403);
                         done();
                     });
             });
@@ -123,7 +118,7 @@ describe("Topic", () => {
                 .patch(`/api/topic/1`)
                 .set("Authentication", "Bearer " + idToken)
                 .end((err, res) => {
-                    res.should.have.status(500);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -142,7 +137,7 @@ describe("Topic", () => {
                         .set("Authentication", "Bearer " + idToken)
                         .send(newTopicName)
                         .end((err, res) => {
-                            res.should.have.status(500);
+                            res.should.have.status(403);
                             done();
                         });
                 });
@@ -234,7 +229,8 @@ describe("Topic", () => {
                 topic_id = topic._id;
                 let question = new Question({
                     name: "Question 1",
-                    content: "Content is here."
+                    content: "Content is here.",
+                    poster: "5cab70541930e60d68e908d2"
                 });
 
                 var question_id;

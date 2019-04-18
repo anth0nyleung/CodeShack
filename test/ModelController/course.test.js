@@ -65,7 +65,7 @@ describe("Course", () => {
 
     /* Test the /POST route */
     describe("Create course /POST", () => {
-        it("it should create a course", done => {
+        it("it should fail to create a course", done => {
             let course = {
                 courseName: "Programming",
                 courseNumber: "CS506"
@@ -75,11 +75,7 @@ describe("Course", () => {
                 .set("Authentication", "Bearer " + idToken)
                 .send(course)
                 .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a("object");
-                    res.body.should.have
-                        .property("courseName")
-                        .eql("Programming");
+                    res.should.have.status(500);
                     done();
                 });
         });
@@ -95,7 +91,7 @@ describe("Course", () => {
     });
 
     describe("Update course /PATCH", () => {
-        it("it should update a course", done => {
+        it("it should fail to update a course", done => {
             let course = new Course({
                 courseName: "Test Course",
                 courseNumber: "CS432"
@@ -112,10 +108,7 @@ describe("Course", () => {
                     .set("Authentication", "Bearer " + idToken)
                     .send(newCourseName)
                     .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.have
-                            .property("courseName")
-                            .eql("Updated Course");
+                        res.should.have.status(500);
                         done();
                     });
             });
@@ -228,7 +221,8 @@ describe("Course", () => {
                 course_id = course._id;
                 let question = new Question({
                     name: "Question 1",
-                    content: "Content is here."
+                    content: "Content is here.",
+                    poster: "5cab70541930e60d68e908d2"
                 });
 
                 var question_id;

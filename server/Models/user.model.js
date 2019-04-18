@@ -9,7 +9,15 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     history: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
-    favCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }]
+    favCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+    role: { type: String, enum: ["admin", "user"], default: "user" }
+});
+
+UserSchema.pre("save", function(next) {
+    if (this.isModified("role")) {
+        return next(new Error("Trying to modify restricted data"));
+    }
+    return next();
 });
 
 UserSchema.methods.addHistory = function(question_id, callback) {

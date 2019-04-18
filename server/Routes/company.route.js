@@ -4,11 +4,19 @@ const auth = require("../Controllers/auth.controller");
 module.exports = router => {
     router
         .route("/company")
-        .post(auth.validateFirebaseIdToken, company.createCompany);
+        .post(
+            auth.validateFirebaseIdToken,
+            auth.requireAdmin,
+            company.createCompany
+        );
 
     router
         .route("/company/:id")
-        .patch(auth.validateFirebaseIdToken, company.updateCompany);
+        .patch(
+            auth.validateFirebaseIdToken,
+            auth.requireAdmin,
+            company.updateCompany
+        );
 
     router
         .route("/company")

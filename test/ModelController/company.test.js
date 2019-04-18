@@ -2,6 +2,7 @@ process.env.NODE_ENV = "test";
 
 let Company = require("../../server/Models/company.model");
 let Question = require("../../server/Models/question.model");
+let User = require("../../server/Models/user.model");
 let admin = require("../../server/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
@@ -53,33 +54,42 @@ describe("Company", () => {
     beforeEach(done => {
         Company.deleteMany({}, err => {
             Question.deleteMany({}, err => {
-                admin
-                    .auth()
-                    .createCustomToken(UID)
-                    .then(token => {
-                        getIdTokenFromCustomToken(token, () => {
-                            done();
+                User.deleteMany({}, err => {
+                    admin
+                        .auth()
+                        .createCustomToken(UID)
+                        .then(token => {
+                            getIdTokenFromCustomToken(token, () => {
+                                done();
+                            });
                         });
-                    });
+                });
             });
         });
     });
 
     describe("Create Company /POST", () => {
-        it("it should create a company", done => {
+        it("it should fail to create a company ", done => {
             let company = {
                 companyName: "Test"
             };
-            chai.request(server)
-                .post("/api/company")
-                .set("Authentication", "Bearer " + idToken)
-                .send(company)
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a("object");
-                    res.body.should.have.property("companyName").eql("Test");
-                    done();
-                });
+            new User({
+                username: "test",
+                firebase_id: UID,
+                name: "test",
+                year: "test",
+                email: "test"
+            }).save((err, user) => {
+                console.log(err);
+                chai.request(server)
+                    .post("/api/company")
+                    .set("Authentication", "Bearer " + idToken)
+                    .send(company)
+                    .end((err, res) => {
+                        res.should.have.status(403);
+                        done();
+                    });
+            });
         });
 
         it("it should fail to create a company", done => {
@@ -94,7 +104,7 @@ describe("Company", () => {
     });
 
     describe("Update Company /POST", () => {
-        it("it should update a company", done => {
+        it("it should fail to update a company", done => {
             let company = new Company({
                 companyName: "Test"
             });
@@ -109,10 +119,7 @@ describe("Company", () => {
                     .set("Authentication", "Bearer " + idToken)
                     .send(newCompanyName)
                     .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.have
-                            .property("companyName")
-                            .eql("Updated Company");
+                        res.should.have.status(500);
                         done();
                     });
             });
@@ -237,7 +244,8 @@ describe("Company", () => {
                 company_id = company._id;
                 let question = new Question({
                     name: "Question 1",
-                    content: "Content is here."
+                    content: "Content is here.",
+                    poster: "5cab70541930e60d68e908d2"
                 });
 
                 var question_id;

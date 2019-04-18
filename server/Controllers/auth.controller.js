@@ -1,5 +1,5 @@
 const admin = require("../Firebase/admin");
-
+const User = require("../Models/user.model");
 module.exports = {
     /**
      * Reads idToken from the header, verifies it, then sends the id to next route
@@ -25,5 +25,20 @@ module.exports = {
         } else {
             return res.status(401).send();
         }
+    },
+    requireAdmin: (req, res, next) => {
+        User.findOne({ firebase_id: req.firebase_id }, (err, user) => {
+            if (err) {
+                return res.status(500).send(err);
+            } else if (!user) {
+                return res.status(500).send();
+            } else {
+                if (user.role !== "admin") {
+                    return res.status(403).send(new Error("Not authorized"));
+                } else {
+                    return next();
+                }
+            }
+        });
     }
 };

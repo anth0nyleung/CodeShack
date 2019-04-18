@@ -4,11 +4,19 @@ const auth = require("../Controllers/auth.controller");
 module.exports = router => {
     router
         .route("/topic")
-        .post(auth.validateFirebaseIdToken, topic.createTopic);
+        .post(
+            auth.validateFirebaseIdToken,
+            auth.requireAdmin,
+            topic.createTopic
+        );
 
     router
         .route("/topic/:id")
-        .patch(auth.validateFirebaseIdToken, topic.updateTopic);
+        .patch(
+            auth.validateFirebaseIdToken,
+            auth.requireAdmin,
+            topic.updateTopic
+        );
 
     router.route("/topic").get(auth.validateFirebaseIdToken, topic.getTopics);
 

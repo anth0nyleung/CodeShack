@@ -97,7 +97,7 @@ export class Login extends Component {
                             console.log("Invalid token");
                         } else if (err === 401) {
                             console.log("Invalid request");
-                        } else if (err === 500) {
+                        } else {
                             console.log("error");
                         }
                     });
