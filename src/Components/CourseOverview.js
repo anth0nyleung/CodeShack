@@ -38,7 +38,7 @@ export class CourseOverview extends Component {
 
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Course Overview";
+        document.title = "Courses";
 
         this.props.loadAllCourses();
     }

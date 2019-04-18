@@ -56,6 +56,10 @@ class Main extends Component {
         this.state = {};
     }
 
+    componentDidMount() {
+        document.title = "CodeShack";
+    }
+
     onClickLogin = () => {
         this.context.router.history.push("/login");
     };

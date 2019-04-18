@@ -37,7 +37,7 @@ export class TopicOverview extends Component {
 
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Topic Overview";
+        document.title = "Topics";
 
         this.props.loadAllTopics();
     }

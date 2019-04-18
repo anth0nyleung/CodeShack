@@ -19,6 +19,7 @@ const mapStateToProps = state => {
  */
 export class TopicQuestions extends Component {
     componentDidMount() {
+        document.title = "Questions";
         this.props.loadTopic(this.props.match.params.id);
     }
 

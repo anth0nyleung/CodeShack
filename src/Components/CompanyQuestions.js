@@ -19,6 +19,7 @@ const mapStateToProps = state => {
  */
 export class CompanyQuestions extends Component {
     componentDidMount() {
+        document.title = "Questions";
         this.props.loadCompany(this.props.match.params.id);
     }
 

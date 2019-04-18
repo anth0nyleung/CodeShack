@@ -37,7 +37,7 @@ export class CompanyOverview extends Component {
 
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Company Overview";
+        document.title = "Companies";
 
         this.props.loadAllCompanies();
     }

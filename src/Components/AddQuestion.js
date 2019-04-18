@@ -98,6 +98,7 @@ export class AddQuestion extends Component {
     };
 
     componentDidMount() {
+        document.title = "Create Question";
         this.props.loadAllCompanies();
         this.props.loadAllCourses();
         this.props.loadAllTopics();

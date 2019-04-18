@@ -20,7 +20,7 @@ const setHeader = callback => {
                         Authentication: "Bearer " + idToken
                     }
                 };
-                console.log(config);
+                //console.log(config);
                 callback(config);
             });
         } else {
