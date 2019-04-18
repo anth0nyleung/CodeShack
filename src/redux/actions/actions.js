@@ -145,13 +145,13 @@ const formatQuestionTags = (questions, callback) => {
     questions.forEach(question => {
         questionTags[question._id] = [];
         question.courses.forEach(course => {
-            questionTags[question._id].push(course.courseNumber);
+            questionTags[question._id] += course.courseName + ", ";
         });
         question.topics.forEach(topic => {
-            questionTags[question._id].push(topic.topicName);
+            questionTags[question._id] += topic.topicName + ", ";
         });
         question.companies.forEach(company => {
-            questionTags[question._id].push(company.companyName);
+            questionTags[question._id] += company.companyName + ", ";
         });
     });
     return callback(questionTags);

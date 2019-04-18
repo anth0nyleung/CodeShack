@@ -34,7 +34,7 @@ class AllQuestions extends Component {
     };
 
     formatTags = (cell, row) => {
-        return this.props.questionTags[row._id];
+        return this.props.questionTags[row._id].slice(0, -2);
     };
 
     formatDescription = (cell, row) => {
