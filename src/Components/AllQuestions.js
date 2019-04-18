@@ -4,8 +4,12 @@ import { loadAllQuestions } from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
+
+const { SearchBar } = Search;
 
 const mapStateToProps = state => {
     return {
@@ -29,7 +33,7 @@ class AllQuestions extends Component {
         this.props.loadAllQuestions();
     }
 
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/question/${row._id}`);
     };
 
@@ -54,8 +58,38 @@ class AllQuestions extends Component {
                 </main>
             );
         }
-        const options = {
-            onRowClick: this.onRowClick
+        const columns = [
+            {
+                dataField: "name",
+                text: "Question Name",
+                sort: "true"
+            },
+            {
+                dataField: "content",
+                text: "Description",
+                style: {
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden"
+                },
+                formatter: (cell, row) => {
+                    return cell
+                        ? convertFromRaw(JSON.parse(cell)).getPlainText()
+                        : null;
+                }
+            },
+            {
+                dataField: "tags",
+                isDummyField: true,
+                text: "Tags",
+                formatter: (cell, row, index, formatExtraData) => {
+                    return formatExtraData[row._id].slice(0, -2);
+                },
+                formatExtraData: this.props.questionTags
+            }
+        ];
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
@@ -69,50 +103,27 @@ class AllQuestions extends Component {
                         <h2 style={{ marginTop: "16px", marginBottom: "16px" }}>
                             Questions
                         </h2>
-                        <BootstrapTable
+                        <ToolkitProvider
+                            keyField="_id"
                             data={this.props.questions}
-                            striped
-                            pagination={true}
-                            search
-                            hover
-                            bordered={false}
-                            options={options}
+                            columns={columns}
+                            search={{ searchFormatted: true }}
                         >
-                            <TableHeaderColumn isKey={true} dataField="name">
-                                Name
-                            </TableHeaderColumn>
-                            {/*<TableHeaderColumn
-                                tdStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                thStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                dataField="content"
-                                dataFormat={this.formatDescription}
-                            >
-                                Description
-                            </TableHeaderColumn>*/}
-                            <TableHeaderColumn
-                                tdStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                thStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                dataFormat={this.formatTags}
-                            >
-                                Tags
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            {props => (
+                                <div>
+                                    <SearchBar {...props.searchProps} />
+                                    <BootstrapTable
+                                        {...props.baseProps}
+                                        pagination={paginationFactory()}
+                                        hover
+                                        bordered={false}
+                                        rowEvents={rowEvents}
+                                        bootstrap4
+                                        striped
+                                    />
+                                </div>
+                            )}
+                        </ToolkitProvider>
                     </Container>
                 </main>
             </div>

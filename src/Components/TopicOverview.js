@@ -10,9 +10,32 @@ import {
     Collapse,
     Input
 } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
+
+const columns = [
+    {
+        dataField: "topicName",
+        text: "Topic Name",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "70%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "questions.length",
+        text: "Num. Questions",
+        sort: true
+    }
+];
+
+const defaultSorted = [
+    {
+        dataField: "questions.length",
+        order: "desc"
+    }
+];
 
 const mapStateToProps = state => {
     return {
@@ -58,27 +81,9 @@ export class TopicOverview extends Component {
     };
 
     /**
-     * Redirects to the corresponding course page
-     *
-     * @param event.target.id The name of the page to redirect to
-     */
-    onRedirect = event => {
-        console.log(event.target);
-        this.context.router.history.push(`/topic/${event.target.id}`);
-        event.preventDefault();
-    };
-
-    /**
-     * Counts the number of quesions a course has
-     */
-    countNumber = (cell, row) => {
-        return cell.length;
-    };
-
-    /**
      * Handles clicking on a course
      */
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/topic/${row._id}`);
     };
 
@@ -97,8 +102,8 @@ export class TopicOverview extends Component {
             );
         }
 
-        const options = {
-            onRowClick: this.onRowClick
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
@@ -111,31 +116,16 @@ export class TopicOverview extends Component {
                     </Jumbotron>
                     <Container>
                         <BootstrapTable
-                            data={this.props.topics.sort(function(a, b) {
-                                return b.questions.length - a.questions.length;
-                            })}
+                            keyField="_id"
+                            data={this.props.topics}
+                            columns={columns}
                             striped
                             hover
                             bordered={false}
-                            options={options}
-                        >
-                            <TableHeaderColumn
-                                isKey={true}
-                                dataField="topicName"
-                                width="60%"
-                            >
-                                Topics
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="questions"
-                                thStyle={{
-                                    whiteSpace: "normal"
-                                }}
-                                dataFormat={this.countNumber}
-                            >
-                                Num. Questions
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            rowEvents={rowEvents}
+                            defaultSorted={defaultSorted}
+                            bootstrap4
+                        />
                         <Row>
                             <Col>
                                 {this.props.userRole === "admin" && (

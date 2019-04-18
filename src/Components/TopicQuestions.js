@@ -4,8 +4,33 @@ import { loadTopic } from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
+
+const { SearchBar } = Search;
+const columns = [
+    {
+        dataField: "name",
+        text: "Question Name",
+        sort: "true"
+    },
+    {
+        dataField: "content",
+        text: "Description",
+        style: {
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden"
+        },
+        formatter: (cell, row) => {
+            return cell
+                ? convertFromRaw(JSON.parse(cell)).getPlainText()
+                : null;
+        }
+    }
+];
 
 const mapStateToProps = state => {
     return {
@@ -24,17 +49,9 @@ export class TopicQuestions extends Component {
     }
 
     /**
-     * Formats the description of a question to be readable
-     */
-    formatDescription = (cell, row) => {
-        console.log(cell);
-        return convertFromRaw(JSON.parse(cell)).getPlainText();
-    };
-
-    /**
      * Handles clicking on a question
      */
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/question/${row._id}`);
     };
 
@@ -52,8 +69,8 @@ export class TopicQuestions extends Component {
                 </main>
             );
         }
-        const options = {
-            onRowClick: this.onRowClick
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
@@ -69,40 +86,27 @@ export class TopicQuestions extends Component {
                         <h2 style={{ marginTop: "16px", marginBottom: "16px" }}>
                             Questions
                         </h2>
-                        <BootstrapTable
+                        <ToolkitProvider
+                            keyField="_id"
                             data={this.props.currentTopic.questions}
-                            striped
-                            pagination={true}
-                            search={true}
-                            hover
-                            bordered={false}
-                            options={options}
+                            columns={columns}
+                            search
                         >
-                            <TableHeaderColumn
-                                width="30%"
-                                isKey={true}
-                                dataField="name"
-                            >
-                                Name
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                tdStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                thStyle={{
-                                    whiteSpace: "nowrap",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden"
-                                }}
-                                dataField="content"
-                                width="65%"
-                                dataFormat={this.formatDescription}
-                            >
-                                Description
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            {props => (
+                                <div>
+                                    <SearchBar {...props.searchProps} />
+                                    <BootstrapTable
+                                        {...props.baseProps}
+                                        pagination={paginationFactory()}
+                                        hover
+                                        bordered={false}
+                                        rowEvents={rowEvents}
+                                        bootstrap4
+                                        striped
+                                    />
+                                </div>
+                            )}
+                        </ToolkitProvider>
                     </Container>
                 </main>
                 <footer>

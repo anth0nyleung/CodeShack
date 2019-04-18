@@ -10,9 +10,40 @@ import {
     Collapse,
     Input
 } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
+
+const columns = [
+    {
+        dataField: "courseNumber",
+        text: "Course Num.",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "20%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "courseName",
+        text: "Coruse Name",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "50%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "questions.length",
+        text: "Num. Questions",
+        sort: true
+    }
+];
+
+const defaultSorted = [
+    {
+        dataField: "questions.length",
+        order: "desc"
+    }
+];
 
 const mapStateToProps = state => {
     return {
@@ -58,26 +89,9 @@ export class CourseOverview extends Component {
     };
 
     /**
-     * Redirects to the corresponding course page
-     *
-     * @param event.target.id The name of the page to redirect to
-     */
-    onRedirect = event => {
-        this.context.router.history.push(`/courses/${event.target.id}`);
-        event.preventDefault();
-    };
-
-    /**
-     * Counts the number of quesions a course has
-     */
-    countNumber = (cell, row) => {
-        return cell.length;
-    };
-
-    /**
      * Handles clicking on a course
      */
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/courses/${row._id}`);
     };
 
@@ -96,8 +110,8 @@ export class CourseOverview extends Component {
             );
         }
 
-        const options = {
-            onRowClick: this.onRowClick
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
@@ -111,43 +125,16 @@ export class CourseOverview extends Component {
 
                     <Container>
                         <BootstrapTable
-                            data={this.props.courses.sort(function(a, b) {
-                                return b.questions.length - a.questions.length;
-                            })}
+                            keyField="_id"
+                            data={this.props.courses}
+                            columns={columns}
                             striped
                             hover
                             bordered={false}
-                            options={options}
-                        >
-                            <TableHeaderColumn
-                                isKey={true}
-                                thStyle={{
-                                    whiteSpace: "normal"
-                                }}
-                                dataField="courseNumber"
-                                width="auto"
-                                dataSort={true}
-                            >
-                                Course Number
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="courseName"
-                                width="50%"
-                            >
-                                CourseName
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataSort={true}
-                                dataField="questions"
-                                thStyle={{
-                                    whiteSpace: "normal"
-                                }}
-                                dataFormat={this.countNumber}
-                                width="auto"
-                            >
-                                Num. Questions
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            rowEvents={rowEvents}
+                            defaultSorted={defaultSorted}
+                            bootstrap4
+                        />
                         <Row>
                             <Col>
                                 {this.props.userRole === "admin" && (
