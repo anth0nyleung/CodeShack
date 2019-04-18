@@ -67,6 +67,20 @@ module.exports = {
             }
         });
     },
+    getQuestions: (req, res) => {
+        Question.find({})
+            .populate("courses", ["courseName", "courseNumber"])
+            .populate("topics", ["topicName"])
+            .populate("companies", ["companyName"])
+            .exec((err, questions) => {
+                if (err) {
+                    res.status(500);
+                    res.send(err);
+                } else {
+                    res.send(questions);
+                }
+            });
+    },
     /**
      * Get a question from the database. Populates all fields
      * GET /question/:id

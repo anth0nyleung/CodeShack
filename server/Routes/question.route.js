@@ -11,6 +11,10 @@ module.exports = router => {
         .patch(auth.validateFirebaseIdToken, question.updateQuestion);
 
     router
+        .route("/question")
+        .get(auth.validateFirebaseIdToken, question.getQuestions);
+
+    router
         .route("/question/:id")
         .get(auth.validateFirebaseIdToken, question.getQuestion);
 

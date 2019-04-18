@@ -140,6 +140,45 @@ export function loadQuestion(question_id) {
     };
 }
 
+const formatQuestionTags = (questions, callback) => {
+    var questionTags = [[]];
+    questions.forEach(question => {
+        questionTags[question._id] = [];
+        question.courses.forEach(course => {
+            questionTags[question._id].push(course.courseNumber);
+        });
+        question.topics.forEach(topic => {
+            questionTags[question._id].push(topic.topicName);
+        });
+        question.companies.forEach(company => {
+            questionTags[question._id].push(company.companyName);
+        });
+    });
+    return callback(questionTags);
+};
+
+export function loadAllQuestions() {
+    return dispatch => {
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}question`, config)
+                .then(res => {
+                    let questions = res.data;
+                    dispatch({ type: "LOAD_QUESTIONS", questions });
+                    formatQuestionTags(questions, questionTags => {
+                        dispatch({ type: "LOAD_TAGS", questionTags });
+                        dispatch({ type: "STOP_LOADING" });
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
+    };
+}
+
 /**
  * Saves a specific question into user's history
  *
