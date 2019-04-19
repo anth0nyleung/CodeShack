@@ -6,13 +6,7 @@ import {
     Col,
     Button,
     Jumbotron,
-    Container,
-    Card,
-    CardImg,
-    CardText,
-    CardBody,
-    CardTitle,
-    
+    Container,   
 } from "reactstrap";
 
 const mainStyles = {
