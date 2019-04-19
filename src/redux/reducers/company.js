@@ -1,6 +1,6 @@
 const initialState = {
     companies: [],
-    currentCompany: {}
+    currentCompany: { questions: [] }
 };
 
 export default (state = initialState, action) => {

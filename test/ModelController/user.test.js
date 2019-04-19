@@ -1,12 +1,12 @@
 process.env.NODE_ENV = "test";
 
-let User = require("../../src/Backend/Models/user.model");
-let Question = require("../../src/Backend/Models/question.model");
-let admin = require("../../src/Backend/Firebase/admin");
+let User = require("../../server/Models/user.model");
+let Question = require("../../server/Models/question.model");
+let admin = require("../../server/Firebase/admin");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../src/Backend/server");
+let server = require("../../server/server");
 let should = chai.should();
 
 let idToken = "";
@@ -144,20 +144,22 @@ describe("User", () => {
             };
 
             new User(user).save((err, user) => {
-                new Question({ name: "Test", content: "Test" }).save(
-                    (err, question) => {
-                        chai.request(server)
-                            .post(`/api/user/${user._id}/history`)
-                            .send({ question_id: question._id })
-                            .set("Authentication", "Bearer " + idToken)
-                            .end((err, res) => {
-                                res.should.have.status(200);
-                                const history = res.body.history;
-                                history.length.should.eql(1);
-                                done();
-                            });
-                    }
-                );
+                new Question({
+                    name: "Test",
+                    content: "Test",
+                    poster: "5cab70541930e60d68e908d2"
+                }).save((err, question) => {
+                    chai.request(server)
+                        .post(`/api/user/${user._id}/history`)
+                        .send({ question_id: question._id })
+                        .set("Authentication", "Bearer " + idToken)
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            const history = res.body.history;
+                            history.length.should.eql(1);
+                            done();
+                        });
+                });
             });
         });
 
@@ -171,26 +173,28 @@ describe("User", () => {
             };
 
             new User(user).save((err, user) => {
-                new Question({ name: "Test", content: "Test" }).save(
-                    (err, question) => {
-                        chai.request(server)
-                            .post(`/api/user/${user._id}/history`)
-                            .send({ question_id: question._id })
-                            .set("Authentication", "Bearer " + idToken)
-                            .end((err, res) => {
-                                chai.request(server)
-                                    .post(`/api/user/${user._id}/history`)
-                                    .send({ question_id: question._id })
-                                    .set("Authentication", "Bearer " + idToken)
-                                    .end((err, res) => {
-                                        res.should.have.status(200);
-                                        const history = res.body.history;
-                                        history.length.should.eql(1);
-                                        done();
-                                    });
-                            });
-                    }
-                );
+                new Question({
+                    name: "Test",
+                    content: "Test",
+                    poster: "5cab70541930e60d68e908d2"
+                }).save((err, question) => {
+                    chai.request(server)
+                        .post(`/api/user/${user._id}/history`)
+                        .send({ question_id: question._id })
+                        .set("Authentication", "Bearer " + idToken)
+                        .end((err, res) => {
+                            chai.request(server)
+                                .post(`/api/user/${user._id}/history`)
+                                .send({ question_id: question._id })
+                                .set("Authentication", "Bearer " + idToken)
+                                .end((err, res) => {
+                                    res.should.have.status(200);
+                                    const history = res.body.history;
+                                    history.length.should.eql(1);
+                                    done();
+                                });
+                        });
+                });
             });
         });
 

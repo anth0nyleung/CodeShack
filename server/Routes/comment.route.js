@@ -16,5 +16,5 @@ module.exports = router => {
 
     router
         .route("/comment/:id")
-        .get(/*auth.validateFirebaseIdToken,*/ comment.getComment);
+        .get(auth.validateFirebaseIdToken, comment.getComment);
 };

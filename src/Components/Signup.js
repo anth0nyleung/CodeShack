@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { signupUser } from "../redux/actions/actions";
-import { auth, provider } from "../Backend/Firebase/firebase";
+import { signupUser, loadAllCourses } from "../redux/actions/actions";
+import { auth, provider } from "./utils/firebase";
+import Select from "react-select";
 
 import {
     Col,
@@ -45,7 +46,8 @@ const mapStateToProps = state => {
     return {
         user: state.authUser.user,
         isAuth: state.authUser.isAuth,
-        authError: state.authUser.authError
+        authError: state.authUser.authError,
+        courses: state.course.courses
     };
 };
 
@@ -69,6 +71,7 @@ export class Signup extends Component {
     componentDidMount() {
         // Sets the title of the page
         document.title = " CodeShack - Signup";
+        this.props.loadAllCourses();
     }
 
     //Handle sign up button pressed
@@ -90,7 +93,7 @@ export class Signup extends Component {
                         username: this.state.username,
                         name: this.state.name,
                         year: this.state.year,
-                        currentCourse: this.state.currentCourse
+                        courses: this.state.currentCourse
                     });
                 }
                 // Reject and require to log in with wisc edu email again
@@ -139,19 +142,29 @@ export class Signup extends Component {
     // Handle input change
     handleChange = e => {
         console.log("Handle change");
+        this.setState({
+            [e.target.id]: e.target.value
+        });
+    };
 
-        if (e.target.id === "currentCourse") {
-            this.state.currentCourse.push(e.target.value);
+    handleTagChange = event => {
+        var courses = [];
+        event.forEach(element => {
+            courses.push(element.value);
+        });
+        this.setState({ currentCourse: courses });
+        console.log(this.state.currentCourse);
+    };
 
-            this.setState({
-                [e.target.id]: this.state.currentCourse
+    loadOptions = () => {
+        var options = [];
+        this.props.courses.forEach(course => {
+            options.push({
+                value: course._id,
+                label: course.courseNumber + ": " + course.courseName
             });
-        } else {
-            this.setState({
-                [e.target.id]: e.target.value
-            });
-        }
-        console.log(this.state);
+        });
+        return options;
     };
 
     render() {
@@ -241,21 +254,17 @@ export class Signup extends Component {
                             </FormGroup>
                             <FormGroup onChange={this.handleChange}>
                                 <Label for="currentCourse">
-                                    Current Course
+                                    Current Courses
                                 </Label>
-                                <Input
-                                    multiple
-                                    type="select"
-                                    name="currentCourse"
-                                    id="currentCourse"
-                                >
-                                    <option>CS200</option>
-                                    <option>CS300</option>
-                                    <option>CS400</option>
-                                    <option>CS240</option>
-                                    <option>CS354</option>
-                                    <option>CS577</option>
-                                </Input>
+                                <Select
+                                    isMulti
+                                    isSearchable
+                                    name="courses"
+                                    options={this.loadOptions()}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={this.handleTagChange}
+                                />
                             </FormGroup>
                             <Button
                                 outline
@@ -291,5 +300,5 @@ Signup.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { signupUser }
+    { signupUser, loadAllCourses }
 )(Signup);

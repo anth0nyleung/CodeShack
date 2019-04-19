@@ -1,8 +1,19 @@
 import React, { Component } from "react";
 import { DraftailEditor, BLOCK_TYPE, INLINE_STYLE } from "draftail";
-import { Container, Input, Button } from "reactstrap";
+import { EditorState, convertToRaw } from "draft-js";
+import {
+    Container,
+    Input,
+    Button,
+    Row,
+    Col,
+    Modal,
+    ModalBody,
+    ModalFooter
+} from "reactstrap";
 import PropTypes from "prop-types";
 import Select from "react-select";
+import InfoPopover from "./InfoPopover";
 import {
     loadAllCompanies,
     loadAllCourses,
@@ -11,6 +22,7 @@ import {
     saveQuestionToUserHistory
 } from "../redux/actions/actions";
 import { connect } from "react-redux";
+import PrismDecorator from "./utils/PrismDecorator.js";
 
 const mapStateToProps = state => {
     return {
@@ -30,12 +42,17 @@ export class AddQuestion extends Component {
 
         this.state = {
             name: "",
-            content: null,
-            solution: null,
+            content: convertToRaw(
+                EditorState.createEmpty().getCurrentContent()
+            ),
+            solution: convertToRaw(
+                EditorState.createEmpty().getCurrentContent()
+            ),
             courses: [],
             companies: [],
             topics: [],
-            error: false
+            error: false,
+            decorator: new PrismDecorator({ defaultLanguage: "javascript" })
         };
     }
 
@@ -85,9 +102,15 @@ export class AddQuestion extends Component {
     };
 
     componentDidMount() {
+        document.title = "Create Question";
+        this._isMounted = true;
         this.props.loadAllCompanies();
         this.props.loadAllCourses();
         this.props.loadAllTopics();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     /**
@@ -192,16 +215,50 @@ export class AddQuestion extends Component {
         return (
             <main>
                 <Container>
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Question Title
+                    <h2
+                        style={{
+                            paddingTop: "16px",
+                            paddingBottom: "16px"
+                        }}
+                    >
+                        Question Title{" "}
+                        <span style={{ color: "#c5050c" }}>
+                            <small>*</small>
+                        </span>
                     </h2>
+
                     <Input id="name" onChange={this.onChange} />
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Question Content
-                    </h2>
+
+                    <Row className="d-flex align-items-center">
+                        <Col>
+                            <h2
+                                style={{
+                                    paddingTop: "16px",
+                                    paddingBottom: "16px"
+                                }}
+                            >
+                                Question Content{" "}
+                                <span style={{ color: "#c5050c" }}>
+                                    <small>*</small>
+                                </span>
+                            </h2>
+                        </Col>
+                        <Col xs="auto">
+                            <InfoPopover
+                                id="content"
+                                buttonText="?"
+                                popoverBodyText={
+                                    "Type in the description of the question here, including any background info or code that goes along with it. " +
+                                    "Note that code defaults to JavaScript - we are working on adding more language support!"
+                                }
+                                popoverHeaderText="Question Content"
+                            />
+                        </Col>
+                    </Row>
+
                     <DraftailEditor
-                        style={{ margin: "16px" }}
-                        rawContentState={null}
+                        style={{ margin: "16px", "user-select": "text" }}
+                        rawContentState={this.state.content || null}
                         onSave={this.onSaveContent}
                         blockTypes={[
                             { type: BLOCK_TYPE.HEADER_THREE },
@@ -212,16 +269,43 @@ export class AddQuestion extends Component {
                         inlineStyles={[
                             { type: INLINE_STYLE.BOLD },
                             { type: INLINE_STYLE.ITALIC },
-                            { type: INLINE_STYLE.UNDERLINE }
+                            { type: INLINE_STYLE.UNDERLINE },
+                            { type: INLINE_STYLE.CODE }
                         ]}
-                        plugins={this.state.plugins}
+                        spellCheck
+                        decorators={[this.state.decorator]}
                     />
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Solution
-                    </h2>
+
+                    <Row className="d-flex align-items-center">
+                        <Col>
+                            <h2
+                                style={{
+                                    paddingTop: "16px",
+                                    paddingBottom: "16px"
+                                }}
+                            >
+                                Solution{" "}
+                                <span style={{ color: "#c5050c" }}>
+                                    <small>*</small>
+                                </span>
+                            </h2>
+                        </Col>
+                        <Col xs="auto">
+                            <InfoPopover
+                                id="solution"
+                                buttonText="?"
+                                popoverBodyText={
+                                    'Enter the solution to your question here. If you don\'t have or cannot provide a solution, feel free to enter "No Solution" or something simalar. ' +
+                                    "Note that code defaults to JavaScript - we are working on adding more language support!"
+                                }
+                                popoverHeaderText="Solution"
+                            />
+                        </Col>
+                    </Row>
+
                     <DraftailEditor
-                        style={{ margin: "16px" }}
-                        rawContentState={null}
+                        style={{ margin: "16px", "user-select": "text" }}
+                        rawContentState={this.state.solution || null}
                         onSave={this.onSaveSolution}
                         blockTypes={[
                             { type: BLOCK_TYPE.HEADER_THREE },
@@ -232,12 +316,38 @@ export class AddQuestion extends Component {
                         inlineStyles={[
                             { type: INLINE_STYLE.BOLD },
                             { type: INLINE_STYLE.ITALIC },
-                            { type: INLINE_STYLE.UNDERLINE }
+                            { type: INLINE_STYLE.UNDERLINE },
+                            { type: INLINE_STYLE.CODE }
                         ]}
+                        decorators={[this.state.decorator]}
                     />
-                    <h2 style={{ paddingTop: "16px", paddingBottom: "16px" }}>
-                        Tags
-                    </h2>
+
+                    <Row className="d-flex align-items-center">
+                        <Col>
+                            <h2
+                                style={{
+                                    paddingTop: "16px",
+                                    paddingBottom: "16px"
+                                }}
+                            >
+                                Tags{" "}
+                                <span style={{ color: "#c5050c" }}>
+                                    <small>*</small>
+                                </span>
+                            </h2>
+                        </Col>
+                        <Col xs="auto">
+                            <InfoPopover
+                                id="tags"
+                                buttonText="?"
+                                popoverBodyText={
+                                    "Select the tags in which you want your question to be associated with. " +
+                                    "For each of the tags you select, your question will be added to it's respective page for others to view."
+                                }
+                                popoverHeaderText="Tags"
+                            />
+                        </Col>
+                    </Row>
                     <Select
                         isMulti
                         isSearchable
@@ -255,7 +365,37 @@ export class AddQuestion extends Component {
                     >
                         Submit
                     </Button>
+                    <Row>
+                        <Col>
+                            <span style={{ color: "#c5050c" }}>*</span>
+                            <span> - Required</span>
+                        </Col>
+                    </Row>
                 </Container>
+                <Modal
+                    isOpen={this.state.error}
+                    toggle={() => {
+                        this.setState({ error: !this.state.error });
+                    }}
+                >
+                    <ModalBody>
+                        There was an error adding your question, please try
+                        again.
+                    </ModalBody>
+                    <ModalFooter
+                        onClick={() => {
+                            this.setState({ error: !this.state.error });
+                        }}
+                    >
+                        <Button>Close</Button>
+                    </ModalFooter>
+                </Modal>
+                <footer>
+                    <Container>
+                        <hr />
+                        <p>&copy; CodeShack 2019</p>
+                    </Container>
+                </footer>
             </main>
         );
     }

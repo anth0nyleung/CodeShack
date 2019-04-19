@@ -14,8 +14,10 @@ import TopicQuestions from "./Components/TopicQuestions";
 import NavBar from "./Components/NavBar";
 import UserProfile from "./Components/UserProfile";
 import Question from "./Components/Question";
-import Main from "./Components/Main"
+import Main from "./Components/Main";
 import AddQuestion from "./Components/AddQuestion";
+import AllQuestions from "./Components/AllQuestions";
+import Logout from "./Components/Logout";
 
 class App extends Component {
     render() {
@@ -77,6 +79,12 @@ class App extends Component {
                         path="/createquestion"
                         component={EnsureAuthContainer(AddQuestion)}
                     />
+                    <Route
+                        exact
+                        path="/questions"
+                        component={EnsureAuthContainer(AllQuestions)}
+                    />
+                    <Route exact path="/logout" component={Logout} />
                     <Route component={NotFound} />
                 </Switch>
             </div>
