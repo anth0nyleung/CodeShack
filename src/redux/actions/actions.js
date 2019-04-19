@@ -1,8 +1,11 @@
 //Here is where all the action creators will be
 import axios from "axios";
-import { auth } from "../../Backend/Firebase/firebase";
+import { auth } from "../../Components/utils/firebase";
 
-const url = "http://localhost:8080/api/";
+const url =
+    process.env.NODE_ENV === "production"
+        ? "https://codeshack.herokuapp.com/api/"
+        : "http://localhost:8080/api/";
 
 /**
  * Returns the header config containing the idToken used for verification
@@ -14,9 +17,10 @@ const setHeader = callback => {
             auth.currentUser.getIdToken(true).then(idToken => {
                 let config = {
                     headers: {
-                        Authentication: "Bearer " + idToken
+                        Authorization: "Bearer " + idToken
                     }
                 };
+                //console.log(config);
                 callback(config);
             });
         } else {
@@ -30,15 +34,20 @@ const setHeader = callback => {
  */
 export function loadAllTopics() {
     return dispatch => {
-        axios
-            .get(`${url}topic`)
-            .then(res => {
-                let topics = res.data;
-                dispatch({ type: "LOAD_TOPICS", topics });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get topics", err);
-            });
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}topic`, config)
+                .then(res => {
+                    let topics = res.data;
+                    dispatch({ type: "LOAD_TOPICS", topics });
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get topics", err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
     };
 }
 
@@ -47,15 +56,20 @@ export function loadAllTopics() {
  */
 export function loadTopic(topic_id) {
     return dispatch => {
-        axios
-            .get(`${url}topic/${topic_id}`)
-            .then(res => {
-                let topic = res.data;
-                dispatch({ type: "LOAD_TOPIC", topic });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get topic", err);
-            });
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}topic/${topic_id}`, config)
+                .then(res => {
+                    let topic = res.data;
+                    dispatch({ type: "LOAD_TOPIC", topic });
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get topic", err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
     };
 }
 
@@ -64,15 +78,20 @@ export function loadTopic(topic_id) {
  */
 export function loadAllCompanies() {
     return dispatch => {
-        axios
-            .get(`${url}company`)
-            .then(res => {
-                let companies = res.data;
-                dispatch({ type: "LOAD_COMPANIES", companies });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get companies", err);
-            });
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}company`, config)
+                .then(res => {
+                    let companies = res.data;
+                    dispatch({ type: "LOAD_COMPANIES", companies });
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get companies", err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
     };
 }
 
@@ -81,15 +100,20 @@ export function loadAllCompanies() {
  */
 export function loadCompany(company_id) {
     return dispatch => {
-        axios
-            .get(`${url}company/${company_id}`)
-            .then(res => {
-                let company = res.data;
-                dispatch({ type: "LOAD_COMPANY", company });
-            })
-            .catch(err => {
-                console.log("Error: Unable to get company", err);
-            });
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}company/${company_id}`, config)
+                .then(res => {
+                    let company = res.data;
+                    dispatch({ type: "LOAD_COMPANY", company });
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log("Error: Unable to get company", err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
     };
 }
 
@@ -116,6 +140,45 @@ export function loadQuestion(question_id) {
     };
 }
 
+const formatQuestionTags = (questions, callback) => {
+    var questionTags = [[]];
+    questions.forEach(question => {
+        questionTags[question._id] = [];
+        question.courses.forEach(course => {
+            questionTags[question._id] += course.courseName + ", ";
+        });
+        question.topics.forEach(topic => {
+            questionTags[question._id] += topic.topicName + ", ";
+        });
+        question.companies.forEach(company => {
+            questionTags[question._id] += company.companyName + ", ";
+        });
+    });
+    return callback(questionTags);
+};
+
+export function loadAllQuestions() {
+    return dispatch => {
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .get(`${url}question`, config)
+                .then(res => {
+                    let questions = res.data;
+                    dispatch({ type: "LOAD_QUESTIONS", questions });
+                    formatQuestionTags(questions, questionTags => {
+                        dispatch({ type: "LOAD_TAGS", questionTags });
+                        dispatch({ type: "STOP_LOADING" });
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
+    };
+}
+
 /**
  * Saves a specific question into user's history
  *
@@ -124,7 +187,6 @@ export function loadQuestion(question_id) {
  */
 
 export function saveQuestionToUserHistory(question_data, user_id) {
-    console.log(question_data);
     return dispatch => {
         setHeader(config => {
             axios
@@ -232,7 +294,11 @@ export function loginUser(callback) {
                     console.log(err);
                     dispatch({ type: "AUTH_ERROR" });
                     dispatch({ type: "STOP_LOADING" });
-                    callback(err.response.status);
+                    if (err.response) {
+                        callback(err.response.status);
+                    } else {
+                        callback(err);
+                    }
                 });
         });
     };
@@ -326,6 +392,50 @@ export function deleteComment(comment_id, callback) {
     };
 }
 
+export function createCourse(course_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}course`, course_data, config)
+                .then(res => {
+                    loadAllCourses()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
+
+export function createCompany(company_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}company`, company_data, config)
+                .then(res => {
+                    loadAllCompanies()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
+
+export function createTopic(topic_data) {
+    return dispatch => {
+        setHeader(config => {
+            axios
+                .post(`${url}topic`, topic_data, config)
+                .then(res => {
+                    loadAllTopics()(dispatch);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    };
+}
 /**
  * Creates a user and loads them into the state
  * @param {Object} user_data
@@ -344,6 +454,24 @@ export function signupUser(user_data) {
                 .catch(err => {
                     console.log(err);
                     dispatch({ type: "AUTH_ERROR" });
+                });
+        });
+    };
+}
+
+export function updateUser(user_data) {
+    return dispatch => {
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .patch(`${url}user`, user_data, config)
+                .then(res => {
+                    loginUser(() => {})(dispatch);
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "STOP_LOADING" });
                 });
         });
     };

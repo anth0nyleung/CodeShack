@@ -8,7 +8,13 @@ import {
     saveQuestionToUserHistory
 } from "../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
-import { convertFromRaw, Editor, EditorState } from "draft-js";
+import "./Question.css";
+import {
+    convertFromRaw,
+    Editor,
+    EditorState,
+    CompositeDecorator
+} from "draft-js";
 import Reply from "./Reply";
 import {
     Row,
@@ -23,7 +29,12 @@ import {
 } from "reactstrap";
 import LazyLoad from "react-lazyload";
 import Comment from "./Comment";
+import PrismDecorator from "./utils/PrismDecorator";
+import { Default, Mobile } from "./utils/Responsive";
 
+const compositeDecorator = new CompositeDecorator([
+    new PrismDecorator({ defaultLanguage: "javascript" })
+]);
 /**
  * Maps the state of the redux store to the properties of the component
  *
@@ -45,7 +56,12 @@ export class Question extends Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
-        this.state = { collapse: false, reply: null, collapseComment: false };
+        this.state = {
+            collapse: false,
+            reply: null,
+            collapseComment: false,
+            didAddToHistory: false
+        };
     }
 
     componentDidMount() {
@@ -63,6 +79,16 @@ export class Question extends Component {
             );
         }
     }
+
+    /**
+     * Custom code block rendering for draft-js editor
+     */
+    codeBlockStyle = contentBlock => {
+        const type = contentBlock.getType();
+        if (type === "code-block") {
+            return "blockCode";
+        }
+    };
 
     /**
      * Toggles the collapse component for the solution
@@ -100,7 +126,7 @@ export class Question extends Component {
             var content = convertFromRaw(
                 JSON.parse(this.props.question.content)
             );
-            return EditorState.createWithContent(content);
+            return EditorState.createWithContent(content, compositeDecorator);
         } else {
             return EditorState.createEmpty();
         }
@@ -114,7 +140,7 @@ export class Question extends Component {
             var content = convertFromRaw(
                 JSON.parse(this.props.question.solution)
             );
-            return EditorState.createWithContent(content);
+            return EditorState.createWithContent(content, compositeDecorator);
         } else {
             return EditorState.createEmpty();
         }
@@ -162,125 +188,188 @@ export class Question extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );
         }
         return (
             <div>
-                <main>
-                    <Jumbotron>
+                <Fade in={!this.props.isLoading}>
+                    <main>
+                        <Jumbotron>
+                            <Container>
+                                <h3 className="display-3">
+                                    {this.props.question.name}
+                                </h3>
+                                <hr className="my-2" />
+                                <p>
+                                    Posted by{" "}
+                                    {this.props.question.poster
+                                        ? this.props.question.poster.username
+                                        : ""}
+                                </p>
+                            </Container>
+                        </Jumbotron>
                         <Container>
-                            <h3 className="display-3">
-                                {this.props.question.name}
-                            </h3>
-                            <hr className="my-2" />
-                            <p>
-                                Posted by{" "}
-                                {this.props.question.poster
-                                    ? this.props.question.poster.username
-                                    : ""}
-                            </p>
-                        </Container>
-                    </Jumbotron>
-                    <Container>
-                        <Row>
-                            <Col xs="2" className="text-danger">
-                                <strong>Description</strong>
-                            </Col>
-                            <Col xs="10">
-                                <Editor
-                                    editorState={this.getContent()}
-                                    readOnly
-                                />
-                            </Col>
-                        </Row>
-                        <hr />
-                        <Row>
-                            <Col xs="2">
-                                <Button color="primary" onClick={this.toggle}>
-                                    Show Solution
-                                </Button>
-                            </Col>
-                            <Col xs="10">
-                                <Collapse isOpen={this.state.collapse}>
-                                    <Card>
-                                        <CardBody>
-                                            <Editor
-                                                editorState={this.getSolution()}
-                                                readOnly
-                                            />
-                                        </CardBody>
-                                    </Card>
-                                </Collapse>
-                            </Col>
-                        </Row>
+                            <Default>
+                                <Row>
+                                    <Col xs="2" className="text-danger">
+                                        <strong>Description</strong>
+                                    </Col>
+                                    <Col xs="10">
+                                        <Editor
+                                            editorState={this.getContent()}
+                                            readOnly
+                                            blockStyleFn={this.codeBlockStyle}
+                                        />
+                                    </Col>
+                                </Row>
+                                <hr />
+                            </Default>
+                            <Mobile>
+                                <Row>
+                                    <Col className="text-danger">
+                                        <h2>Description</h2>
+                                        <hr />
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginBottom: "24px" }}>
+                                    <Col className="text-center">
+                                        <Editor
+                                            editorState={this.getContent()}
+                                            readOnly
+                                            blockStyleFn={this.codeBlockStyle}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Mobile>
 
-                        <hr />
-                        <Row>
-                            <Col>
-                                <h3>Comments</h3>
-                            </Col>
-                            <Fade in={this.state.collapseComment}>
-                                <Col xs="auto">
-                                    <Button
-                                        size="sm"
-                                        color="primary"
-                                        disabled={!this.handleReplyDisable()}
-                                        onClick={this.onReply}
-                                    >
-                                        Post
-                                    </Button>
-                                </Col>
-                            </Fade>
-                            <Col xs="auto">
-                                <Button
-                                    onClick={this.toggleComment}
-                                    color="primary"
-                                    size="sm"
-                                >
-                                    {!this.state.collapseComment
-                                        ? "Post a Comment"
-                                        : "Cancel"}
-                                </Button>
-                            </Col>
-                        </Row>
-                        <Collapse isOpen={this.state.collapseComment}>
+                            <Default>
+                                <Row>
+                                    <Col xs="2">
+                                        <Button
+                                            color="primary"
+                                            onClick={this.toggle}
+                                        >
+                                            Show Solution
+                                        </Button>
+                                    </Col>
+                                    <Col xs="10">
+                                        <Collapse isOpen={this.state.collapse}>
+                                            <Card>
+                                                <CardBody>
+                                                    <Editor
+                                                        editorState={this.getSolution()}
+                                                        readOnly
+                                                        blockStyleFn={
+                                                            this.codeBlockStyle
+                                                        }
+                                                    />
+                                                </CardBody>
+                                            </Card>
+                                        </Collapse>
+                                    </Col>
+                                </Row>
+                            </Default>
+                            <Mobile>
+                                <Row style={{ marginBottom: "16px" }}>
+                                    <Col xs="12">
+                                        <Button
+                                            style={{ width: "100%" }}
+                                            color="primary"
+                                            onClick={this.toggle}
+                                        >
+                                            Show Solution
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs="12">
+                                        <Collapse isOpen={this.state.collapse}>
+                                            <Card>
+                                                <CardBody>
+                                                    <Editor
+                                                        editorState={this.getSolution()}
+                                                        readOnly
+                                                        blockStyleFn={
+                                                            this.codeBlockStyle
+                                                        }
+                                                    />
+                                                </CardBody>
+                                            </Card>
+                                        </Collapse>
+                                    </Col>
+                                </Row>
+                            </Mobile>
+                            <hr />
                             <Row>
                                 <Col>
-                                    <Reply onSave={this.onSave} />
+                                    <h3>Comments</h3>
+                                </Col>
+                                <Fade in={this.state.collapseComment}>
+                                    <Col xs="auto">
+                                        <Button
+                                            size="sm"
+                                            color="primary"
+                                            disabled={
+                                                !this.handleReplyDisable()
+                                            }
+                                            onClick={this.onReply}
+                                        >
+                                            Post
+                                        </Button>
+                                    </Col>
+                                </Fade>
+                                <Col xs="auto">
+                                    <Button
+                                        onClick={this.toggleComment}
+                                        color="primary"
+                                        size="sm"
+                                    >
+                                        {!this.state.collapseComment
+                                            ? "Post a Comment"
+                                            : "Cancel"}
+                                    </Button>
                                 </Col>
                             </Row>
-                        </Collapse>
+                            <Collapse isOpen={this.state.collapseComment}>
+                                <Row>
+                                    <Col>
+                                        <Reply onSave={this.onSave} />
+                                    </Col>
+                                </Row>
+                            </Collapse>
 
-                        {this.sortedComments().map(comment => {
-                            return (
-                                <LazyLoad height={100} once>
-                                    <Comment
-                                        loadComment={this.props.loadComment}
-                                        comment_id={comment._id}
-                                        indent={0}
-                                    />
-                                </LazyLoad>
-                            );
-                        })}
-                    </Container>
-                </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                            {this.sortedComments().map(comment => {
+                                return (
+                                    <LazyLoad
+                                        key={comment._id}
+                                        height={100}
+                                        once
+                                    >
+                                        <Comment
+                                            key={comment._id}
+                                            loadComment={this.props.loadComment}
+                                            comment_id={comment._id}
+                                            indent={0}
+                                        />
+                                    </LazyLoad>
+                                );
+                            })}
+                        </Container>
+                    </main>
+                    <footer>
+                        <Container>
+                            <hr />
+                            <p>&copy; CodeShack 2019</p>
+                        </Container>
+                    </footer>
+                </Fade>
             </div>
         );
     }
 }
-
-Question.propTypes = {
-    classes: PropTypes.object.isRequired
-};
 
 Question.contextTypes = {
     router: PropTypes.object.isRequired

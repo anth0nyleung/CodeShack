@@ -1,15 +1,55 @@
 import React, { Component } from "react";
-import { loadAllCourses } from "../redux/actions/actions";
+import { loadAllCourses, createCourse } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { Jumbotron, Container } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import {
+    Jumbotron,
+    Container,
+    Button,
+    Row,
+    Col,
+    Collapse,
+    Input
+} from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
+
+const columns = [
+    {
+        dataField: "courseNumber",
+        text: "Course Num.",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "20%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "courseName",
+        text: "Coruse Name",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "50%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "questions.length",
+        text: "Num. Questions",
+        sort: true
+    }
+];
+
+const defaultSorted = [
+    {
+        dataField: "questions.length",
+        order: "desc"
+    }
+];
 
 const mapStateToProps = state => {
     return {
         courses: state.course.courses,
-        isLoading: state.loading.isLoading
+        isLoading: state.loading.isLoading,
+        userRole: state.authUser.user.role
     };
 };
 
@@ -17,35 +57,41 @@ const mapStateToProps = state => {
  * Course Overview page component
  */
 export class CourseOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            courseNumber: "",
+            courseName: "",
+            toggle: false
+        };
+    }
+
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Course Overview";
+        document.title = "Courses";
 
         this.props.loadAllCourses();
     }
 
-    /**
-     * Redirects to the corresponding course page
-     *
-     * @param event.target.id The name of the page to redirect to
-     */
-    onRedirect = event => {
-        console.log(event.target);
-        this.context.router.history.push(`/courses/${event.target.id}`);
-        event.preventDefault();
+    onChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
     };
 
-    /**
-     * Counts the number of quesions a course has
-     */
-    countNumber = (cell, row) => {
-        return cell.length;
+    onAddCourse = event => {
+        this.props.createCourse({
+            courseNumber: this.state.courseNumber,
+            courseName: this.state.courseName
+        });
+        this.setState({ toggle: false });
     };
 
     /**
      * Handles clicking on a course
      */
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/courses/${row._id}`);
     };
 
@@ -58,54 +104,81 @@ export class CourseOverview extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );
         }
 
-        const options = {
-            onRowClick: this.onRowClick
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Course</h3>
+                            <h3 className="display-3">Courses</h3>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
+
                     <Container>
                         <BootstrapTable
-                            data={this.props.courses.sort(function(a, b) {
-                                return b.questions.length - a.questions.length;
-                            })}
+                            keyField="_id"
+                            data={this.props.courses}
+                            columns={columns}
                             striped
                             hover
                             bordered={false}
-                            options={options}
-                        >
-                            <TableHeaderColumn
-                                isKey={true}
-                                dataField="courseNumber"
-                                width="15%"
-                            >
-                                Course Number
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="courseName"
-                                width="50%"
-                            >
-                                CourseName
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="questions"
-                                dataFormat={this.countNumber}
-                            >
-                                Num. Questions
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            rowEvents={rowEvents}
+                            defaultSorted={defaultSorted}
+                            bootstrap4
+                        />
+                        <Row>
+                            <Col>
+                                {this.props.userRole === "admin" && (
+                                    <Button
+                                        style={{ marginTop: "16px" }}
+                                        onClick={() => {
+                                            this.setState({
+                                                toggle: !this.state.toggle
+                                            });
+                                        }}
+                                        color="primary"
+                                    >
+                                        + Course
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                        <Collapse isOpen={this.state.toggle}>
+                            <Row>
+                                <Col>
+                                    <Input
+                                        id="courseNumber"
+                                        placeholder="Course Number..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Input
+                                        id="courseName"
+                                        placeholder="Course Name..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Button
+                                        color="primary"
+                                        onClick={this.onAddCourse}
+                                        disabled={
+                                            this.state.courseName.length ===
+                                                0 ||
+                                            this.state.courseNumber === 0
+                                        }
+                                    >
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Collapse>
                     </Container>
                 </main>
                 <footer>
@@ -125,5 +198,5 @@ CourseOverview.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadAllCourses }
+    { loadAllCourses, createCourse }
 )(CourseOverview);

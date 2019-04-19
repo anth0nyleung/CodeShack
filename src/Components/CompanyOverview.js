@@ -1,15 +1,47 @@
 import React, { Component } from "react";
-import { loadAllCompanies } from "../redux/actions/actions";
+import { loadAllCompanies, createCompany } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { Jumbotron, Container } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import {
+    Jumbotron,
+    Container,
+    Button,
+    Row,
+    Col,
+    Collapse,
+    Input
+} from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
+
+const columns = [
+    {
+        dataField: "companyName",
+        text: "Company Name",
+        sort: true,
+        headerStyle: (colum, colIndex) => {
+            return { width: "70%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "questions.length",
+        text: "Num. Questions",
+        sort: true
+    }
+];
+
+const defaultSorted = [
+    {
+        dataField: "questions.length",
+        order: "desc"
+    }
+];
 
 const mapStateToProps = state => {
     return {
         companies: state.company.companies,
-        isLoading: state.loading.isLoading
+        isLoading: state.loading.isLoading,
+        userRole: state.authUser.user.role
     };
 };
 
@@ -17,35 +49,41 @@ const mapStateToProps = state => {
  * Course Overview page component
  */
 export class CompanyOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            companyName: "",
+            toggle: false
+        };
+    }
+
     componentDidMount() {
         // Sets the title of the page
-        document.title = "Company Overview";
+        document.title = "Companies";
 
         this.props.loadAllCompanies();
     }
 
-    /**
-     * Redirects to the corresponding course page
-     *
-     * @param event.target.id The name of the page to redirect to
-     */
-    onRedirect = event => {
-        console.log(event.target);
-        this.context.router.history.push(`/company/${event.target.id}`);
-        event.preventDefault();
+    onChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
     };
 
-    /**
-     * Counts the number of quesions a course has
-     */
-    countNumber = (cell, row) => {
-        return cell.length;
+    onAddCompany = event => {
+        this.props.createCompany({
+            companyName: this.state.companyName
+        });
+        this.setState({
+            toggle: false
+        });
     };
 
     /**
      * Handles clicking on a course
      */
-    onRowClick = row => {
+    onRowClick = (e, row, index) => {
         this.context.router.history.push(`/company/${row._id}`);
     };
 
@@ -58,48 +96,73 @@ export class CompanyOverview extends Component {
                         width={100}
                         widthUnit={"%"}
                         color={"#c5050c"}
-                        loading={this.props.isLoading}
+                        loading={true}
                     />
                 </main>
             );
         }
 
-        const options = {
-            onRowClick: this.onRowClick
+        const rowEvents = {
+            onClick: this.onRowClick
         };
         return (
             <div>
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">Company</h3>
+                            <h3 className="display-3">Companies</h3>
                             <hr className="my-2" />
                         </Container>
                     </Jumbotron>
                     <Container>
                         <BootstrapTable
-                            data={this.props.companies.sort(function(a, b) {
-                                return b.questions.length - a.questions.length;
-                            })}
+                            keyField="_id"
+                            data={this.props.companies}
+                            columns={columns}
                             striped
                             hover
                             bordered={false}
-                            options={options}
-                        >
-                            <TableHeaderColumn
-                                isKey={true}
-                                dataField="companyName"
-                                width="85%"
-                            >
-                                Company Name
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="questions"
-                                dataFormat={this.countNumber}
-                            >
-                                Num. Questions
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            rowEvents={rowEvents}
+                            defaultSorted={defaultSorted}
+                            bootstrap4
+                        />
+                        <Row>
+                            <Col>
+                                {this.props.userRole === "admin" && (
+                                    <Button
+                                        style={{ marginTop: "16px" }}
+                                        onClick={() => {
+                                            this.setState({
+                                                toggle: !this.state.toggle
+                                            });
+                                        }}
+                                        color="primary"
+                                    >
+                                        + Company
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                        <Collapse isOpen={this.state.toggle}>
+                            <Row>
+                                <Col>
+                                    <Input
+                                        id="companyName"
+                                        placeholder="Company Name..."
+                                        onChange={this.onChange}
+                                    />
+                                    <Button
+                                        color="primary"
+                                        onClick={this.onAddCompany}
+                                        disabled={
+                                            this.state.companyName.length === 0
+                                        }
+                                    >
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Collapse>
                     </Container>
                 </main>
                 <footer>
@@ -119,5 +182,5 @@ CompanyOverview.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadAllCompanies }
+    { loadAllCompanies, createCompany }
 )(CompanyOverview);

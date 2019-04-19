@@ -1,6 +1,6 @@
 const initialState = {
     topics: [],
-    currentTopic: {}
+    currentTopic: { questions: [] }
 };
 
 export default (state = initialState, action) => {

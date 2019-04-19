@@ -1,6 +1,7 @@
 const initialState = {
     questions: [],
-    currentQuestion: { comments: [] }
+    currentQuestion: { comments: [] },
+    questionTags: [[]]
 };
 
 export default (state = initialState, action) => {
@@ -14,6 +15,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 currentQuestion: action.question
+            };
+        case "LOAD_TAGS":
+            return {
+                ...state,
+                questionTags: action.questionTags
             };
         default:
             return state;
