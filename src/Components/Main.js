@@ -1,18 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-<<<<<<< HEAD
-import {
-    Row,
-    Col,
-    Button,
-    Jumbotron,
-    Container,   
-} from "reactstrap";
-=======
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { Default, Mobile } from "./utils/Responsive";
->>>>>>> 0c8111882e00f6703d68005ab41869a329a74e4b
 
 const mainStyles = {
     backgroundColor: "#9b0000",

@@ -1,7 +1,8 @@
 const initialState = {
     user: { history: [], courses: [], favCompanies: [] },
     isAuth: false,
-    authError: false
+    authError: false,
+    updateError: false
 };
 
 export default (state = initialState, action) => {
@@ -20,6 +21,11 @@ export default (state = initialState, action) => {
             };
         case "LOGOUT_USER":
             return initialState;
+        case "UPDATE_FAIL":
+            return {
+                ...state,
+                updateError: true
+            };
         default:
             return state;
     }

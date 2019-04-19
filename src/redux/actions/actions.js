@@ -3,9 +3,9 @@ import axios from "axios";
 import { auth } from "../../Components/utils/firebase";
 
 const url =
-    process.env.NODE_ENV === "production"
-        ? "https://codeshack.herokuapp.com/api/"
-        : "http://localhost:8080/api/";
+    //process.env.NODE_ENV === "production"
+    /*    ?*/ "https://codeshack.herokuapp.com/api/";
+//  : "http://localhost:8080/api/";
 
 /**
  * Returns the header config containing the idToken used for verification
@@ -471,6 +471,7 @@ export function updateUser(user_data) {
                 })
                 .catch(err => {
                     console.log(err);
+                    dispatch({ type: "UPDATE_FAIL" });
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
