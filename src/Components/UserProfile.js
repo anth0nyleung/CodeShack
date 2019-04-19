@@ -1,10 +1,54 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import { Row, Col, Button, Jumbotron, Container, Collapse } from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
-import { saveQuestionToUserHistory, loginUser } from "../redux/actions/actions";
+import remove from "lodash/remove";
+import {
+    saveQuestionToUserHistory,
+    loginUser,
+    updateUser
+} from "../redux/actions/actions";
+
+const courseColumns = [
+    {
+        dataField: "courseNumber",
+        text: "Course Num.",
+        sort: true
+    },
+    {
+        dataField: "courseName",
+        text: "Course Name",
+        sort: true
+    }
+];
+
+const courseDefaultSorted = [
+    {
+        dataField: "courseNumber",
+        order: "asc"
+    }
+];
+
+const historyColumns = [
+    {
+        dataField: "index",
+        isDummyField: true,
+        text: "#",
+        formatter: (cell, row, index) => {
+            return <div>{index + 1}</div>;
+        },
+        headerStyle: (colum, colIndex) => {
+            return { width: "10%", textAlign: "left" };
+        }
+    },
+    {
+        dataField: "name",
+        text: "Question Name"
+    }
+];
+
 const mapStateToProps = state => {
     return {
         user_id: state.authUser.user._id,
@@ -27,7 +71,8 @@ class UserProfile extends Component {
         super(props);
 
         this.state = {
-            url: null
+            url: null,
+            coursesToDelete: []
         };
     }
 
@@ -37,19 +82,57 @@ class UserProfile extends Component {
         this.setState({ url: localStorage.getItem("url") });
     }
 
-    onRowClick = row => {
-        this.props.saveQuestionToUserHistory(
-            { question_id: row._id },
-            this.props.user_id
-        );
+    onHistoryClick = (e, row, index) => {
         this.context.router.history.push(`/question/${row._id}`);
+    };
+
+    onCourseClick = (e, row, index) => {
+        if (e.target.type !== "checkbox" && e.target.cellIndex !== 0) {
+            this.context.router.history.push(`/courses/${row._id}`);
+        }
     };
 
     indexN = (cell, row, enumObject, index) => {
         return <div>{index + 1}</div>;
     };
 
-    onClickEdit = () => {};
+    handleOnSelectAll = (isSelect, rows) => {
+        if (isSelect) {
+            var coursesToDelete = [];
+            rows.forEach(element => {
+                coursesToDelete.push(element._id);
+            });
+            this.setState({
+                coursesToDelete: coursesToDelete
+            });
+        } else {
+            this.setState({
+                coursesToDelete: []
+            });
+        }
+    };
+
+    onDelete = () => {
+        let difference = this.props.currentCourses.filter(
+            x => !this.state.coursesToDelete.includes(x._id)
+        );
+        this.setState({ coursesToDelete: [] });
+        this.props.updateUser({ courses: difference });
+    };
+
+    handleOnSelect = (row, isSelect) => {
+        var coursesToDelete = this.state.coursesToDelete;
+        if (isSelect) {
+            coursesToDelete.push(row._id);
+        } else {
+            remove(coursesToDelete, obj => {
+                return obj === row._id;
+            });
+        }
+        this.setState({
+            coursesToDelete: coursesToDelete
+        });
+    };
 
     render() {
         if (this.props.isLoading) {
@@ -64,8 +147,17 @@ class UserProfile extends Component {
                 </main>
             );
         }
-        const options = {
-            onRowClick: this.onRowClick
+        const courseRowEvents = {
+            onClick: this.onCourseClick
+        };
+        const selectRow = {
+            mode: "checkbox",
+            style: { backgroundColor: "#ff7575" },
+            onSelect: this.handleOnSelect,
+            onSelectAll: this.handleOnSelectAll
+        };
+        const historyRowEvents = {
+            onClick: this.onHistoryClick
         };
         return (
             <div>
@@ -107,49 +199,39 @@ class UserProfile extends Component {
                     <Container>
                         <h2>Current Courses</h2>
                         <BootstrapTable
+                            keyField="_id"
                             data={this.props.currentCourses}
-                            options={options}
+                            columns={courseColumns}
                             striped
                             hover
                             bordered={false}
+                            rowEvents={courseRowEvents}
+                            selectRow={selectRow}
+                            defaultSorted={courseDefaultSorted}
+                            bootstrap4
+                        />
+                        <Collapse
+                            isOpen={this.state.coursesToDelete.length > 0}
                         >
-                            <TableHeaderColumn
-                                isKey={true}
-                                dataField="courseNumber"
-                                width="40%"
-                            >
-                                Course Number
-                            </TableHeaderColumn>
-                            <TableHeaderColumn
-                                dataField="courseName"
-                                width="50%"
-                            >
-                                Course Name
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            <Button color="danger" onClick={this.onDelete}>
+                                Remove
+                            </Button>
+                        </Collapse>
                         <hr />
                     </Container>
 
                     <Container>
                         <h2>Recently Viewed Questions</h2>
                         <BootstrapTable
+                            keyField="_id"
                             data={this.props.history}
+                            columns={historyColumns}
                             striped
                             hover
                             bordered={false}
-                            options={options}
-                        >
-                            <TableHeaderColumn
-                                dataField="index"
-                                dataFormat={this.indexN}
-                                width="10%"
-                            >
-                                #
-                            </TableHeaderColumn>
-                            <TableHeaderColumn isKey={true} dataField="name">
-                                Question
-                            </TableHeaderColumn>
-                        </BootstrapTable>
+                            rowEvents={historyRowEvents}
+                            bootstrap4
+                        />
                     </Container>
                 </main>
                 <footer>
@@ -173,5 +255,5 @@ UserProfile.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { saveQuestionToUserHistory, loginUser }
+    { saveQuestionToUserHistory, loginUser, updateUser }
 )(UserProfile);

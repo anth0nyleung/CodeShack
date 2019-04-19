@@ -1,5 +1,5 @@
 const initialState = {
-    user: { history: [] },
+    user: { history: [], courses: [], favCompanies: [] },
     isAuth: false,
     authError: false
 };

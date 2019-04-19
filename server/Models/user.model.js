@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Course = require("./course.model");
+const remove = require("lodash/remove");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({

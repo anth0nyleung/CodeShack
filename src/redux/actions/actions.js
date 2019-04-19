@@ -459,6 +459,24 @@ export function signupUser(user_data) {
     };
 }
 
+export function updateUser(user_data) {
+    return dispatch => {
+        dispatch({ type: "START_LOADING" });
+        setHeader(config => {
+            axios
+                .patch(`${url}user`, user_data, config)
+                .then(res => {
+                    loginUser(() => {})(dispatch);
+                    dispatch({ type: "STOP_LOADING" });
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch({ type: "STOP_LOADING" });
+                });
+        });
+    };
+}
+
 /**
  * Removes user from state
  */

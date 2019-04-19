@@ -2,15 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
     loadCourse,
-    saveQuestionToUserHistory
+    saveQuestionToUserHistory,
+    updateUser
 } from "../redux/actions/actions";
-import { Jumbotron, Container } from "reactstrap";
+import { Jumbotron, Container, Row, Col, Button } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
+import { Default, Mobile } from "./utils/Responsive";
 
 const { SearchBar } = Search;
 const columns = [
@@ -39,7 +41,8 @@ const mapStateToProps = state => {
     return {
         currentCourse: state.course.currentCourse,
         isLoading: state.loading.isLoading,
-        user_id: state.authUser.user._id
+        user_id: state.authUser.user._id,
+        userCourses: state.authUser.user.courses
     };
 };
 
@@ -51,6 +54,19 @@ export class CourseQuestions extends Component {
         document.title = "Questions";
         this.props.loadCourse(this.props.match.params.id);
     }
+
+    onAddToCourses = () => {
+        this.props.updateUser({
+            courses: [...this.props.userCourses, this.props.currentCourse._id]
+        });
+    };
+
+    isUserCourse = () => {
+        var index = this.props.userCourses.findIndex(element => {
+            return element._id === this.props.currentCourse._id;
+        });
+        return index !== -1;
+    };
 
     /**
      * Formats the description of a question to be readable
@@ -89,9 +105,44 @@ export class CourseQuestions extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">
-                                {this.props.currentCourse.courseNumber}
-                            </h3>
+                            <Row>
+                                <Col>
+                                    <h3 className="display-3">
+                                        {this.props.currentCourse.courseNumber}
+                                    </h3>
+                                </Col>
+                                <Default>
+                                    <Col
+                                        xs="auto"
+                                        className="d-flex align-items-center"
+                                    >
+                                        {!this.isUserCourse() && (
+                                            <Button
+                                                color="primary"
+                                                onClick={this.onAddToCourses}
+                                            >
+                                                + Current Courses
+                                            </Button>
+                                        )}
+                                    </Col>
+                                </Default>
+                                <Mobile>
+                                    <Col
+                                        xs="4"
+                                        className="d-flex align-items-center"
+                                    >
+                                        {!this.isUserCourse() && (
+                                            <Button
+                                                color="primary"
+                                                onClick={this.onAddToCourses}
+                                            >
+                                                + Current Courses
+                                            </Button>
+                                        )}
+                                    </Col>
+                                </Mobile>
+                            </Row>
+
                             <hr className="my-2" />
                             <p className="leading">
                                 {this.props.currentCourse.courseName}
@@ -142,5 +193,5 @@ CourseQuestions.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { loadCourse, saveQuestionToUserHistory }
+    { loadCourse, saveQuestionToUserHistory, updateUser }
 )(CourseQuestions);

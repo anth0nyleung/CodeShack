@@ -10,7 +10,8 @@ module.exports = {
             firebase_id: req.body.firebase_id,
             email: req.body.email,
             name: req.body.name,
-            year: req.body.year
+            year: req.body.year,
+            courses: req.body.courses
         });
 
         user.save(function(err, newUser) {
@@ -52,6 +53,8 @@ module.exports = {
     getUser: (req, res) => {
         User.findOne({ firebase_id: req.firebase_id })
             .populate("history")
+            .populate("courses")
+            .populate("favCompanies")
             .exec(function(err, user) {
                 if (err) {
                     res.status(500);
