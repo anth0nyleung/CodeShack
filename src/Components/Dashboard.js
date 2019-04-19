@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Jumbotron, Container, Fade } from "reactstrap";
+import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { Default, Mobile } from "./utils/Responsive";
 
 /**

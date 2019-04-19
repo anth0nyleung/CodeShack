@@ -2,7 +2,6 @@ import React from "react";
 import { auth } from "./utils/firebase";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 class Logout extends React.Component {

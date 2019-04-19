@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { auth } from "./utils/firebase";
 import PropTypes from "prop-types";
 import {
     Navbar,
@@ -210,14 +209,17 @@ class NavBar extends Component {
                         </Nav>
                     </Default>
                     <Mobile>
-                        <NavbarToggler
-                            onClick={() =>
-                                this.setState({
-                                    collapsed: !this.state.collapsed
-                                })
-                            }
-                            className="navbar-toggler-right"
-                        />
+                        {this.context.router.history.location.pathname !==
+                            "/" && (
+                            <NavbarToggler
+                                onClick={() =>
+                                    this.setState({
+                                        collapsed: !this.state.collapsed
+                                    })
+                                }
+                                className="navbar-toggler-right"
+                            />
+                        )}
                         <Collapse isOpen={this.state.collapsed} navbar>
                             <Nav navbar>
                                 <NavLink

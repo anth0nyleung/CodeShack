@@ -8,7 +8,6 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
-import { Default, Mobile } from "./utils/Responsive";
 
 const { SearchBar } = Search;
 

@@ -10,7 +10,6 @@ import {
 } from "draft-js";
 import Reply from "./Reply";
 import { PulseLoader } from "react-spinners";
-import { IoIosSend } from "react-icons/io";
 import { MdReply, MdDelete, MdCancel } from "react-icons/md";
 import PrismDecorator from "./utils/PrismDecorator";
 import "./Question.css";
