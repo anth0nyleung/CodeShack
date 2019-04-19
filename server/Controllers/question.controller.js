@@ -3,6 +3,7 @@ const Course = require("../Models/course.model");
 const Comment = require("../Models/comment.model");
 const Topic = require("../Models/topic.model");
 const Company = require("../Models/company.model");
+const User = require("../Models/user.model");
 
 module.exports = {
     /**
@@ -39,16 +40,46 @@ module.exports = {
                 res.status(500);
                 res.send(err);
             } else {
-                Object.assign(question, req.body).save(function(err, question) {
+                User.findOne({ firebase_id: req.firebase_id }, (err, user) => {
                     if (err) {
                         res.status(500);
                         res.send(err);
+                    } else if (!user) {
+                        res.status(500);
+                        res.send();
+                    } else if (!question.poster.equals(user._id)) {
+                        res.status(403);
+                        res.send();
                     } else {
-                        res.send(question);
+                        Object.assign(question, req.body).save(function(
+                            err,
+                            question
+                        ) {
+                            if (err) {
+                                res.status(500);
+                                res.send(err);
+                            } else {
+                                res.send(question);
+                            }
+                        });
                     }
                 });
             }
         });
+    },
+    getQuestions: (req, res) => {
+        Question.find({})
+            .populate("courses", ["courseName", "courseNumber"])
+            .populate("topics", ["topicName"])
+            .populate("companies", ["companyName"])
+            .exec((err, questions) => {
+                if (err) {
+                    res.status(500);
+                    res.send(err);
+                } else {
+                    res.send(questions);
+                }
+            });
     },
     /**
      * Get a question from the database. Populates all fields

@@ -5,14 +5,18 @@ import { ConnectedRouter } from "connected-react-router";
 import { Switch, Route } from "react-router-dom";
 import "draft-js/dist/Draft.css";
 import "draftail/dist/draftail.css";
+import "prismjs/themes/prism.css";
+import "./Components/utils/PrismDecorator.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "react-bootstrap-table/dist/react-bootstrap-table.min.css";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min.css";
+import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store, history } from "./redux/store";
 
-window.store = store;
+//window.store = store;
 
 ReactDOM.render(
     <Provider store={store}>

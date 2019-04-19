@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { loadTopic } from "../redux/actions/actions";
+import { loadAllQuestions } from "../redux/actions/actions";
 import { Jumbotron, Container } from "reactstrap";
 import { BarLoader } from "react-spinners";
 import { PropTypes } from "prop-types";
@@ -10,53 +10,42 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
 
 const { SearchBar } = Search;
-const columns = [
-    {
-        dataField: "name",
-        text: "Question Name",
-        sort: "true"
-    },
-    {
-        dataField: "content",
-        text: "Description",
-        style: {
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-            overflow: "hidden"
-        },
-        formatter: (cell, row) => {
-            return cell
-                ? convertFromRaw(JSON.parse(cell)).getPlainText()
-                : null;
-        }
-    }
-];
 
 const mapStateToProps = state => {
     return {
-        currentTopic: state.topic.currentTopic,
-        isLoading: state.loading.isLoading
+        questions: state.question.questions,
+        isLoading: state.loading.isLoading,
+        questionTags: state.question.questionTags
     };
 };
 
-/**
- * Component which lists all questions for a course
- */
-export class TopicQuestions extends Component {
-    componentDidMount() {
-        document.title = "Questions";
-        this.props.loadTopic(this.props.match.params.id);
+class AllQuestions extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            questionTags: [[]]
+        };
     }
 
-    /**
-     * Handles clicking on a question
-     */
+    componentDidMount() {
+        document.title = "All Questions";
+        this.props.loadAllQuestions();
+    }
+
     onRowClick = (e, row, index) => {
         this.context.router.history.push(`/question/${row._id}`);
     };
 
+    formatTags = (cell, row) => {
+        return this.props.questionTags[row._id].slice(0, -2);
+    };
+
+    formatDescription = (cell, row) => {
+        return convertFromRaw(JSON.parse(cell)).getPlainText();
+    };
+
     render() {
-        // While quesitons are being fetched, loading
         if (this.props.isLoading) {
             return (
                 <main>
@@ -69,6 +58,36 @@ export class TopicQuestions extends Component {
                 </main>
             );
         }
+        const columns = [
+            {
+                dataField: "name",
+                text: "Question Name",
+                sort: "true"
+            },
+            {
+                dataField: "content",
+                text: "Description",
+                style: {
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden"
+                },
+                formatter: (cell, row) => {
+                    return cell
+                        ? convertFromRaw(JSON.parse(cell)).getPlainText()
+                        : null;
+                }
+            },
+            {
+                dataField: "tags",
+                isDummyField: true,
+                text: "Tags",
+                formatter: (cell, row, index, formatExtraData) => {
+                    return formatExtraData[row._id].slice(0, -2);
+                },
+                formatExtraData: this.props.questionTags
+            }
+        ];
         const rowEvents = {
             onClick: this.onRowClick
         };
@@ -77,20 +96,20 @@ export class TopicQuestions extends Component {
                 <main>
                     <Jumbotron>
                         <Container>
-                            <h3 className="display-3">
-                                {this.props.currentTopic.topicName}
-                            </h3>
+                            <h3 className="display-3">All Questions</h3>
+                            <hr />
                         </Container>
                     </Jumbotron>
                     <Container>
                         <h2 style={{ marginTop: "16px", marginBottom: "16px" }}>
                             Questions
                         </h2>
+
                         <ToolkitProvider
                             keyField="_id"
-                            data={this.props.currentTopic.questions}
+                            data={this.props.questions}
                             columns={columns}
-                            search
+                            search={{ searchFormatted: true }}
                         >
                             {props => (
                                 <div>
@@ -109,22 +128,16 @@ export class TopicQuestions extends Component {
                         </ToolkitProvider>
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
             </div>
         );
     }
 }
 
-TopicQuestions.contextTypes = {
+AllQuestions.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
 export default connect(
     mapStateToProps,
-    { loadTopic }
-)(TopicQuestions);
+    { loadAllQuestions }
+)(AllQuestions);

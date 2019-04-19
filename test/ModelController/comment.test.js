@@ -1,17 +1,17 @@
 process.env.NODE_ENV = "test";
 
 let mongoose = require("mongoose");
-let Comment = require("../../src/Backend/Models/comment.model");
+let Comment = require("../../server/Models/comment.model");
 
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../src/Backend/server");
+let server = require("../../server/server");
 let should = chai.should();
 
 let idToken = "";
 
-let admin = require("../../src/Backend/Firebase/admin");
+let admin = require("../../server/Firebase/admin");
 const rp = require("request-promise");
 const API_KEY = "AIzaSyArrokhuYfs5rPYBjqQmY3K9DeRHxLThBg";
 const UID = "hW9mWRQ6RePiVcCuV6wF4Dd28mE3";

@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
-const Course = require("../Models/course.model");
-const Topic = require("../Models/topic.model");
-const Company = require("../Models/company.model");
+const Course = require("./course.model");
+const Topic = require("./topic.model");
+const Company = require("./company.model");
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
-    poster: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    poster: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     name: { type: String, required: true },
     content: { type: String, required: true },
     solution: { type: String, required: false },
