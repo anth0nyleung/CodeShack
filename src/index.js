@@ -16,7 +16,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store, history } from "./redux/store";
 
-window.store = store;
+//window.store = store;
 
 ReactDOM.render(
     <Provider store={store}>

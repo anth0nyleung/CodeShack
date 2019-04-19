@@ -11,6 +11,7 @@ const mongoose = require("mongoose"),
 
 const API_PORT = 8080;
 
+app.use(cors());
 // This is our MongoDB database
 let dbRoute = "mongodb://localhost:27017/CodeShackDev"; // Change this
 
@@ -35,7 +36,6 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
 app.use(helmet());
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

@@ -6,8 +6,7 @@ const CONFIG = {
     authDomain: "codeshack-2a355.firebaseapp.com",
     databaseURL: "https://codeshack-2a355.firebaseio.com",
     projectId: "codeshack-2a355",
-    storageBucket: "codeshack-2a355.appspot.com",
-    messagingSenderId: "220351087002"
+    storageBucket: "codeshack-2a355.appspot.com"
 };
 
 firebase.initializeApp(CONFIG);

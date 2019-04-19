@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Row, Col, Button, Jumbotron, Container, Fade } from "reactstrap";
+import { Default, Mobile } from "./utils/Responsive";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -79,50 +80,102 @@ export class Dashboard extends Component {
                     </Jumbotron>
 
                     <Container>
-                        <Row>
-                            <Col className="md-4">
-                                <h2>Company</h2>
-                                <p>
-                                    View and answer technical questions sorted
-                                    by Company
-                                </p>
-                                <Button
-                                    id="company"
-                                    onClick={this.onRedirect}
-                                    color="primary"
-                                >
-                                    Click Here &raquo;
-                                </Button>
-                            </Col>
-                            <Col className="md-4">
-                                <h2>Topic</h2>
-                                <p>
-                                    View and answer technical questions sorted
-                                    by Topic
-                                </p>
-                                <Button
-                                    id="topic"
-                                    onClick={this.onRedirect}
-                                    color="primary"
-                                >
-                                    Click Here &raquo;
-                                </Button>
-                            </Col>
-                            <Col className="md-4">
-                                <h2>Course</h2>
-                                <p>
-                                    View and answer technical questions sorted
-                                    by Course
-                                </p>
-                                <Button
-                                    id="course"
-                                    onClick={this.onRedirect}
-                                    color="primary"
-                                >
-                                    Click Here &raquo;
-                                </Button>
-                            </Col>
-                        </Row>
+                        <Default>
+                            <Row>
+                                <Col className="md-4">
+                                    <h2>Company</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Company
+                                    </p>
+                                    <Button
+                                        id="company"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                                <Col className="md-4">
+                                    <h2>Topic</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Topic
+                                    </p>
+                                    <Button
+                                        id="topic"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                                <Col className="md-4">
+                                    <h2>Course</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Course
+                                    </p>
+                                    <Button
+                                        id="course"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Default>
+                        <Mobile>
+                            <Row style={{ marginBottom: "16px" }}>
+                                <Col>
+                                    <h2>Company</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Company
+                                    </p>
+                                    <Button
+                                        id="company"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                            </Row>
+                            <Row style={{ marginBottom: "16px" }}>
+                                <Col>
+                                    <h2>Topic</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Topic
+                                    </p>
+                                    <Button
+                                        id="topic"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                            </Row>
+                            <Row style={{ marginBottom: "16px" }}>
+                                <Col>
+                                    <h2>Course</h2>
+                                    <p>
+                                        View and answer technical questions
+                                        sorted by Course
+                                    </p>
+                                    <Button
+                                        id="course"
+                                        onClick={this.onRedirect}
+                                        color="primary"
+                                    >
+                                        Click Here &raquo;
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Mobile>
                         <hr />
                     </Container>
                 </main>

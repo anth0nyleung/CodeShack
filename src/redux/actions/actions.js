@@ -4,7 +4,7 @@ import { auth } from "../../Components/utils/firebase";
 
 const url =
     process.env.NODE_ENV === "production"
-        ? "http://codeshack.herokuapp.com/api/"
+        ? "https://codeshack.herokuapp.com/api/"
         : "http://localhost:8080/api/";
 
 /**
@@ -17,7 +17,7 @@ const setHeader = callback => {
             auth.currentUser.getIdToken(true).then(idToken => {
                 let config = {
                     headers: {
-                        Authentication: "Bearer " + idToken
+                        Authorization: "Bearer " + idToken
                     }
                 };
                 //console.log(config);

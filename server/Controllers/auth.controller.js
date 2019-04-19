@@ -5,8 +5,8 @@ module.exports = {
      * Reads idToken from the header, verifies it, then sends the id to next route
      */
     validateFirebaseIdToken: (req, res, next) => {
-        if (req.header("Authentication")) {
-            let authentication = req.header("Authentication").split(" ");
+        if (req.header("Authorization")) {
+            let authentication = req.header("Authorization").split(" ");
             if (authentication[0] !== "Bearer") {
                 return res.status(401).send();
             } else {

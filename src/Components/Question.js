@@ -30,6 +30,7 @@ import {
 import LazyLoad from "react-lazyload";
 import Comment from "./Comment";
 import PrismDecorator from "./utils/PrismDecorator";
+import { Default, Mobile } from "./utils/Responsive";
 
 const compositeDecorator = new CompositeDecorator([
     new PrismDecorator({ defaultLanguage: "javascript" })
@@ -211,45 +212,96 @@ export class Question extends Component {
                             </Container>
                         </Jumbotron>
                         <Container>
-                            <Row>
-                                <Col xs="2" className="text-danger">
-                                    <strong>Description</strong>
-                                </Col>
-                                <Col xs="10">
-                                    <Editor
-                                        editorState={this.getContent()}
-                                        readOnly
-                                        blockStyleFn={this.codeBlockStyle}
-                                    />
-                                </Col>
-                            </Row>
-                            <hr />
-                            <Row>
-                                <Col xs="2">
-                                    <Button
-                                        color="primary"
-                                        onClick={this.toggle}
-                                    >
-                                        Show Solution
-                                    </Button>
-                                </Col>
-                                <Col xs="10">
-                                    <Collapse isOpen={this.state.collapse}>
-                                        <Card>
-                                            <CardBody>
-                                                <Editor
-                                                    editorState={this.getSolution()}
-                                                    readOnly
-                                                    blockStyleFn={
-                                                        this.codeBlockStyle
-                                                    }
-                                                />
-                                            </CardBody>
-                                        </Card>
-                                    </Collapse>
-                                </Col>
-                            </Row>
+                            <Default>
+                                <Row>
+                                    <Col xs="2" className="text-danger">
+                                        <strong>Description</strong>
+                                    </Col>
+                                    <Col xs="10">
+                                        <Editor
+                                            editorState={this.getContent()}
+                                            readOnly
+                                            blockStyleFn={this.codeBlockStyle}
+                                        />
+                                    </Col>
+                                </Row>
+                                <hr />
+                            </Default>
+                            <Mobile>
+                                <Row>
+                                    <Col className="text-danger">
+                                        <h2>Description</h2>
+                                        <hr />
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginBottom: "24px" }}>
+                                    <Col className="text-center">
+                                        <Editor
+                                            editorState={this.getContent()}
+                                            readOnly
+                                            blockStyleFn={this.codeBlockStyle}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Mobile>
 
+                            <Default>
+                                <Row>
+                                    <Col xs="2">
+                                        <Button
+                                            color="primary"
+                                            onClick={this.toggle}
+                                        >
+                                            Show Solution
+                                        </Button>
+                                    </Col>
+                                    <Col xs="10">
+                                        <Collapse isOpen={this.state.collapse}>
+                                            <Card>
+                                                <CardBody>
+                                                    <Editor
+                                                        editorState={this.getSolution()}
+                                                        readOnly
+                                                        blockStyleFn={
+                                                            this.codeBlockStyle
+                                                        }
+                                                    />
+                                                </CardBody>
+                                            </Card>
+                                        </Collapse>
+                                    </Col>
+                                </Row>
+                            </Default>
+                            <Mobile>
+                                <Row style={{ marginBottom: "16px" }}>
+                                    <Col xs="12">
+                                        <Button
+                                            style={{ width: "100%" }}
+                                            color="primary"
+                                            onClick={this.toggle}
+                                        >
+                                            Show Solution
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs="12">
+                                        <Collapse isOpen={this.state.collapse}>
+                                            <Card>
+                                                <CardBody>
+                                                    <Editor
+                                                        editorState={this.getSolution()}
+                                                        readOnly
+                                                        blockStyleFn={
+                                                            this.codeBlockStyle
+                                                        }
+                                                    />
+                                                </CardBody>
+                                            </Card>
+                                        </Collapse>
+                                    </Col>
+                                </Row>
+                            </Mobile>
                             <hr />
                             <Row>
                                 <Col>

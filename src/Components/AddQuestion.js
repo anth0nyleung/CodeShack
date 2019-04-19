@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { DraftailEditor, BLOCK_TYPE, INLINE_STYLE } from "draftail";
+import { EditorState, convertToRaw } from "draft-js";
 import {
     Container,
     Input,
@@ -13,7 +14,6 @@ import {
 import PropTypes from "prop-types";
 import Select from "react-select";
 import InfoPopover from "./InfoPopover";
-
 import {
     loadAllCompanies,
     loadAllCourses,
@@ -42,8 +42,12 @@ export class AddQuestion extends Component {
 
         this.state = {
             name: "",
-            content: null,
-            solution: null,
+            content: convertToRaw(
+                EditorState.createEmpty().getCurrentContent()
+            ),
+            solution: convertToRaw(
+                EditorState.createEmpty().getCurrentContent()
+            ),
             courses: [],
             companies: [],
             topics: [],
@@ -99,9 +103,14 @@ export class AddQuestion extends Component {
 
     componentDidMount() {
         document.title = "Create Question";
+        this._isMounted = true;
         this.props.loadAllCompanies();
         this.props.loadAllCourses();
         this.props.loadAllTopics();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     /**
@@ -248,8 +257,8 @@ export class AddQuestion extends Component {
                     </Row>
 
                     <DraftailEditor
-                        style={{ margin: "16px" }}
-                        rawContentState={null}
+                        style={{ margin: "16px", "user-select": "text" }}
+                        rawContentState={this.state.content || null}
                         onSave={this.onSaveContent}
                         blockTypes={[
                             { type: BLOCK_TYPE.HEADER_THREE },
@@ -293,9 +302,10 @@ export class AddQuestion extends Component {
                             />
                         </Col>
                     </Row>
+
                     <DraftailEditor
-                        style={{ margin: "16px" }}
-                        rawContentState={null}
+                        style={{ margin: "16px", "user-select": "text" }}
+                        rawContentState={this.state.solution || null}
                         onSave={this.onSaveSolution}
                         blockTypes={[
                             { type: BLOCK_TYPE.HEADER_THREE },
@@ -311,6 +321,7 @@ export class AddQuestion extends Component {
                         ]}
                         decorators={[this.state.decorator]}
                     />
+
                     <Row className="d-flex align-items-center">
                         <Col>
                             <h2
