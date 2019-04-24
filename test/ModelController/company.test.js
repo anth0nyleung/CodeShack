@@ -83,7 +83,7 @@ describe("Company", () => {
                 console.log(err);
                 chai.request(server)
                     .post("/api/company")
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send(company)
                     .end((err, res) => {
                         res.should.have.status(403);
@@ -95,7 +95,7 @@ describe("Company", () => {
         it("it should fail to create a company", done => {
             chai.request(server)
                 .post("/api/company")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -116,7 +116,7 @@ describe("Company", () => {
                 let newCompanyName = { companyName: "Updated Company" };
                 chai.request(server)
                     .patch(`/api/company/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send(newCompanyName)
                     .end((err, res) => {
                         res.should.have.status(500);
@@ -128,7 +128,7 @@ describe("Company", () => {
         it("it should fail to update a company", done => {
             chai.request(server)
                 .patch(`/api/company/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -146,7 +146,7 @@ describe("Company", () => {
                     let newCompanyName = { companyName: "Updated Company" };
                     chai.request(server)
                         .patch(`/api/company/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send(newCompanyName)
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -167,7 +167,7 @@ describe("Company", () => {
                 }).save((err, company1) => {
                     chai.request(server)
                         .get("/api/company")
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(200);
                             let companies = res.body;
@@ -191,7 +191,7 @@ describe("Company", () => {
 
                 chai.request(server)
                     .get(`/api/company/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have
@@ -205,7 +205,7 @@ describe("Company", () => {
         it("it should fail to get a company", done => {
             chai.request(server)
                 .get(`/api/company/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -223,7 +223,7 @@ describe("Company", () => {
                 Company.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .get(`/api/company/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();
@@ -254,7 +254,7 @@ describe("Company", () => {
 
                     chai.request(server)
                         .post(`/api/company/${company_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ question_id: question_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -269,7 +269,7 @@ describe("Company", () => {
         it("it should fail to add the question", done => {
             chai.request(server)
                 .post(`/api/company/1/addq`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -287,7 +287,7 @@ describe("Company", () => {
                 Company.findByIdAndDelete(company_id, err => {
                     chai.request(server)
                         .post(`/api/company/${company_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();

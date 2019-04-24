@@ -8,8 +8,6 @@ import {
     Jumbotron,
     Container,
     Collapse,
-    Card,
-    InputGroup,
     Input,
     Alert
 } from "reactstrap";
@@ -21,7 +19,7 @@ import {
     loginUser,
     updateUser
 } from "../redux/actions/actions";
-import { createTrue } from "typescript";
+import Footer from "./Footer";
 
 const courseColumns = [
     {
@@ -296,12 +294,7 @@ class UserProfile extends Component {
                         />
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

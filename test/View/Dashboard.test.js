@@ -28,7 +28,7 @@ describe("Dashboard component testing", () => {
     });
     it("it should contain 3 buttons", done => {
         const wrapper = shallow(<Dashboard />);
-        expect(wrapper.find("Button").length).to.equal(3);
+        expect(wrapper.find("Button").length).to.equal(6);
         done();
     });
 });

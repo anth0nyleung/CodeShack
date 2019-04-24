@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/actions";
 import { auth, provider } from "./utils/firebase";
+import Footer from "./Footer";
 
 import {
     Row,
@@ -204,12 +205,7 @@ export class Login extends Component {
                         </Col>
                     </Row>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

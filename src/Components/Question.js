@@ -31,6 +31,7 @@ import LazyLoad from "react-lazyload";
 import Comment from "./Comment";
 import PrismDecorator from "./utils/PrismDecorator";
 import { Default, Mobile } from "./utils/Responsive";
+import Footer from "./Footer";
 
 const compositeDecorator = new CompositeDecorator([
     new PrismDecorator({ defaultLanguage: "javascript" })
@@ -359,12 +360,7 @@ export class Question extends Component {
                             })}
                         </Container>
                     </main>
-                    <footer>
-                        <Container>
-                            <hr />
-                            <p>&copy; CodeShack 2019</p>
-                        </Container>
-                    </footer>
+                    <Footer />
                 </Fade>
             </div>
         );

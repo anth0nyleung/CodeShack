@@ -23,16 +23,20 @@ const props = {
     currentCompany: {
         companyName: "Test",
         questions: []
-    }
+    },
+    userCourses: []
 };
 
 describe("Questions component testing", () => {
     it("it should render CourseQuestions correctly", done => {
         const wrapper = shallow(
-            <CourseQuestions currentCourse={props.currentCourse} />,
+            <CourseQuestions
+                currentCourse={props.currentCourse}
+                userCourses={props.userCourses}
+            />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -41,7 +45,7 @@ describe("Questions component testing", () => {
             <TopicQuestions currentTopic={props.currentTopic} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -50,7 +54,7 @@ describe("Questions component testing", () => {
             <CompanyQuestions currentCompany={props.currentCompany} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 });

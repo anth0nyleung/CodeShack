@@ -23,6 +23,7 @@ import {
 } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import PrismDecorator from "./utils/PrismDecorator.js";
+import Footer from "./Footer";
 
 const mapStateToProps = state => {
     return {
@@ -390,12 +391,7 @@ export class AddQuestion extends Component {
                         <Button>Close</Button>
                     </ModalFooter>
                 </Modal>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </main>
         );
     }

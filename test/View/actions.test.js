@@ -21,33 +21,89 @@ mock.onGet("http://localhost:8080/api/user/").reply(200, {});
 describe("Actions", () => {
     it("it should send action to load topics", done => {
         const test = actions.loadAllTopics();
+        var total = 0;
         test(action => {
-            action.type.should.eql("START_LOADING");
-            done();
+            total++;
+            switch (total) {
+                case 1:
+                    action.type.should.eql("START_LOADING");
+                    break;
+                case 2:
+                    action.type.should.eql("LOAD_TOPICS");
+                    break;
+                case 3:
+                    action.type.should.eql("STOP_LOADING");
+                    done();
+                    break;
+                default:
+                    break;
+            }
         });
     });
 
     it("it should send actino to load a specific topic", done => {
         const test = actions.loadTopic("123");
+        var total = 0;
         test(action => {
-            action.type.should.eql("START_LOADING");
-            done();
+            total++;
+            switch (total) {
+                case 1:
+                    action.type.should.eql("START_LOADING");
+                    break;
+                case 2:
+                    action.type.should.eql("LOAD_TOPIC");
+                    break;
+                case 3:
+                    action.type.should.eql("STOP_LOADING");
+                    done();
+                    break;
+                default:
+                    break;
+            }
         });
     });
 
     it("it should send a LOAD_COMPANIES action", done => {
         const test = actions.loadAllCompanies();
+        var total = 0;
         test(action => {
-            action.type.should.eql("START_LOADING");
-            done();
+            total++;
+            switch (total) {
+                case 1:
+                    action.type.should.eql("START_LOADING");
+                    break;
+                case 2:
+                    action.type.should.eql("LOAD_COMPANIES");
+                    break;
+                case 3:
+                    action.type.should.eql("STOP_LOADING");
+                    done();
+                    break;
+                default:
+                    break;
+            }
         });
     });
 
     it("it should send a LOAD_COMPANY aciton", done => {
         const test = actions.loadCompany("123");
+        var total = 0;
         test(action => {
-            action.type.should.eql("START_LOADING");
-            done();
+            total++;
+            switch (total) {
+                case 1:
+                    action.type.should.eql("START_LOADING");
+                    break;
+                case 2:
+                    action.type.should.eql("LOAD_COMPANY");
+                    break;
+                case 3:
+                    action.type.should.eql("STOP_LOADING");
+                    done();
+                    break;
+                default:
+                    break;
+            }
         });
     });
 
@@ -239,6 +295,32 @@ describe("Actions", () => {
         test(action => {
             action.type.should.eql("SET_USER");
             done();
+        });
+    });
+
+    it("it should send a LOAD_QUESITONS and LOAD_TAGS", done => {
+        mock.onGet("http://localhost:8080/api/question").reply(200, []);
+        var total = 0;
+        const test = actions.loadAllQuestions();
+        test(action => {
+            total++;
+            switch (total) {
+                case 1:
+                    action.type.should.eql("START_LOADING");
+                    break;
+                case 2:
+                    action.type.should.eql("LOAD_QUESTIONS");
+                    break;
+                case 3:
+                    action.type.should.eql("LOAD_TAGS");
+                    break;
+                case 4:
+                    action.type.should.eql("STOP_LOADING");
+                    done();
+                    break;
+                default:
+                    break;
+            }
         });
     });
 });

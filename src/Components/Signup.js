@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { signupUser, loadAllCourses } from "../redux/actions/actions";
 import { auth, provider } from "./utils/firebase";
 import Select from "react-select";
+import Footer from "./Footer";
 
 import {
     Col,
@@ -279,12 +280,7 @@ export class Signup extends Component {
                         </Form>
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

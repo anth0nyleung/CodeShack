@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { Default, Mobile } from "./utils/Responsive";
+import Footer from "./Footer";
 
 const mainStyles = {
     backgroundColor: "#9b0000",
@@ -230,12 +231,7 @@ class Main extends Component {
                         </Container>
                     </Jumbotron>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

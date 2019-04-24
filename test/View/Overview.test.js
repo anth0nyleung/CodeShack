@@ -17,7 +17,7 @@ describe("Overview component testing", () => {
             />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -26,7 +26,7 @@ describe("Overview component testing", () => {
             <TopicOverview topics={[{ topicName: "Test" }]} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -35,7 +35,7 @@ describe("Overview component testing", () => {
             <CompanyOverview companies={[{ companyName: "Test" }]} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 });

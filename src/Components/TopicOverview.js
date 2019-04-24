@@ -13,6 +13,7 @@ import {
 import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import PropTypes from "prop-types";
+import Footer from "./Footer";
 
 const columns = [
     {
@@ -165,12 +166,7 @@ export class TopicOverview extends Component {
                         </Collapse>
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

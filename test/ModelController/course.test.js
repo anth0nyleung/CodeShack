@@ -72,7 +72,7 @@ describe("Course", () => {
             };
             chai.request(server)
                 .post("/api/course")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(course)
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -82,7 +82,7 @@ describe("Course", () => {
         it("it should fail to create a course", done => {
             chai.request(server)
                 .post("/api/course")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -105,7 +105,7 @@ describe("Course", () => {
                 let newCourseName = { courseName: "Updated Course" };
                 chai.request(server)
                     .patch(`/api/course/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send(newCourseName)
                     .end((err, res) => {
                         res.should.have.status(500);
@@ -117,7 +117,7 @@ describe("Course", () => {
         it("it should fail to update a course", done => {
             chai.request(server)
                 .patch(`/api/course/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -137,7 +137,7 @@ describe("Course", () => {
                 Course.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .patch(`/api/course/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({})
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -160,7 +160,7 @@ describe("Course", () => {
                 }).save((err, course2) => {
                     chai.request(server)
                         .get("/api/course")
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(200);
                             let courses = res.body;
@@ -187,7 +187,7 @@ describe("Course", () => {
 
                 chai.request(server)
                     .get(`/api/course/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have
@@ -201,7 +201,7 @@ describe("Course", () => {
         it("it should faile to get a single course", done => {
             chai.request(server)
                 .get("/api/course/1")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -231,7 +231,7 @@ describe("Course", () => {
 
                     chai.request(server)
                         .post(`/api/course/${course_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ question_id: question_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -254,7 +254,7 @@ describe("Course", () => {
 
                 chai.request(server)
                     .post(`/api/course/${course_id}/addq`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send({ question_id: question_id })
                     .end((err, res) => {
                         res.should.have.status(500);
@@ -276,7 +276,7 @@ describe("Course", () => {
                 Course.findByIdAndDelete(course_id, err => {
                     chai.request(server)
                         .post(`/api/course/${course_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ question_id: question_id })
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -299,7 +299,7 @@ describe("Course", () => {
 
                 chai.request(server)
                     .post(`/api/course/${course_id}/addq`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send({ question_id: question_id })
                     .end((err, res) => {
                         res.should.have.status(500);

@@ -10,9 +10,11 @@ configure({ adapter: new Adapter() });
 
 describe("Signup component testing", () => {
     it("it should render correctly", done => {
-        const wrapper = shallow(<Signup />);
+        const wrapper = shallow(<Signup courses={[]} />, {
+            disableLifecycleMethods: true
+        });
         expect(wrapper.find("Button").length).to.equal(1);
-        expect(wrapper.find("Input").length).to.equal(5);
+        expect(wrapper.find("Input").length).to.equal(4);
         done();
     });
 });
