@@ -1,5 +1,5 @@
 process.env.NODE_ENV = "test";
-
+let sinon = require("sinon");
 let Company = require("../../server/Models/company.model");
 let Question = require("../../server/Models/question.model");
 let User = require("../../server/Models/user.model");
@@ -51,7 +51,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 chai.use(chaiHttp);
 
 describe("Company", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Company.deleteMany({}, err => {
             Question.deleteMany({}, err => {
                 User.deleteMany({}, err => {
@@ -67,7 +71,12 @@ describe("Company", () => {
             });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create Company /POST", () => {
         it("it should fail to create a company ", done => {
             let company = {

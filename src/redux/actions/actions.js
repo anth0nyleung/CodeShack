@@ -44,7 +44,7 @@ export function loadAllTopics() {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get topics", err);
+                    console.error("Error: Unable to get topics", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -66,7 +66,7 @@ export function loadTopic(topic_id) {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get topic", err);
+                    console.error("Error: Unable to get topic", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -88,7 +88,7 @@ export function loadAllCompanies() {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get companies", err);
+                    console.error("Error: Unable to get companies", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -110,7 +110,7 @@ export function loadCompany(company_id) {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get company", err);
+                    console.error("Error: Unable to get company", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -133,7 +133,7 @@ export function loadQuestion(question_id) {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get question,", err);
+                    console.error("Error: Unable to get question,", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -172,7 +172,7 @@ export function loadAllQuestions() {
                     });
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -196,7 +196,7 @@ export function saveQuestionToUserHistory(question_data, user_id) {
                     dispatch({ type: "SET_USER", user });
                 })
                 .catch(err => {
-                    console.log(
+                    console.error(
                         "Error: Unable to save question to user history",
                         err
                     );
@@ -220,7 +220,7 @@ export function loadAllCourses() {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get courses", err);
+                    console.error("Error: Unable to get courses", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -243,7 +243,7 @@ export function loadCourse(course_id) {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log("Error: Unable to get questions,", err);
+                    console.error("Error: Unable to get questions,", err);
                     dispatch({ type: "STOP_LOADING" });
                 });
         });
@@ -266,7 +266,7 @@ export function createQuestion(question_data, callback) {
                     callback(null, question);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     callback(err);
                 });
         });
@@ -278,7 +278,7 @@ export function createQuestion(question_data, callback) {
  * @param {function} callback
  */
 export function loginUser(callback) {
-    console.log("login");
+    console.info("login");
     return dispatch => {
         dispatch({ type: "START_LOADING" });
         setHeader(config => {
@@ -291,7 +291,7 @@ export function loginUser(callback) {
                     callback(null);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     dispatch({ type: "AUTH_ERROR" });
                     dispatch({ type: "STOP_LOADING" });
                     if (err.response) {
@@ -329,7 +329,7 @@ export function createCommentAndReply(comment_data, question_id, callback) {
                                 callback();
                             })
                             .catch(err => {
-                                console.log("Error replying comment");
+                                console.error("Error replying comment");
                             });
                     } else {
                         axios
@@ -342,12 +342,12 @@ export function createCommentAndReply(comment_data, question_id, callback) {
                                 callback();
                             })
                             .catch(err => {
-                                console.log("error replying comment");
+                                console.error("error replying comment");
                             });
                     }
                 })
                 .catch(err => {
-                    console.log("error creating comment");
+                    console.error("error creating comment");
                 });
         });
     };
@@ -386,7 +386,7 @@ export function deleteComment(comment_id, callback) {
                     callback();
                 })
                 .catch(err => {
-                    console.log("Error deleting comment");
+                    console.error("Error deleting comment");
                 });
         });
     };
@@ -401,7 +401,7 @@ export function createCourse(course_data) {
                     loadAllCourses()(dispatch);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
         });
     };
@@ -416,7 +416,7 @@ export function createCompany(company_data) {
                     loadAllCompanies()(dispatch);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
         });
     };
@@ -431,7 +431,7 @@ export function createTopic(topic_data) {
                     loadAllTopics()(dispatch);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
         });
     };
@@ -441,7 +441,7 @@ export function createTopic(topic_data) {
  * @param {Object} user_data
  */
 export function signupUser(user_data) {
-    console.log("create new user " + user_data);
+    console.info("create new user " + user_data);
     return dispatch => {
         setHeader(config => {
             axios
@@ -452,7 +452,7 @@ export function signupUser(user_data) {
                     dispatch({ type: "SET_USER", user });
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     dispatch({ type: "AUTH_ERROR" });
                 });
         });
@@ -470,7 +470,7 @@ export function updateUser(user_data) {
                     dispatch({ type: "STOP_LOADING" });
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     dispatch({ type: "UPDATE_FAIL" });
                     dispatch({ type: "STOP_LOADING" });
                 });

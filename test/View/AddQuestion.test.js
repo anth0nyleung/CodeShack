@@ -3,7 +3,7 @@ import { configure, shallow } from "enzyme";
 import { expect } from "chai";
 
 import { AddQuestion } from "../../src/Components/AddQuestion";
-
+import sinon from "sinon";
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });
 
@@ -28,6 +28,17 @@ const props = {
 };
 
 describe("Add Question", () => {
+    var warn, error;
+    beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        done();
+    });
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        done();
+    });
     it("it should render Add Question correctly", done => {
         const wrapper = shallow(
             <AddQuestion

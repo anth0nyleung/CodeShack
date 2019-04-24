@@ -1,8 +1,8 @@
 import React from "react";
 import { configure, shallow } from "enzyme";
 import { expect } from "chai";
+import sinon from "sinon";
 
-import { Container } from "reactstrap";
 import { CourseQuestions } from "../../src/Components/CourseQuestions";
 import { TopicQuestions } from "../../src/Components/TopicQuestions";
 import { CompanyQuestions } from "../../src/Components/CompanyQuestions";
@@ -28,6 +28,17 @@ const props = {
 };
 
 describe("Questions component testing", () => {
+    var warn, error;
+    beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        done();
+    });
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        done();
+    });
     it("it should render CourseQuestions correctly", done => {
         const wrapper = shallow(
             <CourseQuestions

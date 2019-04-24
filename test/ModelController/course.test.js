@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let Course = require("../../server/Models/course.model");
 let Question = require("../../server/Models/question.model");
 let admin = require("../../server/Firebase/admin");
@@ -50,7 +51,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 chai.use(chaiHttp);
 
 describe("Course", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Course.deleteMany({}, err => {
             admin
                 .auth()
@@ -62,7 +67,12 @@ describe("Course", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     /* Test the /POST route */
     describe("Create course /POST", () => {
         it("it should fail to create a course", done => {

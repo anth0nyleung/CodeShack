@@ -50,8 +50,13 @@ function getIdTokenFromCustomToken(customToken, callback) {
 }
 
 chai.use(chaiHttp);
+
 describe("Comments", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Comment.deleteMany({}, err => {
             admin
                 .auth()
@@ -63,7 +68,12 @@ describe("Comments", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     /* Test the /POST route */
     describe("Create comment /POST", () => {
         it("it should create a comment", done => {

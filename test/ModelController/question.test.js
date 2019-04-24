@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let mongoose = require("mongoose");
 let Course = require("../../server/Models/course.model");
 let Question = require("../../server/Models/question.model");
@@ -56,7 +57,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 }
 
 describe("Question", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Question.deleteMany({}, err => {
             admin
                 .auth()
@@ -68,7 +73,12 @@ describe("Question", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create question /POST", () => {
         it("it should create a question", done => {
             let question = {
@@ -357,6 +367,33 @@ describe("Question", () => {
                                 done();
                             });
                     });
+                });
+            });
+        });
+    });
+
+    describe("Add a company /POST", () => {
+        it("it should add a company", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Company({ companyName: "test" }).save((err, company) => {
+                    let company_id = company._id;
+
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcompany`)
+                        .set("Authorization", "Bearer " + idToken)
+                        .send({ company_id: company_id })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            let companies = res.body.companies;
+                            companies.length.should.eql(1);
+                            done();
+                        });
                 });
             });
         });

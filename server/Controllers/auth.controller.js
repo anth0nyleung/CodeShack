@@ -15,7 +15,7 @@ module.exports = {
                     .verifyIdToken(authentication[1])
                     .then(decodedToken => {
                         req.firebase_id = decodedToken.uid;
-                        console.log("Firebase idToken verified");
+                        console.info("Firebase idToken verified");
                         return next();
                     })
                     .catch(err => {

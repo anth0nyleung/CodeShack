@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let Topic = require("../../server/Models/topic.model");
 let Question = require("../../server/Models/question.model");
 let admin = require("../../server/Firebase/admin");
@@ -50,7 +51,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 chai.use(chaiHttp);
 
 describe("Topic", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Topic.deleteMany({}, err => {
             Question.deleteMany({}, err => {
                 admin
@@ -64,7 +69,12 @@ describe("Topic", () => {
             });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create topic /POST", () => {
         it("it should fail to create a topic", done => {
             let topic = {

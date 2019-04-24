@@ -1,25 +1,31 @@
 import * as actions from "../../src/redux/actions/actions";
 import { expect } from "chai";
+import sinon from "sinon";
+
+process.env.NODE_ENV = "test";
 var MockAdapter = require("axios-mock-adapter");
 var axios = require("axios");
 
-var mock = new MockAdapter(axios);
-
-mock.onGet("http://localhost:8080/api/topic").reply(200, {});
-mock.onGet("http://localhost:8080/api/topic/123").reply(200, {});
-mock.onGet("http://localhost:8080/api/company").reply(200, {});
-mock.onGet("http://localhost:8080/api/company/123").reply(200, {});
-mock.onGet("http://localhost:8080/api/question/123").reply(200, {});
-mock.onGet("http://localhost:8080/api/question/error").reply(500, {});
-mock.onGet("http://localhost:8080/api/course").reply(200, {});
-mock.onGet("http://localhost:8080/api/course/123").reply(200, {});
-mock.onPost("http://localhost:8080/api/question").reply(200, {
-    succeeded: true
-});
-mock.onGet("http://localhost:8080/api/user/").reply(200, {});
+var mock;
 
 describe("Actions", () => {
+    var warn, error, info;
+    beforeEach(done => {
+        mock = new MockAdapter(axios);
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
+        done();
+    });
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        mock.restore();
+        done();
+    });
     it("it should send action to load topics", done => {
+        mock.onGet("http://localhost:8080/api/topic").reply(200, {});
         const test = actions.loadAllTopics();
         var total = 0;
         test(action => {
@@ -42,6 +48,7 @@ describe("Actions", () => {
     });
 
     it("it should send actino to load a specific topic", done => {
+        mock.onGet("http://localhost:8080/api/topic/123").reply(200, {});
         const test = actions.loadTopic("123");
         var total = 0;
         test(action => {
@@ -64,6 +71,7 @@ describe("Actions", () => {
     });
 
     it("it should send a LOAD_COMPANIES action", done => {
+        mock.onGet("http://localhost:8080/api/company").reply(200, {});
         const test = actions.loadAllCompanies();
         var total = 0;
         test(action => {
@@ -86,6 +94,8 @@ describe("Actions", () => {
     });
 
     it("it should send a LOAD_COMPANY aciton", done => {
+        mock.onGet("http://localhost:8080/api/company/123").reply(200, {});
+
         const test = actions.loadCompany("123");
         var total = 0;
         test(action => {
@@ -108,6 +118,7 @@ describe("Actions", () => {
     });
 
     it("it should send a START_LOADING and LOAD_QUESITON action", done => {
+        mock.onGet("http://localhost:8080/api/question/123").reply(200, {});
         const test = actions.loadQuestion("123");
         var total = 0;
         test(action => {
@@ -130,6 +141,7 @@ describe("Actions", () => {
     });
 
     it("it should fail to send a LOAD_QUESITON", done => {
+        mock.onGet("http://localhost:8080/api/question/error").reply(500, {});
         const test = actions.loadQuestion("error");
         var total = 0;
         test(action => {
@@ -149,6 +161,7 @@ describe("Actions", () => {
     });
 
     it("it should send LOAD_COURSES", done => {
+        mock.onGet("http://localhost:8080/api/course").reply(200, {});
         const test = actions.loadAllCourses();
         var total = 0;
         test(action => {
@@ -171,6 +184,7 @@ describe("Actions", () => {
     });
 
     it("it should send a LOAD_COURSE action", done => {
+        mock.onGet("http://localhost:8080/api/course/123").reply(200, {});
         const test = actions.loadCourse("123");
         var total = 0;
         test(action => {
@@ -193,6 +207,9 @@ describe("Actions", () => {
     });
 
     it("it should callback", done => {
+        mock.onPost("http://localhost:8080/api/question").reply(200, {
+            succeeded: true
+        });
         const test = actions.createQuestion({}, (err, data) => {
             data.succeeded.should.eql(true);
             done();
@@ -201,6 +218,7 @@ describe("Actions", () => {
     });
 
     it("it should send SET_USER", done => {
+        mock.onGet("http://localhost:8080/api/user/").reply(200, {});
         const test = actions.loginUser();
         var total = 0;
         test(action => {
