@@ -20,7 +20,7 @@ const mapStateToProps = state => {
     };
 };
 
-class AllQuestions extends Component {
+export class AllQuestions extends Component {
     constructor(props) {
         super(props);
 

@@ -448,7 +448,6 @@ export function signupUser(user_data) {
                 .post(`${url}user`, user_data, config)
                 .then(res => {
                     let user = res.data;
-                    localStorage.setItem("Auth", user.email);
                     dispatch({ type: "SET_USER", user });
                 })
                 .catch(err => {

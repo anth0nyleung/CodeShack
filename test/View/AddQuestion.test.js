@@ -24,7 +24,7 @@ const props = {
     ],
     topics: [{ topicName: "Topic1" }],
     courses: [{ courseName: "ASDF", courseNumber: "CS1234" }],
-    user: {}
+    user: { _id: "1" }
 };
 
 describe("Add Question", () => {
@@ -50,6 +50,58 @@ describe("Add Question", () => {
             { disableLifecycleMethods: true }
         );
         expect(wrapper.find("DraftailEditor").length).to.equal(2);
+        done();
+    });
+
+    it("it should handle tag correctly", done => {
+        const wrapper = shallow(
+            <AddQuestion
+                companies={props.companies}
+                topics={props.topics}
+                courses={props.courses}
+                user={props.user}
+            />,
+            { disableLifecycleMethods: true }
+        );
+        wrapper
+            .instance()
+            .handleTagChange([
+                { value: ["course", "1"] },
+                { value: ["topic", "1"] },
+                { value: ["company", "1"] }
+            ]);
+        expect(wrapper.instance().state.courses.length.should.eql(1));
+        done();
+    });
+    it("it should handle onSubmit correctly", done => {
+        var createQuestion = sinon.spy();
+        var saveQuestionToUserHistory = sinon.spy();
+        const wrapper = shallow(
+            <AddQuestion
+                companies={props.companies}
+                topics={props.topics}
+                courses={props.courses}
+                user={props.user}
+                createQuestion={createQuestion}
+                saveQuestionToUserHistory={saveQuestionToUserHistory}
+            />,
+            { disableLifecycleMethods: true }
+        );
+
+        wrapper.instance().state = {
+            name: "test",
+            content: "{test: 1}",
+            solution: "{test: 1}",
+            courses: ["123"],
+            topics: [],
+            companies: []
+        };
+        wrapper.update();
+        wrapper
+            .find("Button")
+            .at(0)
+            .simulate("click", {});
+        expect(createQuestion.called.should.eql(true));
         done();
     });
 });
