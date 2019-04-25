@@ -109,15 +109,7 @@ class Main extends Component {
                                                     style={buttonStyles}
                                                     onClick={this.onClickLogin}
                                                 >
-                                                    Login
-                                                </Button>
-                                            </Row>
-                                            <Row>
-                                                <Button
-                                                    style={buttonStyles}
-                                                    onClick={this.onClickSignup}
-                                                >
-                                                    Sign up
+                                                    Login/Signup
                                                 </Button>
                                             </Row>
                                         </Jumbotron>
@@ -169,26 +161,7 @@ class Main extends Component {
                                                             this.onClickLogin
                                                         }
                                                     >
-                                                        Login
-                                                    </Button>
-                                                </Col>
-                                            </Row>
-                                            <Row className="justify-content-center">
-                                                <Col>
-                                                    <Button
-                                                        style={{
-                                                            marginTop: "10px",
-                                                            width: "100%",
-                                                            backgroundColor:
-                                                                "#9b0000",
-                                                            borderColor:
-                                                                "#9b0000"
-                                                        }}
-                                                        onClick={
-                                                            this.onClickSignup
-                                                        }
-                                                    >
-                                                        Sign up
+                                                        Login/Signup
                                                     </Button>
                                                 </Col>
                                             </Row>

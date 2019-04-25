@@ -209,16 +209,18 @@ class NavBar extends Component {
                     </Default>
                     <Mobile>
                         {this.context.router.history.location.pathname !==
-                            "/" && (
-                            <NavbarToggler
-                                onClick={() =>
-                                    this.setState({
-                                        collapsed: !this.state.collapsed
-                                    })
-                                }
-                                className="navbar-toggler-right"
-                            />
-                        )}
+                            "/" &&
+                            this.context.router.history.location.pathname !==
+                                "/help" && (
+                                <NavbarToggler
+                                    onClick={() =>
+                                        this.setState({
+                                            collapsed: !this.state.collapsed
+                                        })
+                                    }
+                                    className="navbar-toggler-right"
+                                />
+                            )}
                         <Collapse isOpen={this.state.collapsed} navbar>
                             <Nav navbar>
                                 <NavLink

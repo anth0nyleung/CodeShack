@@ -147,13 +147,20 @@ export class AddQuestion extends Component {
         event.forEach(element => {
             switch (element.value[0]) {
                 case "course":
-                    courses.push(element.value[1]);
+                    if (courses.indexOf(element.value[1]) === -1) {
+                        courses.push(element.value[1]);
+                    }
                     break;
                 case "topic":
-                    topics.push(element.value[1]);
+                    if (topics.indexOf(element.value[1]) === -1) {
+                        topics.push(element.value[1]);
+                    }
+
                     break;
                 case "company":
-                    companies.push(element.value[1]);
+                    if (companies.indexOf(element.value[1]) === -1) {
+                        companies.push(element.value[1]);
+                    }
                     break;
                 default:
                     break;

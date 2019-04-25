@@ -13,7 +13,11 @@ export default (state = initialState, action) => {
                 isAuth: Object.keys(action.user).length > 0 ? true : false,
                 user: action.user
             };
-
+        case "REMOVE_AUTH_ERROR":
+            return {
+                ...state,
+                authError: false
+            };
         case "AUTH_ERROR":
             return {
                 ...state,

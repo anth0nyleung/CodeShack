@@ -71,7 +71,34 @@ export class Login extends Component {
     // Handle sign up button pressed - Bug
     pressSignUp = () => {
         console.log("Pressed Sign up");
-        this.context.router.history.push("/signup");
+        auth.signOut(); // Need to be remove
+        auth.signInWithPopup(provider)
+            .then(result => {
+                this.props.loginUser(err => {
+                    if (err) {
+                        var user = result.user;
+                        if (user.email.includes("@wisc.edu")) {
+                            this.context.router.history.push({
+                                pathname: "/signup",
+                                state: {
+                                    email: user.email,
+                                    name: user.displayName,
+                                    firebase_id: user.uid
+                                }
+                            });
+                        } else {
+                            this.setState({ loginError: true });
+                        }
+                    } else {
+                        this.context.router.history.push("/dashboard");
+                    }
+                });
+            })
+            .catch(err => {
+                if (err.code !== "auth/popup-closed-by-user") {
+                    this.setState({ loginError: true });
+                }
+            });
     };
 
     // Handle submit button pressed
@@ -163,7 +190,7 @@ export class Login extends Component {
                                             toggle={this.onDismiss}
                                         >
                                             Please use a valid wisc.edu email to
-                                            login
+                                            login/signup
                                         </Alert>
                                     )}
                                     {this.state.userExist && (
@@ -197,7 +224,8 @@ export class Login extends Component {
                                             style={buttonStyles}
                                             onClick={this.pressSignUp}
                                         >
-                                            Sign up
+                                            Don't have an account? Sign up with
+                                            Google
                                         </Button>
                                     </Col>
                                 </Form>

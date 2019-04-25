@@ -478,6 +478,12 @@ export function updateUser(user_data) {
     };
 }
 
+export function removeAuthError() {
+    return dispatch => {
+        dispatch({ type: "REMOVE_AUTH_ERROR" });
+    };
+}
+
 /**
  * Removes user from state
  */
