@@ -102,9 +102,11 @@ export class Signup extends Component {
     };
 
     validateForm = () => {
-        var exp = /^[a-z0-9]+$/i;
+        var exp = /^[a-zA-Z0-9-_]+$/;
+        console.log(this.state.username.search(exp));
         var usernameValid =
-            this.state.username.length > 0 && this.state.username.match(exp);
+            this.state.username.length > 0 &&
+            this.state.username.search(exp) !== -1;
 
         var yearValid =
             this.state.year !== "Please Select..." && this.state.year !== "";
@@ -206,7 +208,7 @@ export class Signup extends Component {
                                 id="usernameAlert"
                                 isOpen={
                                     !this.state.username.match(
-                                        /^[a-z0-9]+$/i
+                                        /^[a-zA-Z0-9-_]+$/
                                     ) && this.state.username.length !== 0
                                 }
                             >

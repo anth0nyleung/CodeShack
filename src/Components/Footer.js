@@ -8,12 +8,13 @@ class Footer extends Component {
                 <Container>
                     <hr />
                     <Row>
-                        <Col xs="4">
+                        <Col>
                             <p>&copy; CodeShack 2019</p>
                         </Col>
-                        <Col>
+                        <Col xs="auto">
                             <a href="/help">FAQ</a>
-                            <br />
+                        </Col>
+                        <Col xs="auto">
                             <a href="/">About us</a>
                         </Col>
                     </Row>
