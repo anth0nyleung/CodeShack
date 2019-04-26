@@ -21,7 +21,7 @@ export default function(ChildComponent) {
             if (!this.props.isAuth) {
                 this.props.loginUser(err => {
                     if (err) {
-                        this.context.router.history.push("/login");
+                        window.location = "/login";
                     }
                 });
             }

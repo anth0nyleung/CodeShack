@@ -18,6 +18,7 @@ import Main from "./Components/Main";
 import AddQuestion from "./Components/AddQuestion";
 import AllQuestions from "./Components/AllQuestions";
 import Logout from "./Components/Logout";
+import HelpPage from "./Components/HelpPage";
 
 class App extends Component {
     render() {
@@ -85,6 +86,7 @@ class App extends Component {
                         component={EnsureAuthContainer(AllQuestions)}
                     />
                     <Route exact path="/logout" component={Logout} />
+                    <Route exact path="/help" component={HelpPage} />
                     <Route component={NotFound} />
                 </Switch>
             </div>

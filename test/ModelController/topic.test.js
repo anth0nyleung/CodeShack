@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let Topic = require("../../server/Models/topic.model");
 let Question = require("../../server/Models/question.model");
 let admin = require("../../server/Firebase/admin");
@@ -50,7 +51,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 chai.use(chaiHttp);
 
 describe("Topic", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Topic.deleteMany({}, err => {
             Question.deleteMany({}, err => {
                 admin
@@ -64,7 +69,12 @@ describe("Topic", () => {
             });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create topic /POST", () => {
         it("it should fail to create a topic", done => {
             let topic = {
@@ -72,7 +82,7 @@ describe("Topic", () => {
             };
             chai.request(server)
                 .post("/api/topic")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(topic)
                 .end((err, res) => {
                     res.should.have.status(403);
@@ -83,7 +93,7 @@ describe("Topic", () => {
         it("it should fail to create a topic", done => {
             chai.request(server)
                 .post("/api/topic")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(403);
                     done();
@@ -104,7 +114,7 @@ describe("Topic", () => {
                 let newTopicName = { topicName: "Updated Topic" };
                 chai.request(server)
                     .patch(`/api/topic/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send(newTopicName)
                     .end((err, res) => {
                         res.should.have.status(403);
@@ -116,7 +126,7 @@ describe("Topic", () => {
         it("it should fail to update a topic", done => {
             chai.request(server)
                 .patch(`/api/topic/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(403);
                     done();
@@ -134,7 +144,7 @@ describe("Topic", () => {
                     let newTopicName = { topicName: "Updated Topic" };
                     chai.request(server)
                         .patch(`/api/topic/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send(newTopicName)
                         .end((err, res) => {
                             res.should.have.status(403);
@@ -154,7 +164,7 @@ describe("Topic", () => {
                 }).save((err, topic1) => {
                     chai.request(server)
                         .get("/api/topic")
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(200);
                             let topics = res.body;
@@ -178,7 +188,7 @@ describe("Topic", () => {
 
                 chai.request(server)
                     .get(`/api/topic/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have.property("topicName").eql("Test");
@@ -190,7 +200,7 @@ describe("Topic", () => {
         it("it should fail to get a topic", done => {
             chai.request(server)
                 .get(`/api/topic/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -208,7 +218,7 @@ describe("Topic", () => {
                 Topic.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .get(`/api/topic/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();
@@ -239,7 +249,7 @@ describe("Topic", () => {
 
                     chai.request(server)
                         .post(`/api/topic/${topic_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ question_id: question_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -254,7 +264,7 @@ describe("Topic", () => {
         it("it should fail to add the question", done => {
             chai.request(server)
                 .post(`/api/topic/1/addq`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -272,7 +282,7 @@ describe("Topic", () => {
                 Topic.findByIdAndDelete(topic_id, err => {
                     chai.request(server)
                         .post(`/api/topic/${topic_id}/addq`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(500);
                             done();

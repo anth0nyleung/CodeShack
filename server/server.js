@@ -6,8 +6,7 @@ const mongoose = require("mongoose"),
     cors = require("cors"),
     router = express.Router(),
     helmet = require("helmet"),
-    config = require("config"),
-    logger = require("morgan");
+    config = require("config");
 
 const API_PORT = 8080;
 
@@ -19,8 +18,6 @@ let dbRoute = "mongodb://localhost:27017/CodeShackDev"; // Change this
 if (config.util.getEnv("NODE_ENV") === "test") {
     console.log("Running test...");
     dbRoute = "mongodb://localhost:27017/CodeShackTest";
-} else {
-    app.use(logger("dev"));
 }
 
 // connects our back end code with the database

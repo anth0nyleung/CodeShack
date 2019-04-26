@@ -1,9 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { signupUser, loadAllCourses } from "../redux/actions/actions";
+import {
+    signupUser,
+    loadAllCourses,
+    removeAuthError
+} from "../redux/actions/actions";
 import { auth, provider } from "./utils/firebase";
 import Select from "react-select";
+import Footer from "./Footer";
+import { Redirect } from "react-router";
 
 import {
     Col,
@@ -56,14 +62,9 @@ export class Signup extends Component {
         super(props);
 
         this.state = {
-            email: "",
             username: "",
-            name: "",
             year: "",
             currentCourse: [],
-            invalidEmailError: false,
-            invalidUsernameError: false,
-            emailAlertVisible: true,
             usernameAlertVisible: true
         };
     }
@@ -78,34 +79,20 @@ export class Signup extends Component {
     onSubmit = e => {
         console.log("Handle Submit");
 
-        auth.signOut(); // Need to be remove
-        auth.signInWithPopup(provider)
-            .then(result => {
-                // The signed-in user info.
-                var user = result.user;
-                console.log("Callback email: " + user.email);
-
-                if (user.email.includes("@wisc.edu")) {
-                    // Load user to state
-                    this.props.signupUser({
-                        firebase_id: user.uid,
-                        email: user.email,
-                        username: this.state.username,
-                        name: this.state.name,
-                        year: this.state.year,
-                        courses: this.state.currentCourse
-                    });
-                }
-                // Reject and require to log in with wisc edu email again
-                else {
-                    // Show an alert
-                    this.setState({ invalidEmailError: true });
-                }
-            })
-            .catch(error => {
-                this.setState({ loginError: true });
+        try {
+            // Load user to state
+            this.props.signupUser({
+                firebase_id: this.props.location.state.firebase_id,
+                email: this.props.location.state.email,
+                username: this.state.username,
+                name: this.props.location.state.name,
+                year: this.state.year,
+                courses: this.state.currentCourse
             });
-        e.preventDefault();
+        } catch (error) {
+            console.log("error signing upt");
+            this.setState({ usernameAlertVisible: true });
+        }
     };
 
     renderRedirect = e => {
@@ -115,33 +102,24 @@ export class Signup extends Component {
     };
 
     validateForm = () => {
-        var emailValid =
-            this.state.email.length > 0 &&
-            this.state.email.includes("@wisc.edu");
-        var usernameValid = this.state.username.length > 0;
-        var nameValid = this.state.name.length > 0;
-        var yearValid = this.state.year !== "";
+        var exp = /^[a-zA-Z0-9-_]+$/;
+        console.log(this.state.username.search(exp));
+        var usernameValid =
+            this.state.username.length > 0 &&
+            this.state.username.search(exp) !== -1;
 
-        return emailValid && usernameValid && nameValid && yearValid;
+        var yearValid =
+            this.state.year !== "Please Select..." && this.state.year !== "";
+
+        return usernameValid && yearValid;
     };
 
     onDismiss = e => {
-        if (e.target.id === "usernameAlert") {
-            this.setState({ invalidUsernameError: false });
-        }
-
-        if (e.target.id === "emailAlert") {
-            this.setState({ invalidEmailError: false });
-        }
-
-        if (e.target.id === "yearAlert") {
-            this.setState({ invalidYearError: false });
-        }
+        this.props.removeAuthError();
     };
 
     // Handle input change
     handleChange = e => {
-        console.log("Handle change");
         this.setState({
             [e.target.id]: e.target.value
         });
@@ -153,7 +131,6 @@ export class Signup extends Component {
             courses.push(element.value);
         });
         this.setState({ currentCourse: courses });
-        console.log(this.state.currentCourse);
     };
 
     loadOptions = () => {
@@ -168,6 +145,9 @@ export class Signup extends Component {
     };
 
     render() {
+        if (!this.props.location.state) {
+            return <Redirect to="/login" />;
+        }
         return (
             <div>
                 <main>
@@ -191,20 +171,25 @@ export class Signup extends Component {
                                         type="email"
                                         name="email"
                                         id="email"
-                                        placeholder="Enter your wisc email"
+                                        disabled
+                                        value={this.props.location.state.email}
                                     />
                                 </Col>
                             </FormGroup>
-                            {this.state.invalidEmailError && (
-                                <Alert
-                                    color="danger"
-                                    id="emailAlert"
-                                    isOpen={this.state.visible}
-                                    toggle={this.onDismiss}
-                                >
-                                    Please use a valid wisc.edu email to login
-                                </Alert>
-                            )}
+                            <FormGroup row onChange={this.handleChange}>
+                                <Label for="name" sm={2}>
+                                    Name
+                                </Label>
+                                <Col sm={10}>
+                                    <Input
+                                        type="name"
+                                        name="name"
+                                        id="name"
+                                        disabled
+                                        value={this.props.location.state.name}
+                                    />
+                                </Col>
+                            </FormGroup>
                             <FormGroup row onChange={this.handleChange}>
                                 <Label for="username" sm={2}>
                                     Username
@@ -218,33 +203,35 @@ export class Signup extends Component {
                                     />
                                 </Col>
                             </FormGroup>
-                            {this.props.authError && (
-                                <Alert
-                                    color="danger"
-                                    id="usernameAlert"
-                                    isOpen={this.state.visible}
-                                    toggle={this.onDismiss}
-                                >
-                                    Duplicate username or email has been
-                                    registered
-                                </Alert>
-                            )}
-                            <FormGroup row onChange={this.handleChange}>
-                                <Label for="name" sm={2}>
-                                    Name
-                                </Label>
-                                <Col sm={10}>
-                                    <Input
-                                        type="name"
-                                        name="name"
-                                        id="name"
-                                        placeholder="Enter your name"
-                                    />
-                                </Col>
-                            </FormGroup>
+                            <Alert
+                                color="danger"
+                                id="usernameAlert"
+                                isOpen={
+                                    !this.state.username.match(
+                                        /^[a-zA-Z0-9-_]+$/
+                                    ) && this.state.username.length !== 0
+                                }
+                            >
+                                Invalid Character detected
+                            </Alert>
+                            <Alert
+                                color="danger"
+                                id="usernameAlert"
+                                isOpen={this.props.authError}
+                                toggle={this.onDismiss}
+                            >
+                                Duplicate username or email has been registered
+                            </Alert>
+
                             <FormGroup onChange={this.handleChange}>
                                 <Label for="year">Year</Label>
-                                <Input type="select" name="year" id="year">
+                                <Input
+                                    type="select"
+                                    name="year"
+                                    id="year"
+                                    defaultValue="Please Select..."
+                                >
+                                    <option>Please Select...</option>
                                     <option>Freshman</option>
                                     <option>Sophomore</option>
                                     <option>Junior</option>
@@ -279,12 +266,7 @@ export class Signup extends Component {
                         </Form>
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }
@@ -300,5 +282,5 @@ Signup.contextTypes = {
 
 export default connect(
     mapStateToProps,
-    { signupUser, loadAllCourses }
+    { signupUser, loadAllCourses, removeAuthError }
 )(Signup);

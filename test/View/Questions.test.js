@@ -1,8 +1,8 @@
 import React from "react";
 import { configure, shallow } from "enzyme";
 import { expect } from "chai";
+import sinon from "sinon";
 
-import { Container } from "reactstrap";
 import { CourseQuestions } from "../../src/Components/CourseQuestions";
 import { TopicQuestions } from "../../src/Components/TopicQuestions";
 import { CompanyQuestions } from "../../src/Components/CompanyQuestions";
@@ -23,16 +23,31 @@ const props = {
     currentCompany: {
         companyName: "Test",
         questions: []
-    }
+    },
+    userCourses: []
 };
 
 describe("Questions component testing", () => {
+    var warn, error;
+    beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        done();
+    });
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        done();
+    });
     it("it should render CourseQuestions correctly", done => {
         const wrapper = shallow(
-            <CourseQuestions currentCourse={props.currentCourse} />,
+            <CourseQuestions
+                currentCourse={props.currentCourse}
+                userCourses={props.userCourses}
+            />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -41,7 +56,7 @@ describe("Questions component testing", () => {
             <TopicQuestions currentTopic={props.currentTopic} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -50,7 +65,7 @@ describe("Questions component testing", () => {
             <CompanyQuestions currentCompany={props.currentCompany} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 });

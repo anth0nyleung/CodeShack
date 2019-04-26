@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Row, Col, Button, Jumbotron, Container } from "reactstrap";
 import { Default, Mobile } from "./utils/Responsive";
+import Footer from "./Footer";
 
 /**
  * Maps the state of the redux store to the properties of the component
@@ -176,15 +177,9 @@ export class Dashboard extends Component {
                                 </Col>
                             </Row>
                         </Mobile>
-                        <hr />
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

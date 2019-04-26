@@ -17,11 +17,13 @@ import { Link, Redirect } from "react-router-dom";
 import { logoutUser } from "../redux/actions/actions";
 import { connect } from "react-redux";
 import { Default, Mobile } from "./utils/Responsive";
+import { PulseLoader } from "react-spinners";
 
 const mapStateToProps = state => {
     return {
         isAuth: state.authUser.isAuth,
-        username: state.authUser.user.username
+        username: state.authUser.user.username,
+        isLoading: state.loading.isLoading
     };
 };
 
@@ -159,67 +161,66 @@ class NavBar extends Component {
                             )}
 
                         <Nav className="ml-auto">
-                            {this.context.router.history.location.pathname !==
-                                "/login" &&
-                                this.context.router.history.location
-                                    .pathname !== "/" && (
-                                    <Nav>
-                                        <NavItem className="d-flex align-items-center">
-                                            <img
-                                                alt="profile-pic"
-                                                src={this.state.url}
-                                                style={circleImgStyles}
-                                            />
-                                        </NavItem>
-                                        <NavItem className="d-flex align-items-center">
-                                            <UncontrolledDropdown>
-                                                <DropdownToggle
-                                                    nav
-                                                    caret
-                                                    style={{ color: "white" }}
-                                                >
-                                                    {this.props.username}
-                                                </DropdownToggle>
-                                                <DropdownMenu right>
-                                                    <DropdownItem
-                                                        id="profile"
-                                                        onClick={
-                                                            this.handleClick
-                                                        }
-                                                    >
-                                                        Profile
-                                                    </DropdownItem>
-                                                    <DropdownItem
-                                                        id="createquestion"
-                                                        onClick={
-                                                            this.handleClick
-                                                        }
-                                                    >
-                                                        Add Question
-                                                    </DropdownItem>
-                                                    <DropdownItem divider />
-                                                    <DropdownItem href="/logout">
-                                                        Log Out
-                                                    </DropdownItem>
-                                                </DropdownMenu>
-                                            </UncontrolledDropdown>
-                                        </NavItem>
-                                    </Nav>
+                            {!this.props.isAuth &&
+                                this.props.isLoading !== 0 && (
+                                    <PulseLoader loading={true} color="white" />
                                 )}
+                            {this.props.isAuth && (
+                                <Nav>
+                                    <NavItem className="d-flex align-items-center">
+                                        <img
+                                            alt="profile-pic"
+                                            src={this.state.url}
+                                            style={circleImgStyles}
+                                        />
+                                    </NavItem>
+                                    <NavItem className="d-flex align-items-center">
+                                        <UncontrolledDropdown>
+                                            <DropdownToggle
+                                                nav
+                                                caret
+                                                style={{ color: "white" }}
+                                            >
+                                                {this.props.username}
+                                            </DropdownToggle>
+                                            <DropdownMenu right>
+                                                <DropdownItem
+                                                    id="profile"
+                                                    onClick={this.handleClick}
+                                                >
+                                                    Profile
+                                                </DropdownItem>
+                                                <DropdownItem
+                                                    id="createquestion"
+                                                    onClick={this.handleClick}
+                                                >
+                                                    Add Question
+                                                </DropdownItem>
+                                                <DropdownItem divider />
+                                                <DropdownItem href="/logout">
+                                                    Log Out
+                                                </DropdownItem>
+                                            </DropdownMenu>
+                                        </UncontrolledDropdown>
+                                    </NavItem>
+                                </Nav>
+                            )}
                         </Nav>
                     </Default>
                     <Mobile>
                         {this.context.router.history.location.pathname !==
-                            "/" && (
-                            <NavbarToggler
-                                onClick={() =>
-                                    this.setState({
-                                        collapsed: !this.state.collapsed
-                                    })
-                                }
-                                className="navbar-toggler-right"
-                            />
-                        )}
+                            "/" &&
+                            this.context.router.history.location.pathname !==
+                                "/help" && (
+                                <NavbarToggler
+                                    onClick={() =>
+                                        this.setState({
+                                            collapsed: !this.state.collapsed
+                                        })
+                                    }
+                                    className="navbar-toggler-right"
+                                />
+                            )}
                         <Collapse isOpen={this.state.collapsed} navbar>
                             <Nav navbar>
                                 <NavLink

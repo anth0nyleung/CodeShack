@@ -5,11 +5,22 @@ import { expect } from "chai";
 import { CourseOverview } from "../../src/Components/CourseOverview";
 import { TopicOverview } from "../../src/Components/TopicOverview";
 import { CompanyOverview } from "../../src/Components/CompanyOverview";
-
+import sinon from "sinon";
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });
 
 describe("Overview component testing", () => {
+    var warn, error;
+    beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        done();
+    });
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        done();
+    });
     it("it should render CourseOverview correctly", done => {
         const wrapper = shallow(
             <CourseOverview
@@ -17,7 +28,7 @@ describe("Overview component testing", () => {
             />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -26,7 +37,7 @@ describe("Overview component testing", () => {
             <TopicOverview topics={[{ topicName: "Test" }]} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 
@@ -35,7 +46,7 @@ describe("Overview component testing", () => {
             <CompanyOverview companies={[{ companyName: "Test" }]} />,
             { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("BootstrapTable").length).to.equal(1);
+        expect(wrapper.find("Container").length).to.equal(2);
         done();
     });
 });

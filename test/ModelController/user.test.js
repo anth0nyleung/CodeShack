@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let User = require("../../server/Models/user.model");
 let Question = require("../../server/Models/question.model");
 let admin = require("../../server/Firebase/admin");
@@ -50,7 +51,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 chai.use(chaiHttp);
 
 describe("User", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         User.deleteMany({}, err => {
             admin
                 .auth()
@@ -62,7 +67,12 @@ describe("User", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create User /POST", () => {
         it("it should create a user", done => {
             let user = {
@@ -75,7 +85,7 @@ describe("User", () => {
 
             chai.request(server)
                 .post("/api/user")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(user)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -91,7 +101,7 @@ describe("User", () => {
 
             chai.request(server)
                 .post("/api/user")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(user)
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -113,7 +123,7 @@ describe("User", () => {
             new User(user).save((err, user) => {
                 chai.request(server)
                     .get("/api/user")
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have.property("username").eql("test");
@@ -125,7 +135,7 @@ describe("User", () => {
         it("it should fail to get a user", done => {
             chai.request(server)
                 .get("/api/user")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(600);
                     done();
@@ -152,7 +162,7 @@ describe("User", () => {
                     chai.request(server)
                         .post(`/api/user/${user._id}/history`)
                         .send({ question_id: question._id })
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(200);
                             const history = res.body.history;
@@ -181,12 +191,12 @@ describe("User", () => {
                     chai.request(server)
                         .post(`/api/user/${user._id}/history`)
                         .send({ question_id: question._id })
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             chai.request(server)
                                 .post(`/api/user/${user._id}/history`)
                                 .send({ question_id: question._id })
-                                .set("Authentication", "Bearer " + idToken)
+                                .set("Authorization", "Bearer " + idToken)
                                 .end((err, res) => {
                                     res.should.have.status(200);
                                     const history = res.body.history;
@@ -201,7 +211,7 @@ describe("User", () => {
         it("it should fail to add a question to history", done => {
             chai.request(server)
                 .post(`/api/user/123/history`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -221,7 +231,7 @@ describe("User", () => {
                 User.findByIdAndDelete(user._id, (err, user) => {
                     chai.request(server)
                         .post(`/api/user/${user._id}/history`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(600);
                             done();
@@ -235,7 +245,7 @@ describe("User", () => {
         it("it should fail to authenticate (401)", done => {
             chai.request(server)
                 .post("/api/user")
-                .set("Authentication", idToken)
+                .set("Authorization", idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(401);
@@ -256,7 +266,7 @@ describe("User", () => {
         it("it should fail to authenticate (403)", done => {
             chai.request(server)
                 .post("/api/user")
-                .set("Authentication", "Bearer 123")
+                .set("Authorization", "Bearer 123")
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(403);

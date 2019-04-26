@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
 let mongoose = require("mongoose");
 let Course = require("../../server/Models/course.model");
 let Question = require("../../server/Models/question.model");
@@ -56,7 +57,11 @@ function getIdTokenFromCustomToken(customToken, callback) {
 }
 
 describe("Question", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Question.deleteMany({}, err => {
             admin
                 .auth()
@@ -68,7 +73,12 @@ describe("Question", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     describe("Create question /POST", () => {
         it("it should create a question", done => {
             let question = {
@@ -79,7 +89,7 @@ describe("Question", () => {
             };
             chai.request(server)
                 .post("/api/question")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(question)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -102,7 +112,7 @@ describe("Question", () => {
 
             chai.request(server)
                 .post("/api/question")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(question)
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -136,7 +146,7 @@ describe("Question", () => {
 
                     chai.request(server)
                         .patch(`/api/question/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send(updateQuestion)
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -156,7 +166,7 @@ describe("Question", () => {
         it("it should fail to update a question", done => {
             chai.request(server)
                 .patch(`/api/question/1`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -177,7 +187,7 @@ describe("Question", () => {
                 Question.findByIdAndDelete(id, err => {
                     chai.request(server)
                         .patch(`/api/question/${id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({})
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -204,7 +214,7 @@ describe("Question", () => {
 
                 chai.request(server)
                     .patch(`/api/question/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .send(updateQuestion)
                     .end((err, res) => {
                         res.should.have.status(403);
@@ -226,7 +236,7 @@ describe("Question", () => {
 
                 chai.request(server)
                     .get(`/api/question/${id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.have
@@ -241,7 +251,7 @@ describe("Question", () => {
         it("it should fail to get a question", done => {
             chai.request(server)
                 .get("/api/question/1234")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -266,7 +276,7 @@ describe("Question", () => {
 
                     chai.request(server)
                         .post(`/api/question/${question_id}/addcourse`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ course_id: course_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -281,7 +291,7 @@ describe("Question", () => {
         it("it should fail to add a course to a question", done => {
             chai.request(server)
                 .post("/api/question/123345432/addcourse")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                 });
@@ -298,7 +308,7 @@ describe("Question", () => {
                 }).save((err, course) => {
                     chai.request(server)
                         .post(`/api/question/${question_id}/addcourse`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ course_id: "1234" })
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -322,7 +332,7 @@ describe("Question", () => {
                     }).save((err, course) => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcourse`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ course_id: course._id })
                             .end((err, res) => {
                                 res.should.have.status(500);
@@ -350,13 +360,40 @@ describe("Question", () => {
                     Course.findByIdAndDelete(course_id, err => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcourse`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ course_id: course_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
                                 done();
                             });
                     });
+                });
+            });
+        });
+    });
+
+    describe("Add a company /POST", () => {
+        it("it should add a company", done => {
+            new Question({
+                name: "Test",
+                content: "Test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                let question_id = question._id;
+
+                new Company({ companyName: "test" }).save((err, company) => {
+                    let company_id = company._id;
+
+                    chai.request(server)
+                        .post(`/api/question/${question_id}/addcompany`)
+                        .set("Authorization", "Bearer " + idToken)
+                        .send({ company_id: company_id })
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            let companies = res.body.companies;
+                            companies.length.should.eql(1);
+                            done();
+                        });
                 });
             });
         });
@@ -378,7 +415,7 @@ describe("Question", () => {
 
                     chai.request(server)
                         .post(`/api/question/${question_id}/addtopic`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ topic_id: topic_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -393,7 +430,7 @@ describe("Question", () => {
         it("it should fail to add a topic", done => {
             chai.request(server)
                 .post(`/api/question/1/addtopic`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -416,7 +453,7 @@ describe("Question", () => {
                     Question.findByIdAndDelete(question_id, err => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addtopic`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ topic_id: topic_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
@@ -440,7 +477,7 @@ describe("Question", () => {
                 }).save((err, topic) => {
                     chai.request(server)
                         .post(`/api/question/${question_id}/addtopic`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ topic_id: "123" })
                         .end((err, res) => {
                             res.should.have.status(500);
@@ -465,7 +502,7 @@ describe("Question", () => {
                     Topic.findByIdAndDelete(topic_id, err => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addtopic`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ topic_id: topic_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
@@ -493,7 +530,7 @@ describe("Question", () => {
 
                     chai.request(server)
                         .post(`/api/question/${question_id}/addcomment`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ comment_id: comment_id })
                         .end((err, res) => {
                             res.should.have.status(200);
@@ -508,7 +545,7 @@ describe("Question", () => {
         it("it should fail to add a comment", done => {
             chai.request(server)
                 .post(`/api/question/1/addcomment`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send({})
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -532,7 +569,7 @@ describe("Question", () => {
 
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcomment`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ comment_id: comment_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
@@ -558,7 +595,7 @@ describe("Question", () => {
                     Comment.findByIdAndDelete(comment_id, err => {
                         chai.request(server)
                             .post(`/api/question/${question_id}/addcomment`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ comment_id: comment_id })
                             .end((err, res) => {
                                 res.should.have.status(500);
@@ -582,7 +619,7 @@ describe("Question", () => {
                 }).save((err, comment) => {
                     chai.request(server)
                         .post(`/api/question/${question_id}/addcomment`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .send({ comment_id: "1" })
                         .end((err, res) => {
                             res.should.have.status(500);

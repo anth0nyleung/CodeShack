@@ -1,7 +1,8 @@
 const initialState = {
     user: { history: [], courses: [], favCompanies: [] },
     isAuth: false,
-    authError: false
+    authError: false,
+    updateError: false
 };
 
 export default (state = initialState, action) => {
@@ -12,7 +13,11 @@ export default (state = initialState, action) => {
                 isAuth: Object.keys(action.user).length > 0 ? true : false,
                 user: action.user
             };
-
+        case "REMOVE_AUTH_ERROR":
+            return {
+                ...state,
+                authError: false
+            };
         case "AUTH_ERROR":
             return {
                 ...state,
@@ -20,6 +25,11 @@ export default (state = initialState, action) => {
             };
         case "LOGOUT_USER":
             return initialState;
+        case "UPDATE_FAIL":
+            return {
+                ...state,
+                updateError: true
+            };
         default:
             return state;
     }

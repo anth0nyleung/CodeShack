@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Jumbotron, Container, Collapse } from "reactstrap";
+import {
+    Row,
+    Col,
+    Button,
+    Jumbotron,
+    Container,
+    Collapse,
+    Input,
+    Alert
+} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import { BarLoader } from "react-spinners";
 import remove from "lodash/remove";
@@ -10,6 +19,7 @@ import {
     loginUser,
     updateUser
 } from "../redux/actions/actions";
+import Footer from "./Footer";
 
 const courseColumns = [
     {
@@ -53,6 +63,7 @@ const mapStateToProps = state => {
     return {
         user_id: state.authUser.user._id,
         username: state.authUser.user.username,
+        updateError: state.authUser.updateError,
         isLoading: state.loading.isLoading,
         currentCourses: state.authUser.user.courses,
         history: state.authUser.user.history
@@ -72,7 +83,10 @@ class UserProfile extends Component {
 
         this.state = {
             url: null,
-            coursesToDelete: []
+            coursesToDelete: [],
+            open: false,
+            username: "",
+            errVisible: true
         };
     }
 
@@ -90,6 +104,21 @@ class UserProfile extends Component {
         if (e.target.type !== "checkbox" && e.target.cellIndex !== 0) {
             this.context.router.history.push(`/courses/${row._id}`);
         }
+    };
+
+    onClickEdit = () => {
+        this.setState({ open: !this.state.open });
+    };
+
+    handleChange = e => {
+        this.setState({
+            username: e.target.value
+        });
+        console.log(this.state.username);
+    };
+
+    onClickSubmit = () => {
+        this.props.updateUser({ username: this.state.username });
     };
 
     indexN = (cell, row, enumObject, index) => {
@@ -132,6 +161,10 @@ class UserProfile extends Component {
         this.setState({
             coursesToDelete: coursesToDelete
         });
+    };
+
+    onDismiss = () => {
+        this.setState({ errVisible: false });
     };
 
     render() {
@@ -192,8 +225,35 @@ class UserProfile extends Component {
                                 color="danger"
                                 onClick={this.onClickEdit}
                             >
-                                Edit
+                                Change Username
                             </Button>
+                            <Collapse isOpen={this.state.open}>
+                                <Container>
+                                    <hr />
+                                    {this.props.updateError && (
+                                        <Alert
+                                            color="danger"
+                                            isOpen={this.state.errVisible}
+                                            toggle={this.onDismiss}
+                                        >
+                                            User name {this.state.username} has
+                                            been taken
+                                        </Alert>
+                                    )}
+                                    <Input
+                                        style={{ width: 300 }}
+                                        onChange={this.handleChange}
+                                        placeholder="Enter you new user name"
+                                    />
+                                    <Button
+                                        style={{ margin: "5px" }}
+                                        color="primary"
+                                        onClick={this.onClickSubmit}
+                                    >
+                                        Submit
+                                    </Button>
+                                </Container>
+                            </Collapse>
                         </Container>
                     </Jumbotron>
                     <Container>
@@ -234,12 +294,7 @@ class UserProfile extends Component {
                         />
                     </Container>
                 </main>
-                <footer>
-                    <Container>
-                        <hr />
-                        <p>&copy; CodeShack 2019</p>
-                    </Container>
-                </footer>
+                <Footer />
             </div>
         );
     }

@@ -2,14 +2,17 @@ import React from "react";
 import { configure, shallow } from "enzyme";
 import { expect } from "chai";
 
-import { Container } from "reactstrap";
-import { Signup } from "../../src/Components/Signup";
+import { AllQuestions } from "../../src/Components/AllQuestions";
 import sinon from "sinon";
 import Adapter from "enzyme-adapter-react-16";
-
 configure({ adapter: new Adapter() });
 
-describe("Signup component testing", () => {
+const props = {
+    questions: [],
+    questionTags: "asdf"
+};
+
+describe("Add Question", () => {
     var warn, error;
     beforeEach(done => {
         error = sinon.stub(console, "error");
@@ -21,18 +24,16 @@ describe("Signup component testing", () => {
         warn.restore();
         done();
     });
-    it("it should render correctly", done => {
+    it("it should render All Questions correctly", done => {
         const wrapper = shallow(
-            <Signup
-                courses={[]}
-                location={{ state: { email: "test", name: "test" } }}
+            <AllQuestions
+                questions={props.questions}
+                isLoading={false}
+                questionTags={props.questionTags}
             />,
-            {
-                disableLifecycleMethods: true
-            }
+            { disableLifecycleMethods: true }
         );
-        expect(wrapper.find("Button").length).to.equal(1);
-        expect(wrapper.find("Input").length).to.equal(4);
+        expect(wrapper.find("Container").length.should.eql(2));
         done();
     });
 });

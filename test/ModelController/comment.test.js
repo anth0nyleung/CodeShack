@@ -1,5 +1,7 @@
 process.env.NODE_ENV = "test";
 
+let sinon = require("sinon");
+
 let mongoose = require("mongoose");
 let Comment = require("../../server/Models/comment.model");
 
@@ -48,8 +50,13 @@ function getIdTokenFromCustomToken(customToken, callback) {
 }
 
 chai.use(chaiHttp);
+
 describe("Comments", () => {
+    var error, warn, info;
     beforeEach(done => {
+        error = sinon.stub(console, "error");
+        warn = sinon.stub(console, "warn");
+        info = sinon.stub(console, "info");
         Comment.deleteMany({}, err => {
             admin
                 .auth()
@@ -61,7 +68,12 @@ describe("Comments", () => {
                 });
         });
     });
-
+    afterEach(done => {
+        error.restore();
+        warn.restore();
+        info.restore();
+        done();
+    });
     /* Test the /POST route */
     describe("Create comment /POST", () => {
         it("it should create a comment", done => {
@@ -72,7 +84,7 @@ describe("Comments", () => {
             };
             chai.request(server)
                 .post("/api/comment")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(comment)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -96,7 +108,7 @@ describe("Comments", () => {
                 comment.should.have.property("deleted").eql(false);
                 chai.request(server)
                     .delete(`/api/comment/${comment._id}`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.be.a("object");
@@ -118,7 +130,7 @@ describe("Comments", () => {
                     }).save((err, child) => {
                         chai.request(server)
                             .post(`/api/comment/${parent._id}/reply`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .send({ reply_id: child._id })
                             .end((err, res) => {
                                 res.should.have.status(200);
@@ -134,7 +146,7 @@ describe("Comments", () => {
         it("it should fail to reply to a comment", done => {
             chai.request(server)
                 .post(`/api/comment/1/reply`)
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .end((err, res) => {
                     res.should.have.status(500);
                     done();
@@ -147,7 +159,7 @@ describe("Comments", () => {
                     Comment.findByIdAndDelete(parent._id, (err, comment) => {
                         chai.request(server)
                             .post(`/api/comment/${parent._id}/reply`)
-                            .set("Authentication", "Bearer " + idToken)
+                            .set("Authorization", "Bearer " + idToken)
                             .end((err, res) => {
                                 res.should.have.status(500);
                                 done();
@@ -164,7 +176,7 @@ describe("Comments", () => {
                 (err, comment) => {
                     chai.request(server)
                         .get(`/api/comment/${comment._id}`)
-                        .set("Authentication", "Bearer " + idToken)
+                        .set("Authorization", "Bearer " + idToken)
                         .end((err, res) => {
                             res.should.have.status(200);
                             done();
@@ -182,7 +194,7 @@ describe("Comments", () => {
             };
             chai.request(server)
                 .post("/api/comment")
-                .set("Authentication", "Bearer " + idToken)
+                .set("Authorization", "Bearer " + idToken)
                 .send(comment)
                 .end((err, res) => {
                     res.should.have.status(500);
@@ -200,7 +212,7 @@ describe("Comments", () => {
                 comment.should.have.property("deleted").eql(false);
                 chai.request(server)
                     .delete(`/api/comment/1`)
-                    .set("Authentication", "Bearer " + idToken)
+                    .set("Authorization", "Bearer " + idToken)
                     .end((err, res) => {
                         res.should.have.status(500);
                         done();

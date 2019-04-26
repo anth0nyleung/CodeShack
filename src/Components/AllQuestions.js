@@ -8,6 +8,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { convertFromRaw } from "draft-js";
+import Footer from "./Footer";
 
 const { SearchBar } = Search;
 
@@ -19,7 +20,7 @@ const mapStateToProps = state => {
     };
 };
 
-class AllQuestions extends Component {
+export class AllQuestions extends Component {
     constructor(props) {
         super(props);
 
@@ -128,6 +129,7 @@ class AllQuestions extends Component {
                         </ToolkitProvider>
                     </Container>
                 </main>
+                <Footer />
             </div>
         );
     }
