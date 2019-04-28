@@ -329,7 +329,7 @@ export function createCommentAndReply(comment_data, question_id, callback) {
                                 callback();
                             })
                             .catch(err => {
-                                console.error("Error replying comment");
+                                console.error(err, "Error replying comment");
                             });
                     } else {
                         axios
@@ -342,7 +342,7 @@ export function createCommentAndReply(comment_data, question_id, callback) {
                                 callback();
                             })
                             .catch(err => {
-                                console.error("error replying comment");
+                                console.error(err, "error replying comment");
                             });
                     }
                 })

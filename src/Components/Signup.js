@@ -103,7 +103,6 @@ export class Signup extends Component {
 
     validateForm = () => {
         var exp = /^[a-zA-Z0-9-_]+$/;
-        console.log(this.state.username.search(exp));
         var usernameValid =
             this.state.username.length > 0 &&
             this.state.username.search(exp) !== -1;
