@@ -167,6 +167,14 @@ class UserProfile extends Component {
         this.setState({ errVisible: false });
     };
 
+    validateForm = () => {
+        var exp = /^[a-zA-Z0-9-_]+$/;
+        var usernameValid =
+            this.state.username.length > 0 &&
+            this.state.username.search(exp) !== -1;
+        return usernameValid;
+    };
+
     render() {
         if (this.props.isLoading) {
             return (
@@ -245,10 +253,22 @@ class UserProfile extends Component {
                                         onChange={this.handleChange}
                                         placeholder="Enter you new user name"
                                     />
+                                    <Alert
+                                        color="danger"
+                                        isOpen={
+                                            !this.state.username.match(
+                                                /^[a-zA-Z0-9-_]+$/
+                                            ) &&
+                                            this.state.username.length !== 0
+                                        }
+                                    >
+                                        Invalid character detected
+                                    </Alert>
                                     <Button
                                         style={{ margin: "5px" }}
                                         color="primary"
                                         onClick={this.onClickSubmit}
+                                        disabled={!this.validateForm()}
                                     >
                                         Submit
                                     </Button>
