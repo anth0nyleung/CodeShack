@@ -8,6 +8,8 @@ let Course = require("../../server/Models/course.model");
 let Topic = require("../../server/Models/topic.model");
 let Company = require("../../server/Models/company.model");
 let User = require("../../server/Models/user.model");
+let Comment = require("../../server/Models/comment.model");
+let Question = require("../../server/Models/question.model");
 
 let chai = require("chai");
 let chaiHttp = require("chai-http");
@@ -190,6 +192,42 @@ describe("Integration Tests", () => {
                     action.companies.length.should.eql(1);
                     done();
                 }
+            });
+        });
+    });
+    describe("Comment", () => {
+        before(done => {
+            Comment.deleteMany({}, () => {
+                done();
+            });
+        });
+
+        it("it should create a comment and reply", done => {
+            new Question({
+                name: "test",
+                content: "test",
+                poster: "5cab70541930e60d68e908d2"
+            }).save((err, question) => {
+                const test = actions.createCommentAndReply(
+                    { content: "test", parent: null },
+                    question._id,
+                    () => {
+                        Question.findById(question._id, (err, question) => {
+                            const newTest = actions.createCommentAndReply(
+                                {
+                                    content: "test",
+                                    parent: question.comments[0]
+                                },
+                                null,
+                                () => {
+                                    done();
+                                }
+                            );
+                            newTest();
+                        });
+                    }
+                );
+                test();
             });
         });
     });

@@ -36,4 +36,16 @@ describe("Add Question", () => {
         expect(wrapper.find("Container").length.should.eql(2));
         done();
     });
+    it("it should render a loading bar", done => {
+        const wrapper = shallow(
+            <AllQuestions
+                questions={props.questions}
+                isLoading={true}
+                questionTags={props.questionTags}
+            />,
+            { disableLifecycleMethods: true }
+        );
+        expect(wrapper.find("main").length.should.eql(1));
+        done();
+    });
 });
