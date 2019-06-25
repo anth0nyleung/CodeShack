@@ -12,7 +12,7 @@ const mongoose = require("mongoose"),
 const API_PORT = 8080;
 
 // This is our MongoDB database
-let dbRoute = "mongodb://localhost:27017/CodeShackDev"; // Change this
+let dbRoute = "mongodb://127.0.0.1:27017/CodeShackDev"; // Change this
 
 // If test, set the uri correctly
 if (config.util.getEnv("NODE_ENV") === "test") {

@@ -6,13 +6,7 @@ import {
     Col,
     Button,
     Jumbotron,
-    Container,
-    Card,
-    CardImg,
-    CardText,
-    CardBody,
-    CardTitle,
-    
+    Container
 } from "reactstrap";
 
 const mainStyles = {
@@ -21,6 +15,14 @@ const mainStyles = {
     height: "100%",
     borderRadius: "0px"
 };
+
+const mainStyles2 = {
+    backgroundColor: "#c5050c",
+    width: "100%",
+    height: "100%",
+    borderRadius: "0px"
+};
+
 const firstJumbotronStyles = {
     backgroundColor: "#9b0000",
     width: "100%",
@@ -48,10 +50,18 @@ const fontStyles = {
 
 const buttonStyles = {
     margin : '10px',
-    width : 120,
-    backgroundColor: "#9b0000",
-    borderColor: "#9b0000"
+    width : 360,
+    height: 100,
+    backgroundColor: "#ffffff",
+    borderColor: "#ffffff",
+    color:"#c5050c",
+    fontSize: 36
+    
+
+    
 };
+
+
 
 const mapStateToProps = state => {
     return {
@@ -76,15 +86,13 @@ class Main extends Component {
         this.context.router.history.push("/signup");
     }
 
-    
-
 
     render() {
         return(
             <div>
-                <main style={mainStyles}>
+                <main style={mainStyles2}>
                     
-                    <Jumbotron style={firstJumbotronStyles}>
+                    <Jumbotron style={mainStyles2}>
                         <Container>
                             <Row>
                                 <Col><h3 className="display-3" style={fontStyles}>
@@ -97,7 +105,7 @@ class Main extends Component {
                                             <Button style={buttonStyles} onClick={this.onClickLogin}>Login</Button>
                                         </Row>
                                         <Row>
-                                            <Button style={buttonStyles} onClick={this.onClickSignup}>Sign up</Button>
+                                            <Button style={buttonStyles} onClick={this.onClickSignup}>Create Account</Button>
                                         </Row>
                                     </Jumbotron>
                                 </Col>
